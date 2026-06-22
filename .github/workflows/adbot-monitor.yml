@@ -1,0 +1,44 @@
+name: adbot · CPL+CPA monitor (hourly)
+
+# Pauses any ACTIVE ad whose cost-per-Complete-Registration exceeds the KPI ceiling
+# (kpi.cpl_threshold_myr), folded with the real-sales CPA gate (cpa.*): a healthy 60-day
+# CPA rescues an over-CPL ad, and a proven CPA hard stop (>RM1,200, matured) is paused.
+# Whole-account scope (MTC + STOCKBLOOM), judged one ad at a time; registration-optimized only.
+
+on:
+  schedule:
+    # GitHub drops top-of-hour (":00") scheduled runs under load, so stagger to odd minutes
+    # AND run a few times an hour for redundancy. The monitor is safe to repeat: it only
+    # pauses over-threshold ACTIVE ads and never un-pauses, so extra runs are no-ops.
+    - cron: "7,27,47 * * * *"   # ~every 20 min, off the congested hour boundary (UTC)
+  workflow_dispatch:            # allow manual runs from the Actions tab
+    inputs:
+      dry_run:
+        description: "Dry run (evaluate + log what would pause, write nothing)"
+        type: boolean
+        default: false
+
+concurrency:
+  group: adbot-monitor
+  cancel-in-progress: false
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install .
+      - name: Run CPL+CPA monitor
+        env:
+          # pip install . is non-editable, so settings.py lands in site-packages and its
+          # __file__-relative repo-root guess misses config/config.yaml. Point it at the checkout.
+          ADBOT_ROOT: ${{ github.workspace }}
+          ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
+          META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
+          META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
+          GOOGLE_SERVICE_ACCOUNT_JSON_B64: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON_B64 }}
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+        run: python -m adbot monitor ${{ inputs.dry_run && '--dry-run' || '' }}
