@@ -44,7 +44,7 @@ meta:
     activate_after_build: true           # auto-activate at daily_amount_myr after a verified build
 
 naming:
-  prefix: "[CLAUDE]"                     # name prefix scoping every entity this bot creates
+  prefix: "MARTIN-MY"                    # name prefix scoping every entity this bot creates
   weekly_off_label: "ADBOT_WEEKLY_OFF"   # structural — do not change
 
 drive:
