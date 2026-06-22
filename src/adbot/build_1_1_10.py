@@ -1,4 +1,4 @@
-"""Build the 1-1-10 structure: 1 CBO campaign, 1 broad ad set (MY 25+), 10 ads.
+"""Build the 1-1-10 structure: 1 CBO campaign, 1 broad ad set (geo + age from config), 10 ads.
 
 Everything is created PAUSED. If ``meta.build.activate_after_build`` is true, the whole
 hierarchy is then activated (campaign -> ad set -> ads) at the configured CBO budget.
@@ -76,7 +76,7 @@ def build(graph, settings: Settings, units: List[Unit],
         "bid_strategy": "LOWEST_COST_WITHOUT_CAP",
     }
     adset_fields = {
-        "name": settings.naming.campaign_name(f"{label} | AdSet (Broad MY 25+)"),
+        "name": settings.naming.campaign_name(f"{label} | AdSet (Broad {(m.targeting.countries or ['MY'])[0]} {m.targeting.age_min}+)"),
         "optimization_goal": m.optimization_goal, "billing_event": "IMPRESSIONS",
         "promoted_object": m.promoted_object, "targeting": m.targeting.to_spec(),
         "status": "PAUSED",

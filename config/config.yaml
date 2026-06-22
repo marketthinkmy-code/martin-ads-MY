@@ -48,13 +48,12 @@ naming:
   weekly_off_label: "ADBOT_WEEKLY_OFF"   # structural — do not change
 
 drive:
-  # Set to Drive folder "JUNE 2 (月中)" — current structured set: SINGLE IMAGES (3) +
-  # CAROUSEL (1, 6 cards) = 4 creative units. NO videos (those are in the separate "2026"
-  # tree). For a full 1-1-10 incl. videos, consolidate the intended 10 into one folder and
-  # update this id. MUST be shared with the service-account email (client_email in the key).
-  creatives_folder_id: "1rsllkhmbadYmyAQ6porZif7FDelRfSAO"
-  carousel_subfolder_marker: "carousel"     # matches CAROUSEL / CAROUSEL 1 / CAROUSEL 2
-  script_sidecar_ext: ".txt"                # NOTE: scripts are currently a Google Doc, not .txt sidecars (optional)
+  # Curated 1-1-10 set "MARTIN-MY ADBOT 1-1-10 (JUNE)" (assembled from your archives;
+  # lives inside "JUNE 2" so the SA inherits read access): 6 videos + 3 single images +
+  # 1 CAROUSEL subfolder (6 cards) = 10 creative units.
+  creatives_folder_id: "1XTztY2xvAKY0YfZW3spZi3ZEKqu3lHlF"
+  carousel_subfolder_marker: "carousel"     # matches the CAROUSEL subfolder
+  script_sidecar_ext: ".txt"                # optional per-asset .txt brief (same basename)
 
 google_docs:
   caption_log_doc_id: ""                 # empty -> auto-create on first write
