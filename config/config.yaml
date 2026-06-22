@@ -48,15 +48,13 @@ naming:
   weekly_off_label: "ADBOT_WEEKLY_OFF"   # structural — do not change
 
 drive:
-  # PENDING: the bot needs ONE curated root folder holding exactly this campaign's
-  # creatives (videos + images + .txt script sidecars), shared with the service account.
-  # Your current folders are monthly archives (JUNE images / 2026 videos) — pointing here
-  # would pull arbitrary old assets. Replace GDRIVE_FOLDER_ID with the curated folder id.
-  #   images/scripts archive: 1Q1ybYbGqo9nNbE9h5_vB6DpLDkwss3tb  (folder "JUNE")
-  #   videos archive:         1tJ7s4ajWyRAB-JXkzboTJDdHsmPU4rMv  (folder "2026")
-  creatives_folder_id: "GDRIVE_FOLDER_ID"
-  carousel_subfolder_marker: "carousel"     # a subfolder whose name contains this = one carousel set
-  script_sidecar_ext: ".txt"                # per-asset script/brief: same basename, this extension
+  # Set to Drive folder "JUNE 2 (月中)" — current structured set: SINGLE IMAGES (3) +
+  # CAROUSEL (1, 6 cards) = 4 creative units. NO videos (those are in the separate "2026"
+  # tree). For a full 1-1-10 incl. videos, consolidate the intended 10 into one folder and
+  # update this id. MUST be shared with the service-account email (client_email in the key).
+  creatives_folder_id: "1rsllkhmbadYmyAQ6porZif7FDelRfSAO"
+  carousel_subfolder_marker: "carousel"     # matches CAROUSEL / CAROUSEL 1 / CAROUSEL 2
+  script_sidecar_ext: ".txt"                # NOTE: scripts are currently a Google Doc, not .txt sidecars (optional)
 
 google_docs:
   caption_log_doc_id: ""                 # empty -> auto-create on first write
