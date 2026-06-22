@@ -79,7 +79,7 @@ Example Block A (the 营养·方向错了 angle — study the line-breaks & spac
 - Do NOT add hashtags unless asked.
 - The full `caption` = Block A + "\n\n======\n\n" + Block B.
 
-## Headline (<= ~40 字, 简体, angle-specific) — e.g.「补品买了一堆，孩子还是不长?」
+## Headline (<= ~40 字, 简体, angle-specific) — MUST start with 🔴, e.g.「🔴 补品买了一堆，孩子还是不长?」
 
 ## Output — return ONLY this JSON object:
 {
