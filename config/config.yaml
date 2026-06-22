@@ -41,7 +41,7 @@ meta:
 
   build:
     creatives_per_adset: 10              # the "N" in 1-1-N
-    activate_after_build: true           # auto-activate at daily_amount_myr after a verified build
+    activate_after_build: false          # SAFETY: batch builds create everything PAUSED — you activate after review (no spend until then)
 
 naming:
   prefix: "MARTIN-MY"                    # name prefix scoping every entity this bot creates
