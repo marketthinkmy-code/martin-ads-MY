@@ -36,6 +36,7 @@ jobs:
           META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
           GOOGLE_SERVICE_ACCOUNT_JSON_B64: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON_B64 }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
         run: |
           echo "==================== python -m adbot doctor ===================="
           python -m adbot doctor || true
@@ -45,3 +46,6 @@ jobs:
           echo ""
           echo "==================== python -m adbot build --dry-run ===================="
           python -m adbot build --dry-run || true
+          echo ""
+          echo "==================== notion connectivity ===================="
+          python -c "import os; from adbot.settings import load_settings; from adbot.commands import notion_client; s=load_settings(); print('Notion DB reachable:', notion_client(s).get_database(s.notion.database_id).get('title')) if os.environ.get('NOTION_API_KEY') else print('NOTION_API_KEY not visible to this workflow — add it as a REPO secret; Notion write will be skipped until then')" || true

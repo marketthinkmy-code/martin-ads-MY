@@ -145,12 +145,22 @@ class CpaCfg(BaseModel):
     min_spend_myr: float = 1000.0       # need at least this much spend to fairly judge CPA
 
 
+class NotionCfg(BaseModel):
+    """Mirror each generated caption+headline into a Notion database (optional)."""
+    enabled: bool = False
+    database_id: str = ""
+    brand: str = ""
+    default_status: str = "In Review"
+    default_type: str = "Caption"
+
+
 # ── secrets (.env / environment) ─────────────────────────────────────────────
 class Secrets(BaseModel):
     meta_token: str = ""
     meta_app_secret: str = ""
     google_sa_json: str = ""
     anthropic_api_key: str = ""
+    notion_api_key: str = ""
 
 
 # ── top-level ────────────────────────────────────────────────────────────────
@@ -161,6 +171,7 @@ class Settings(BaseModel):
     google_docs: GoogleDocsCfg = Field(default_factory=GoogleDocsCfg)
     kpi: KpiCfg = Field(default_factory=KpiCfg)
     cpa: CpaCfg = Field(default_factory=CpaCfg)
+    notion: NotionCfg = Field(default_factory=NotionCfg)
     schedule: dict = Field(default_factory=dict)
     secrets: Secrets = Field(default_factory=Secrets)
     config_path: str = str(DEFAULT_CONFIG)
@@ -212,10 +223,12 @@ def _load_secrets() -> Secrets:
         meta_app_secret=os.environ.get("META_APP_SECRET", ""),
         google_sa_json=_resolve_sa_json(),
         anthropic_api_key=os.environ.get("ANTHROPIC_API_KEY", ""),
+        notion_api_key=os.environ.get("NOTION_API_KEY", ""),
     )
     register_secret(secrets.meta_token)
     register_secret(secrets.meta_app_secret)
     register_secret(secrets.anthropic_api_key)
+    register_secret(secrets.notion_api_key)
     return secrets
 
 
@@ -232,6 +245,7 @@ def load_settings(config_path: Optional[Path] = None) -> Settings:
         google_docs=GoogleDocsCfg(**(data.get("google_docs") or {})),
         kpi=KpiCfg(**(data.get("kpi") or {})),
         cpa=CpaCfg(**(data.get("cpa") or {})),
+        notion=NotionCfg(**(data.get("notion") or {})),
         schedule=data.get("schedule") or {},
         secrets=_load_secrets(),
         config_path=str(path),

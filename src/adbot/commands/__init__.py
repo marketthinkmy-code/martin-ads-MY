@@ -27,3 +27,8 @@ def docs_client(settings: Settings):
 def llm_client(settings: Settings):
     from ..clients.llm import LLMClient
     return LLMClient(settings.secrets.anthropic_api_key)
+
+
+def notion_client(settings: Settings):
+    from ..clients.notion import NotionClient
+    return NotionClient(settings.secrets.notion_api_key)

@@ -8,8 +8,8 @@ from . import state
 from .creative_groups import Unit
 from .logging import get_logger
 
-CAPTION_DOC_TITLE = "STOCK BLOOM — Caption & Headline Log"
-IDEA_DOC_TITLE = "STOCK BLOOM — Content Idea Backlog"
+CAPTION_DOC_TITLE = "{prefix} — Caption & Headline Log"
+IDEA_DOC_TITLE = "{prefix} — Content Idea Backlog"
 
 
 def _caption_block(content_id: str, kind: str, cap: Dict[str, Any]) -> str:
@@ -36,7 +36,8 @@ def write_caption_log(docs, settings, units: List[Unit],
                       captions: Dict[str, Dict[str, Any]]) -> str:
     log = get_logger()
     configured = settings.google_docs.caption_log_doc_id
-    doc_id = docs.ensure_doc(configured, CAPTION_DOC_TITLE, settings.drive.creatives_folder_id)
+    doc_id = docs.ensure_doc(configured, CAPTION_DOC_TITLE.format(prefix=settings.naming.prefix),
+                             settings.drive.creatives_folder_id)
     if not configured:
         log.info("Created caption-log Doc %s — paste into config.yaml google_docs.caption_log_doc_id", doc_id)
         _remember_doc("caption_log_doc_id", doc_id)
@@ -59,7 +60,8 @@ def _idea_block(idea: Dict[str, Any]) -> str:
 def append_ideas(docs, settings, ideas: List[Dict[str, Any]]) -> int:
     log = get_logger()
     configured = settings.google_docs.idea_backlog_doc_id
-    doc_id = docs.ensure_doc(configured, IDEA_DOC_TITLE, settings.drive.creatives_folder_id)
+    doc_id = docs.ensure_doc(configured, IDEA_DOC_TITLE.format(prefix=settings.naming.prefix),
+                             settings.drive.creatives_folder_id)
     if not configured:
         log.info("Created idea-backlog Doc %s — paste into config.yaml google_docs.idea_backlog_doc_id", doc_id)
         _remember_doc("idea_backlog_doc_id", doc_id)
@@ -77,3 +79,39 @@ def append_ideas(docs, settings, ideas: List[Dict[str, Any]]) -> int:
         docs.append_text(doc_id, "".join(blocks))
     log.info("Appended %d new ideas (skipped %d duplicates).", added, len(ideas) - added)
     return added
+
+
+_NOTION_TYPE = {"video": "Video", "carousel": "Carousel", "single_image": "Post"}
+
+
+def write_notion_captions(notion, settings, units: List[Unit],
+                          captions: Dict[str, Dict[str, Any]]) -> int:
+    """Mirror each caption+headline into the configured Notion database (one row per unit)."""
+    from .clients.notion import rich_text
+    log = get_logger()
+    db = settings.notion.database_id
+    brand = settings.notion.brand or settings.naming.prefix
+    today = state.now_iso()[:10]
+    written = 0
+    for u in units:
+        cap = captions.get(u.content_id, {})
+        signals = ", ".join(cap.get("encoded_audience_signals", []) or [])
+        props = {
+            "Title": {"title": rich_text(f"{settings.naming.prefix} | {u.content_id}")},
+            "Type": {"select": {"name": _NOTION_TYPE.get(u.kind, settings.notion.default_type)}},
+            "Caption": {"rich_text": rich_text(cap.get("caption", ""))},
+            "Headline": {"rich_text": rich_text(cap.get("headline", ""))},
+            "Hook": {"rich_text": rich_text(cap.get("headline", ""))},
+            "Content ID": {"rich_text": rich_text(u.content_id)},
+            "Audience Signals": {"rich_text": rich_text(signals)},
+            "Status": {"status": {"name": settings.notion.default_status}},
+            "Brand": {"rich_text": rich_text(brand)},
+            "Date": {"date": {"start": today}},
+        }
+        try:
+            notion.create_row(db, props)
+            written += 1
+        except Exception as exc:  # noqa: BLE001 - one bad row shouldn't stop the rest
+            log.warning("  [notion] %s failed: %s", u.content_id, exc)
+    log.info("Wrote %d/%d captions to Notion.", written, len(units))
+    return written

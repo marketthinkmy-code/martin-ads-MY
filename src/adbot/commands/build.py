@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any, Dict
 
-from . import docs_client, drive_client, graph_client, llm_client
+from . import docs_client, drive_client, graph_client, llm_client, notion_client
 from .. import build_1_1_10, docwriter, media
 from ..captions import generate_for_units
 from ..drive_sync import download_assets, load_units
@@ -34,4 +34,10 @@ def run(settings, *, dry_run: bool = False) -> Dict[str, Any]:
 
     docs = docs_client(settings)
     docwriter.write_caption_log(docs, settings, units, captions)
+
+    if settings.notion.enabled and settings.secrets.notion_api_key and settings.notion.database_id:
+        try:
+            docwriter.write_notion_captions(notion_client(settings), settings, units, captions)
+        except Exception as exc:  # noqa: BLE001 - Notion logging must never break a build
+            log.warning("Notion logging failed (%s) — continuing", exc)
     return entities
