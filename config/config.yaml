@@ -1,55 +1,60 @@
 # ─────────────────────────────────────────────────────────────────────────────
-# adbot — non-secret operator config for martin-ads-MY (Martin / Malaysia).
-# Secrets live in .env (see .env.example).  Replace every XXXXXXXX / placeholder
-# and CONFIRM value below before the first live run.  `python -m adbot doctor`
-# validates this file.
+# adbot — non-secret operator config for martin-ads-MY
+# Brand: Martin MY ·《儿童长高方程式》· 馬丁藥師 (kids-growth conditioning course)
+# Secrets live in .env (see .env.example).  `python -m adbot doctor` validates this file.
 #
-# Confirmed SAME as the template: country MY · currency MYR · timezone GMT+8 ·
+# Confirmed SAME as the soocheng template: country MY · currency MYR · timezone GMT+8 ·
 # language Chinese (locale 1004) · objective OUTCOME_SALES / OFFSITE_CONVERSIONS /
 # COMPLETE_REGISTRATION.  cron schedules in .github/workflows are UNCHANGED.
 # ─────────────────────────────────────────────────────────────────────────────
 
 meta:
-  ad_account_id: "act_XXXXXXXX"          # numeric; from ads_get_ad_accounts (keep the act_ prefix)
-  page_id: "XXXXXXXX"                     # FB Page the ads run under (ads_get_ad_account_pages)
-  instagram_user_id: "XXXXXXXX"           # IG Business Account; set to null to omit
-  pixel_id: "XXXXXXXX"                    # pixel / dataset id for conversion tracking (ads_get_datasets)
+  ad_account_id: "act_1011719073600566"   # Martin MY ad account
+  page_id: "341825319024143"               # FB Page the ads run under
+  instagram_user_id: "7085012808290550"    # IG Business Account; null to omit
+  pixel_id: "1189593242351293"             # pixel / dataset id for conversion tracking
 
   objective: "OUTCOME_SALES"             # confirmed same as template
   optimization_goal: "OFFSITE_CONVERSIONS"   # "Maximize number of conversions"
   conversion_event: "COMPLETE_REGISTRATION"  # Ads Manager "Complete registration" (custom_event_type)
-  special_ad_categories: []              # CONFIRM: [] or e.g. ["FINANCIAL_PRODUCTS_SERVICES"] for finance/trading
+  special_ad_categories: []              # none (kids-growth education — not a restricted category)
 
   lead_destination:
     type: "WEBSITE"                      # WEBSITE | INSTANT_FORM | MESSENGER | WHATSAPP
-    link_url: "https://your-landing-page.example/"
-  conversion_domain: "https://your-landing-page.example/"   # required by Meta for website-conversion ads
+    link_url: "https://as.dr-martin.com.tw/kids-growth-formula-landing"
+  conversion_domain: "https://as.dr-martin.com.tw/"   # bare domain derived = as.dr-martin.com.tw (verify it in Meta Business settings)
   call_to_action: "LEARN_MORE"           # SIGN_UP / LEARN_MORE / GET_OFFER / SUBSCRIBE ...
   url_tags: "utm_source={{adset.name}}&utm_medium={{placement}}&utm_campaign={{campaign.name}}&utm_content={{ad.name}}"
 
   budget:
     level: "CAMPAIGN"                    # CBO — campaign-level budget
-    daily_amount_myr: 250                # CONFIRM (MYR) — placeholder default, replace with martin's
+    daily_amount_myr: 250                # CBO daily budget (MYR)
     currency: "MYR"                      # confirmed same
-    adset_min_spend_myr: 50              # CONFIRM (MYR) — per-ad-set minimum daily spend (>=50)
+    adset_min_spend_myr: 50              # per-ad-set minimum daily spend (>=50)
 
   targeting:
     countries: ["MY"]                    # confirmed same
-    age_min: 25                          # CONFIRM
-    age_max: 65                          # CONFIRM
+    age_min: 35                          # parents of 10-17yo kids
+    age_max: 65
     advantage_audience: 1                # 1 = Broad/Advantage+ ON; 0 = hard age cap
     locales: [1004]                      # confirmed same — 1004 = Chinese (All)
 
   build:
-    creatives_per_adset: 10              # CONFIRM — the "N" in 1-1-N
+    creatives_per_adset: 10              # the "N" in 1-1-N
     activate_after_build: true           # auto-activate at daily_amount_myr after a verified build
 
 naming:
-  prefix: "XXXXXXXX"                     # CONFIRM — name prefix scoping every entity this bot manages
+  prefix: "[CLAUDE]"                     # name prefix scoping every entity this bot creates
   weekly_off_label: "ADBOT_WEEKLY_OFF"   # structural — do not change
 
 drive:
-  creatives_folder_id: "GDRIVE_FOLDER_ID"   # root Drive folder (videos / images / carousel subfolders)
+  # PENDING: the bot needs ONE curated root folder holding exactly this campaign's
+  # creatives (videos + images + .txt script sidecars), shared with the service account.
+  # Your current folders are monthly archives (JUNE images / 2026 videos) — pointing here
+  # would pull arbitrary old assets. Replace GDRIVE_FOLDER_ID with the curated folder id.
+  #   images/scripts archive: 1Q1ybYbGqo9nNbE9h5_vB6DpLDkwss3tb  (folder "JUNE")
+  #   videos archive:         1tJ7s4ajWyRAB-JXkzboTJDdHsmPU4rMv  (folder "2026")
+  creatives_folder_id: "GDRIVE_FOLDER_ID"
   carousel_subfolder_marker: "carousel"     # a subfolder whose name contains this = one carousel set
   script_sidecar_ext: ".txt"                # per-asset script/brief: same basename, this extension
 
@@ -58,26 +63,26 @@ google_docs:
   idea_backlog_doc_id: ""                # empty -> auto-create on first write
 
 kpi:
-  cpl_threshold_myr: 40.00               # CONFIRM (MYR) — pause an ad above this CPL
-  cpl_min_spend_myr: 80.00               # CONFIRM (MYR) — only judge an ad once it has spent >= this
+  cpl_threshold_myr: 55.00               # pause an ad above this CPL (MYR)
+  cpl_min_spend_myr: 100.00              # only judge an ad once it has spent >= this (MYR)
   cpl_lookback: "week_thu"               # week-to-date from Thursday (the weekly ON/reset)
   pause_zero_lead_after_spend: true      # spent >= cpl_min_spend with 0 results -> infinite CPL -> pause
-  cpl_hold: []                           # ad-name substrings temporarily exempt from auto-pause (owner holds)
+  cpl_hold: []                           # ad-name substrings temporarily exempt from auto-pause
 
-cpa:                                     # cost per real PAID acquisition (joins a paid-list sheet)
-  enabled: false                         # CONFIRM — set true once spreadsheet_id is filled
-  spreadsheet_id: ""                     # CONFIRM — paid-list Google Sheet id (share it with the SA email)
-  sales_tab: "Paid Student List"         # CONFIRM — the tab to read (one paid enrolment per row, with UTM + date)
-  price_myr: 2399.00                     # CONFIRM — default pax price (sheet Amount column overrides per row)
-  target_myr: 720.00                     # CONFIRM — primary target CPA
-  healthy_max_myr: 800.00                # CONFIRM — end of healthy range (NOT an auto-pause line)
-  max_acceptable_myr: 960.00             # CONFIRM — above here -> pause candidate after diagnosis
-  hard_stop_myr: 1200.00                 # CONFIRM — above here (with real sales) -> auto-pause
-  conversion_days: 14                    # CONFIRM — don't judge CPA / 'no sales' until this old
-  min_spend_myr: 1000.00                 # CONFIRM — need >= this spend before a CPA verdict is fair
+cpa:                                     # cost per real PAID acquisition (joins the paid-list sheet)
+  enabled: true
+  spreadsheet_id: "1DsKtcDpsWp3Njfah6Fw3PBizhGiy017ULw5qKeV-RSA"   # "Paid Student List" sheet (share with the SA email)
+  sales_tab: "Paid Student List (RM1997)"   # NOTE: tab label says RM1997 but price_myr below is 2591 — confirm
+  price_myr: 2591.00                     # default pax price (sheet's Amount column overrides per row)
+  target_myr: 740.00                     # primary target CPA
+  healthy_max_myr: 860.00                # end of healthy range (NOT an auto-pause line)
+  max_acceptable_myr: 1040.00            # above here -> pause candidate after diagnosis
+  hard_stop_myr: 1300.00                 # above here (with real sales) -> auto-pause
+  conversion_days: 14                    # don't judge CPA / 'no sales' until this old
+  min_spend_myr: 1000.00                 # need >= this spend before a CPA verdict is fair
 
 schedule:                                # informational; the real schedule lives in .github/workflows (UNCHANGED)
   timezone: "Asia/Kuala_Lumpur"          # GMT+8 (no DST) — confirmed same
-  weekly_off: { day: "WED", time: "15:00" }   # pause ALL            -> workflow cron 9 7 * * 3
-  weekly_on:  { day: "THU", time: "00:00" }   # resume what Wed paused -> workflow cron 9 16 * * 3
+  weekly_off: { day: "WED", time: "15:00" }   # pause ALL            -> workflow cron 9 7 * * 3 (+16:09 backup)
+  weekly_on:  { day: "THU", time: "00:00" }   # resume what Wed paused -> workflow cron 9 16 * * 3 (+ backups)
   monitor_interval_hours: 1
