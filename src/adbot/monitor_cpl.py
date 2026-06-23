@@ -162,6 +162,18 @@ def evaluate_account(graph, settings: Settings, *, cpa_ctx=None) -> List[AdDecis
     tiers = cpa.CpaTiers(settings.cpa.healthy_max_myr, settings.cpa.max_acceptable_myr,
                          settings.cpa.hard_stop_myr)
 
+    # Batch every active ad's CPL-window insight into ONE account-level call (level=ad) instead
+    # of one request per ad. A whole-account scan otherwise fires dozens of /insights calls and
+    # trips Meta's per-account rate limit ("too many calls from this ad account"), which fails
+    # the whole monitor run — so nothing gets paused. Ads with no row (zero delivery in the
+    # window) fall through to parse_metrics(None)=spend 0 and are simply left running.
+    insight_by_ad: Dict[str, Dict[str, Any]] = {}
+    for row in graph.account_insights(account, level="ad", fields="ad_id,spend,actions",
+                                      date_preset=cpl_preset, time_range=cpl_range):
+        aid = row.get("ad_id")
+        if aid:
+            insight_by_ad[aid] = row
+
     decisions: List[AdDecision] = []
     for campaign in graph.list_campaigns(account):
         if campaign.get("effective_status") != "ACTIVE":  # paused/archived have no live ads
@@ -174,7 +186,7 @@ def evaluate_account(graph, settings: Settings, *, cpa_ctx=None) -> List[AdDecis
             if (promoted.get("custom_event_type") or "").upper() != want_event:
                 continue  # not optimized for our event — not ours to judge or pause
             name = ad.get("name", ad["id"])
-            insight = graph.get_ad_insight(ad["id"], date_preset=cpl_preset, time_range=cpl_range)
+            insight = insight_by_ad.get(ad["id"])
             spend, results = parse_metrics(insight, token)
 
             held = any(h and h in name for h in settings.kpi.cpl_hold)
