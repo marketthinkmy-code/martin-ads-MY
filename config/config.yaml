@@ -11,7 +11,7 @@
 meta:
   ad_account_id: "act_1011719073600566"   # Martin MY ad account
   page_id: "341825319024143"               # FB Page the ads run under
-  instagram_user_id: "7085012808290550"    # IG Business Account; null to omit
+  instagram_user_id: null                  # omitted: Meta rejected "7085012808290550" as not a valid IG account id for this ad account; ads use the FB Page (+ its linked IG for IG placements). Provide the correct IG Business Account id to set an explicit IG actor.
   pixel_id: "1189593242351293"             # pixel / dataset id for conversion tracking
 
   objective: "OUTCOME_SALES"             # confirmed same as template
