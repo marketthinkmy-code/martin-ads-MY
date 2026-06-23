@@ -146,7 +146,7 @@ def build_cpa_context(graph, settings: Settings, today: dt.date):
 def evaluate_account(graph, settings: Settings, *, cpa_ctx=None) -> List[AdDecision]:
     """Read every active ad in the account and compute per-ad pause decisions (no writes).
 
-    Whole-account scope (every campaign, MTC + STOCKBLOOM), but judged one ad at a time —
+    Whole-account scope (every campaign in the Martin MY account), but judged one ad at a time —
     a single bad creative is paused without touching the rest of its ad set or campaign.
     Only ads whose ad set optimizes for the configured conversion event (e.g. Complete
     Registration) are evaluated, so a campaign chasing a different objective can never be
