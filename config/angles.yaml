@@ -46,7 +46,7 @@ meta:
       - "120242141920810575"               # MARTIN MYSG PAID CUSTOMER - 13 APR
 
   build:
-    creatives_per_adset: 10                # cap; each angle has ≤4 videos so all are included
+    creatives_per_adset: 20                # cap; biggest bucket (黄金期) holds 12 videos after the APR/MAY top-up
     activate_after_build: false            # SAFETY: every angle campaign is built PAUSED — zero spend until you活
     label: "angle"                          # placeholder; build_all overrides it per subfolder with the angle name
     state_key: "entities_angles"           # base key; build_all appends each folder id -> one state file per campaign
