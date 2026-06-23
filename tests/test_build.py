@@ -147,3 +147,34 @@ def test_build_dry_run_creates_nothing(tmp_path):
     result = build(g, s, _units(), CAPTIONS, dry_run=True)
     assert result["dry_run"] is True
     assert g.calls == []
+
+
+def test_run_all_gives_each_subfolder_a_unique_state_key_and_angle_label(tmp_path, monkeypatch):
+    """build_all must name each campaign for its angle AND give it a UNIQUE state_key — otherwise
+    every subfolder after the first reuses the first campaign's id (shared-state bug) and piles
+    its ads into the wrong campaign."""
+    import adbot.commands.build as buildmod
+
+    s = _settings(tmp_path)
+    s.drive.creatives_folder_id = "PARENT"
+    s.meta.build.state_key = "entities_angles"
+
+    class FakeDrive:
+        def list_children(self, parent):
+            assert parent == "PARENT"
+            return [{"id": "F1", "name": "营养·方向错了"}, {"id": "F2", "name": "黄金期·封板"}]
+
+        def is_folder(self, child):
+            return True
+
+    captured = []
+    monkeypatch.setattr(buildmod, "drive_client", lambda settings: FakeDrive())
+    monkeypatch.setattr(buildmod, "run", lambda st, dry_run=False: captured.append(
+        (st.drive.creatives_folder_id, st.meta.build.label, st.meta.build.state_key)) or {"ok": True})
+
+    out = buildmod.run_all(s, dry_run=True)
+    assert out["campaigns"] == 2
+    assert captured == [
+        ("F1", "营养·方向错了", "entities_angles__F1"),
+        ("F2", "黄金期·封板", "entities_angles__F2"),
+    ]

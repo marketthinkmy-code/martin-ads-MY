@@ -5,6 +5,13 @@ from adbot.creative_groups import (CAROUSEL, SINGLE_IMAGE, VIDEO, Unit,
 def test_content_key_keeps_cjk_filenames_verbatim():
     assert content_key("sgmy_h1.mp4") == "sgmy_h1"                       # ascii -> slug stem
     assert content_key("孩子書包特別長會影響長高嗎.mp4") == "孩子書包特別長會影響長高嗎.mp4"  # CJK -> verbatim (matches Notion id)
+    # CJK names that EMBED digits must STILL be verbatim — the old slugify()=='asset' check
+    # returned digit fragments ('10_175', '15_1_2', '1_1_3cm') that never matched the Notion row:
+    assert content_key("孩子10歲想讓他長到175公分有可能嗎.mp4") == "孩子10歲想讓他長到175公分有可能嗎.mp4"
+    assert content_key("15歲1-2年沒長高正常嗎.mp4") == "15歲1-2年沒長高正常嗎.mp4"
+    assert content_key("1年長1-3cm正常嗎#.mp4") == "1年長1-3cm正常嗎#.mp4"
+    # pure-ascii names (e.g. the April SGMY files) still slugify, so their Notion id is the slug:
+    assert content_key("Martin April SGMY -H6#.mp4") == "martin_april_sgmy_h6"
 
 FOLDER_MIME = "application/vnd.google-apps.folder"
 

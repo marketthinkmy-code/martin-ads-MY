@@ -10,9 +10,14 @@ on:
   workflow_dispatch:
     inputs:
       config_file:
-        description: "config filename under config/ (config.yaml, grades.yaml, …)"
+        description: "config filename under config/ (config.yaml, grades.yaml, angles.yaml, …)"
         type: string
         default: "config.yaml"
+      command:
+        description: "build (one campaign from the folder) or build_all (one campaign per subfolder — angle batch)"
+        type: choice
+        options: ["build", "build_all"]
+        default: "build"
       dry_run:
         description: "Dry run — preview units/specs, write nothing to Meta"
         type: boolean
@@ -37,7 +42,7 @@ jobs:
         with:
           python-version: "3.11"
       - run: pip install .
-      - name: Build (PAUSED) — config ${{ inputs.config_file || 'config.yaml' }}${{ inputs.dry_run && ' (dry-run)' || '' }}
+      - name: ${{ inputs.command || 'build' }} (PAUSED) — config ${{ inputs.config_file || 'config.yaml' }}${{ inputs.dry_run && ' (dry-run)' || '' }}
         env:
           ADBOT_ROOT: ${{ github.workspace }}
           META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
@@ -45,7 +50,7 @@ jobs:
           GOOGLE_SERVICE_ACCOUNT_JSON_B64: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON_B64 }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
-        run: python -m adbot --config "${{ github.workspace }}/config/${{ inputs.config_file || 'config.yaml' }}" build ${{ inputs.dry_run && '--dry-run' || '' }}
+        run: python -m adbot --config "${{ github.workspace }}/config/${{ inputs.config_file || 'config.yaml' }}" ${{ inputs.command || 'build' }} ${{ inputs.dry_run && '--dry-run' || '' }}
       - name: Persist created entity IDs + media cache back to the branch
         if: ${{ !inputs.dry_run }}
         run: |

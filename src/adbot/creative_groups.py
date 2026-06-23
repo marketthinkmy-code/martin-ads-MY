@@ -59,12 +59,19 @@ def slugify(name: str) -> str:
 
 
 def content_key(name: str) -> str:
-    """Caption-matching id. Slugified stem for ascii names ('sgmy_h1.mp4' -> 'sgmy_h1'); the
-    ORIGINAL filename verbatim for CJK / non-ascii names (which slugify would collapse to
-    'asset'), so the build matches the Notion Content IDs the operator wrote as full filenames
-    (e.g. '孩子書包特別長會影響長高嗎.mp4')."""
-    s = slugify(name)
-    return name if s == "asset" else s
+    """Caption-matching id. Slugified stem for pure-ascii names ('sgmy_h1.mp4' -> 'sgmy_h1');
+    the ORIGINAL filename verbatim whenever the stem contains ANY non-ascii (CJK) char, so the
+    build matches the Notion Content IDs the operator writes as full filenames
+    (e.g. '孩子書包特別長會影響長高嗎.mp4').
+
+    Testing for non-ascii — rather than ``slugify(name) == 'asset'`` — is essential for CJK names
+    that EMBED digits: '孩子10歲想讓他長到175公分有可能嗎.mp4' slugifies to '10_175' (not 'asset'),
+    so the old check returned that fragment and never matched the Notion row. Same for
+    '15歲1-2年沒長高正常嗎.mp4' ('15_1_2') and '1年長1-3cm正常嗎#.mp4' ('1_1_3cm')."""
+    stem = re.sub(r"\.[A-Za-z0-9]+$", "", name)  # drop extension before testing for CJK
+    if any(ord(ch) > 127 for ch in stem):
+        return name
+    return slugify(name)
 
 
 def is_video(mime: str) -> bool:

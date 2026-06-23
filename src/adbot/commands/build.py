@@ -86,10 +86,16 @@ def run_all(settings, *, dry_run: bool = False) -> Dict[str, Any]:
         return {"campaigns": 0, "dry_run": dry_run}
     log.info("build_all: %d campaign folder(s) found.", len(subfolders))
     results = []
+    base_state_key = settings.meta.build.state_key
     for sf in subfolders:
         s = settings.model_copy(deep=True)
         s.drive.creatives_folder_id = sf["id"]
-        s.naming.prefix = f"{settings.naming.prefix} | {sf['name']}"
+        # Per-subfolder identity: the campaign is named for the angle ("PREFIX | <angle>") via the
+        # build label, and gets a UNIQUE state_key (base + folder id). The unique key is essential —
+        # build() reuses any campaign_id it finds in state, so a shared key would make every
+        # subfolder after the first pile its ads into the first campaign instead of its own.
+        s.meta.build.label = sf["name"]
+        s.meta.build.state_key = f"{base_state_key}__{sf['id']}"
         log.info("──────── campaign from '%s' ────────", sf["name"])
         results.append({"folder": sf["name"], "result": run(s, dry_run=dry_run)})
     log.info("build_all: processed %d campaign folder(s)%s.", len(subfolders),

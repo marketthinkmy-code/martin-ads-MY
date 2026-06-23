@@ -1,0 +1,101 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# adbot — ANGLE-FIRST batch (run with: `python -m adbot --config config/angles.yaml build_all`)
+# Doctrine: group creatives by ANGLE, then build one 1-1-N per angle (N = videos in that
+# angle). A broad ad set lets Meta/Andromeda find the audience from each creative's hook —
+# no manual micro-targeting. build_all reads every SUBFOLDER of the creatives parent below
+# and creates one PAUSED CBO campaign per angle, named "MARTIN-MY | <angle>".
+#
+# Angle subfolders under the parent (videos each):
+#   营养·方向错了 (3)  · 黄金期·封板 (4, incl. 10岁到175 merged from 目标身高)
+#   基因决定论 (3)     · 体质 (3)            · 运动迷思 (2)
+# Same account/page/pixel/targeting as config.yaml; captions read from Notion by Content ID.
+# ─────────────────────────────────────────────────────────────────────────────
+
+meta:
+  ad_account_id: "act_1011719073600566"
+  page_id: "341825319024143"
+  instagram_user_id: null                  # IG via the Page's linked IG (same as JUNE/成绩单)
+  pixel_id: "1189593242351293"
+
+  objective: "OUTCOME_SALES"
+  optimization_goal: "OFFSITE_CONVERSIONS"
+  conversion_event: "COMPLETE_REGISTRATION"
+  special_ad_categories: []
+
+  lead_destination:
+    type: "WEBSITE"
+    link_url: "https://as.dr-martin.com.tw/kids-growth-formula-landing"
+  conversion_domain: "https://as.dr-martin.com.tw/"
+  call_to_action: "LEARN_MORE"
+  url_tags: "utm_source={{adset.name}}&utm_medium={{placement}}&utm_campaign={{campaign.name}}&utm_content={{ad.name}}"
+
+  budget:
+    level: "CAMPAIGN"
+    daily_amount_myr: 50                   # per-angle CBO daily budget (5 angles × RM50 = RM250/day once all活); raise winners after review
+    currency: "MYR"
+    adset_min_spend_myr: 50
+
+  targeting:                               # identical broad setup to JUNE (see docs/adset_targeting.md)
+    countries: ["MY"]
+    age_min: 25
+    age_max: 65
+    advantage_audience: 1                   # Advantage+ audience ON — broad; creative hook does the targeting
+    locales: [1004]
+    excluded_custom_audiences:
+      - "120224052749710575"               # 马丁 15days complete registration
+      - "120242141920810575"               # MARTIN MYSG PAID CUSTOMER - 13 APR
+
+  build:
+    creatives_per_adset: 10                # cap; each angle has ≤4 videos so all are included
+    activate_after_build: false            # SAFETY: every angle campaign is built PAUSED — zero spend until you活
+    label: "angle"                          # placeholder; build_all overrides it per subfolder with the angle name
+    state_key: "entities_angles"           # base key; build_all appends each folder id -> one state file per campaign
+
+naming:
+  prefix: "MARTIN-MY"                       # campaigns -> "MARTIN-MY | <angle>"
+  weekly_off_label: "ADBOT_WEEKLY_OFF"
+
+drive:
+  # Parent "MARTIN-MY ANGLES (JUNE)" holding the 5 angle subfolders. Lives inside the FreeStyle
+  # folder (anyone-with-link reader), so the build service account inherits read access.
+  creatives_folder_id: "1P8c16AvHbEi9GTh9kOYcLLaBjagysCV0"
+  carousel_subfolder_marker: "carousel"    # none of the angle folders are carousels (all video)
+  script_sidecar_ext: ".txt"
+
+google_docs:
+  caption_log_doc_id: ""
+  idea_backlog_doc_id: ""
+
+notion:                                    # same Notion DB; captions matched by Content ID
+  enabled: true
+  database_id: "4bb82b42449682c294e881448aa21435"
+  brand: "Martin MY"
+  default_status: "In Review"
+  default_type: "Caption"
+  captions_source: true
+  require_status: ""
+
+kpi:
+  cpl_threshold_myr: 55.00
+  cpl_min_spend_myr: 100.00
+  cpl_lookback: "week_thu"
+  pause_zero_lead_after_spend: true
+  cpl_hold: []
+
+cpa:
+  enabled: true
+  spreadsheet_id: "1DsKtcDpsWp3Njfah6Fw3PBizhGiy017ULw5qKeV-RSA"
+  sales_tab: "Paid Student List (RM1997)"
+  price_myr: 2591.00
+  target_myr: 740.00
+  healthy_max_myr: 860.00
+  max_acceptable_myr: 1040.00
+  hard_stop_myr: 1300.00
+  conversion_days: 14
+  min_spend_myr: 1000.00
+
+schedule:
+  timezone: "Asia/Kuala_Lumpur"
+  weekly_off: { day: "WED", time: "15:00" }
+  weekly_on:  { day: "THU", time: "00:00" }
+  monitor_interval_hours: 1
