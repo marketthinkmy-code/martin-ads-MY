@@ -33,6 +33,9 @@ meta:
     adset_min_spend_myr: 50              # per-ad-set minimum daily spend (>=50)
 
   targeting:
+    # NOTE: operator's live ad set uses Advantage+ audience ON / min age 25 (suggestion) +
+    # exclusions (existing leads + paid customers). build does NOT yet auto-apply that — see
+    # docs/adset_targeting.md before changing targeting or building new batches.
     countries: ["MY"]                    # confirmed same
     age_min: 35                          # parents of 10-17yo kids
     age_max: 65
