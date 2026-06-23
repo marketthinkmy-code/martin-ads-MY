@@ -49,8 +49,12 @@ def run(settings, *, dry_run: bool = False) -> Dict[str, Any]:
 
     entities = build_1_1_10.build(graph, settings, units, captions, dry_run=False)
 
-    docs = docs_client(settings)
-    docwriter.write_caption_log(docs, settings, units, captions)
+    # The Google Doc caption-log is a nicety; never fail a completed build over it (a service
+    # account has no Drive storage quota to create Docs, and Notion already holds the captions).
+    try:
+        docwriter.write_caption_log(docs_client(settings), settings, units, captions)
+    except Exception as exc:  # noqa: BLE001
+        log.warning("Caption-log Doc write skipped (%s) — captions are in Notion", exc)
 
     # Mirror to Notion only when the copy did NOT come from Notion (otherwise we'd duplicate
     # the very rows we just read).
