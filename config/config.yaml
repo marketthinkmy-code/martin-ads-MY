@@ -11,7 +11,7 @@
 meta:
   ad_account_id: "act_1011719073600566"   # Martin MY ad account
   page_id: "341825319024143"               # FB Page the ads run under
-  instagram_user_id: "7085012808290550"    # @martinyaoshi IG (confirmed by operator). Earlier rejection was almost certainly the app being in Development mode; should attach once the app is Live (else assign this IG to the ad account in Business Settings).
+  instagram_user_id: null                  # @martinyaoshi (7085012808290550) is the right IG, but it must be ASSIGNED TO THIS AD ACCOUNT (Business Settings -> Accounts -> Instagram) before it works as an explicit actor (app is already Live; that wasn't the cause). Omitted for now -> IG placements run via the 马丁药师 Page's linked IG. Restore the id once the IG is assigned to the ad account.
   pixel_id: "1189593242351293"             # pixel / dataset id for conversion tracking
 
   objective: "OUTCOME_SALES"             # confirmed same as template
