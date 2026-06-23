@@ -92,7 +92,7 @@ def render_report(now_myt, week_start, rows, decisions, ceiling,
 
     out = [
         "# 📊 Daily Ads Report",
-        f"{now_myt:%a %d %b %Y, %H:%M} MYT · whole account (MTC + STOCKBLOOM)",
+        f"{now_myt:%a %d %b %Y, %H:%M} MYT · whole account (Martin MY · every running campaign)",
         "",
         f"## 📅 CPL · this ad-week ({week_start:%a %d %b} → now)",
         f"Spend **RM{tot_spend:,.0f}** · **{tot_reg:.0f}** registrations · "

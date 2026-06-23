@@ -1,5 +1,5 @@
 from adbot.creative_groups import (CAROUSEL, SINGLE_IMAGE, VIDEO, Unit,
-                                   build_units, select_ten, slugify)
+                                   build_units, select_ten, slugify, uniquify_ids)
 
 FOLDER_MIME = "application/vnd.google-apps.folder"
 
@@ -10,6 +10,14 @@ def folder(fid, name, children):
 
 def file(fid, name, mime):
     return {"id": fid, "name": name, "mimeType": mime}
+
+
+def test_uniquify_ids_keeps_cjk_collisions():
+    # Two distinct CJK-named images both slugify to "asset" -> must survive as asset / asset_2
+    units = [Unit("asset", SINGLE_IMAGE), Unit("asset", SINGLE_IMAGE), Unit("carousel_1", CAROUSEL)]
+    uniquify_ids(units)
+    assert [u.content_id for u in units] == ["asset", "asset_2", "carousel_1"]
+    assert len(select_ten(units, 10)) == 3  # none dropped
 
 
 def test_slugify_drops_extension_and_normalizes():

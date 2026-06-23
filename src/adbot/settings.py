@@ -75,6 +75,11 @@ class Targeting(BaseModel):
 class BuildCfg(BaseModel):
     creatives_per_adset: int = 10
     activate_after_build: bool = True
+    # Per-batch identity so a second campaign doesn't collide with the first. label -> campaign
+    # name suffix; state_key -> which state/<key>.json holds this batch's entity ids (keep the
+    # default "entities" for the original 1-1-10 so it stays resumable/untouched).
+    label: str = "1-1-10"
+    state_key: str = "entities"
 
 
 class MetaCfg(BaseModel):

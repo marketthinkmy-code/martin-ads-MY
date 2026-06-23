@@ -1,6 +1,6 @@
 """Weekly kill switch (Wed 15:00 GMT+8): pause every currently-live ad in the account.
 
-Whole-account scope (MTC + STOCKBLOOM). Each delivering ad is tagged with the weekly-off
+Whole-account scope (every campaign in the Martin MY account). Each delivering ad is tagged with the weekly-off
 label before being paused, so the Thursday ``weekly_on`` job can resume *exactly* these ads
 (and nothing the CPL monitor or the operator paused). The label is the cross-run state — no
 committed file needed.
