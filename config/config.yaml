@@ -36,7 +36,7 @@ meta:
     countries: ["MY"]                    # confirmed same
     age_min: 35                          # parents of 10-17yo kids
     age_max: 65
-    advantage_audience: 1                # 1 = Broad/Advantage+ ON; 0 = hard age cap
+    advantage_audience: 0                # 0 = hard age cap 35-65 (Meta rejects Advantage+ ON with a hard age_min>18); still broad (no interests; angle in creative)
     locales: [1004]                      # confirmed same — 1004 = Chinese (All)
 
   build:
