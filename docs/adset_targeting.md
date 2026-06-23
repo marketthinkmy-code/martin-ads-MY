@@ -32,15 +32,18 @@ budget split — Meta optimizes across everyone, and the **exclusions** below do
 
 Purpose: don't pay to reach people who already registered or already bought.
 
-## Encoding status (TODO to auto-apply in `build`)
-`settings.Targeting.to_spec()` currently emits only
-`geo_locations / age_min / age_max / targeting_automation.advantage_audience / locales`.
-To auto-apply the above it must additionally:
-- emit `excluded_custom_audiences` (the two IDs above),
-- set `advantage_audience = 1` with `age_min = 25` (as a suggestion, not a hard floor),
-- set the ASC customer-lifecycle control to "all audiences".
+## Encoding status — DONE (auto-applied by `build`)
+`settings.Targeting.to_spec()` now emits these, so every future batch inherits them from
+`config.yaml > meta.targeting`:
+- `advantage_audience = 1` with `age_min = 25` (suggestion, not a hard floor),
+- `excluded_custom_audiences` = the two ids above.
 
-Pending operator go-ahead before changing build behaviour for future batches.
+"Get conversions from all audiences" needs **no field** — it is the default ASC lifecycle when no
+existing-customer budget cap is set, and `build` never sets one.
+
+> ⚠️ Verify on the next real build: `advantage_audience=1` + `age_min=25` mirrors the operator's
+> working UI setup, but if Meta ever rejects the age as too high a hard value, lower `age_min` (the
+> Advantage+ suggestion floor) rather than turning Advantage+ off.
 
 ## Safety — the live ad set is not at risk
 `build` reuses an existing ad set **by ID** and never rewrites its targeting on reuse;

@@ -52,6 +52,9 @@ class Targeting(BaseModel):
     age_max: int = 65
     advantage_audience: int = 1
     locales: List[int] = Field(default_factory=list)  # Meta locale ids; 1004 = Chinese (All)
+    # Custom-audience ids to EXCLUDE (existing leads / paid customers) so budget reaches fresh
+    # prospects. With advantage_audience=1, age_min/age_max are treated by Meta as suggestions.
+    excluded_custom_audiences: List[str] = Field(default_factory=list)
 
     def to_spec(self) -> dict:
         spec = {
@@ -62,6 +65,10 @@ class Targeting(BaseModel):
         }
         if self.locales:
             spec["locales"] = self.locales
+        if self.excluded_custom_audiences:
+            spec["excluded_custom_audiences"] = [
+                {"id": str(cid)} for cid in self.excluded_custom_audiences
+            ]
         return spec
 
 

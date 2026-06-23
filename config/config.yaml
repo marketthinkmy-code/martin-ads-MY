@@ -33,14 +33,17 @@ meta:
     adset_min_spend_myr: 50              # per-ad-set minimum daily spend (>=50)
 
   targeting:
-    # NOTE: operator's live ad set uses Advantage+ audience ON / min age 25 (suggestion) +
-    # exclusions (existing leads + paid customers). build does NOT yet auto-apply that — see
-    # docs/adset_targeting.md before changing targeting or building new batches.
+    # Mirrors the operator's live ad set (see docs/adset_targeting.md). Advantage+ audience ON
+    # makes age a SUGGESTION (min 25), not a hard cap — do NOT raise age_min as a hard floor here
+    # or Meta rejects it ("add a higher minimum age as a suggestion instead").
     countries: ["MY"]                    # confirmed same
-    age_min: 35                          # parents of 10-17yo kids
+    age_min: 25                          # Advantage+ suggestion floor (not a hard cap)
     age_max: 65
-    advantage_audience: 0                # 0 = hard age cap 35-65 (Meta rejects Advantage+ ON with a hard age_min>18); still broad (no interests; angle in creative)
+    advantage_audience: 1                # Advantage+ audience ON (broad; Meta expands beyond the age suggestion)
     locales: [1004]                      # confirmed same — 1004 = Chinese (All)
+    excluded_custom_audiences:           # exclude existing leads + paid customers (reach fresh prospects)
+      - "120224052749710575"             # 马丁 15days complete registration (website/pixel CA)
+      - "120242141920810575"             # MARTIN MYSG PAID CUSTOMER - 13 APR (customer list)
 
   build:
     creatives_per_adset: 10              # the "N" in 1-1-N

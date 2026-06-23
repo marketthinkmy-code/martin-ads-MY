@@ -36,6 +36,23 @@ def test_targeting_spec_is_broad_my_25plus(tmp_path):
     assert spec["geo_locations"]["countries"] == ["MY"]
     assert spec["age_min"] == 25
     assert spec["targeting_automation"]["advantage_audience"] == 1
+    # No exclusions configured -> key omitted entirely.
+    assert "excluded_custom_audiences" not in spec
+
+
+def test_targeting_spec_emits_excluded_custom_audiences(tmp_path):
+    cfg = CONFIG.replace(
+        'targeting: { countries: ["MY"], age_min: 25, age_max: 65, advantage_audience: 1 }',
+        'targeting:\n'
+        '    countries: ["MY"]\n'
+        '    age_min: 25\n'
+        '    advantage_audience: 1\n'
+        '    excluded_custom_audiences: ["111", "222"]',
+    )
+    path = tmp_path / "config.yaml"
+    path.write_text(cfg, encoding="utf-8")
+    spec = load_settings(path).meta.targeting.to_spec()
+    assert spec["excluded_custom_audiences"] == [{"id": "111"}, {"id": "222"}]
 
 
 def test_account_path_and_promoted_object(tmp_path):
