@@ -152,6 +152,12 @@ class NotionCfg(BaseModel):
     brand: str = ""
     default_status: str = "In Review"
     default_type: str = "Caption"
+    # When true, the build READS each unit's caption+headline FROM Notion (by Content ID)
+    # instead of generating a fresh one with the LLM — so Notion is the single source of
+    # truth and the copy you reviewed is exactly what goes live (no second version).
+    captions_source: bool = False
+    # Only use Notion rows whose Status equals this (e.g. "Approved"). Empty = any status.
+    require_status: str = ""
 
 
 # ── secrets (.env / environment) ─────────────────────────────────────────────

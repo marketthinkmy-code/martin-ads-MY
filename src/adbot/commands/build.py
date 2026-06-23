@@ -6,9 +6,16 @@ from typing import Any, Dict
 
 from . import docs_client, drive_client, graph_client, llm_client, notion_client
 from .. import build_1_1_10, docwriter, media
+from ..caption_source import load_from_notion
 from ..captions import generate_for_units
 from ..drive_sync import download_assets, load_units
 from ..logging import get_logger
+
+
+def _notion_is_source(settings) -> bool:
+    """True when captions must be READ from Notion (single source of truth)."""
+    return bool(settings.notion.captions_source and settings.notion.enabled
+                and settings.secrets.notion_api_key and settings.notion.database_id)
 
 
 def run(settings, *, dry_run: bool = False) -> Dict[str, Any]:
@@ -17,25 +24,38 @@ def run(settings, *, dry_run: bool = False) -> Dict[str, Any]:
     drive = drive_client(settings)
     _, units = load_units(drive, settings)
     log.info("Loaded %d creative unit(s) from Drive.", len(units))
+    notion_sourced = _notion_is_source(settings)
 
     if dry_run:
-        # Preview structure without uploading media or calling the LLM (no spend/cost).
-        stub = {u.content_id: {"caption": "<generated on live run>",
-                              "headline": "<generated>"} for u in units}
-        return build_1_1_10.build(graph, settings, units, stub, dry_run=True)
+        # Preview structure without uploading media or calling the LLM (no spend/cost). When
+        # Notion is the caption source, pull the REAL copy (read-only) so the dry-run doubles
+        # as a check that every unit already has an approved Notion caption.
+        if notion_sourced:
+            captions = load_from_notion(notion_client(settings), settings, units, strict=False)
+        else:
+            captions = {u.content_id: {"caption": "<generated on live run>",
+                                       "headline": "<generated>"} for u in units}
+        return build_1_1_10.build(graph, settings, units, captions, dry_run=True)
 
     download_assets(drive, units)
     media.sync_media(graph, settings, units, dry_run=False)
 
-    llm = llm_client(settings)
-    captions = generate_for_units(llm, settings, units)
+    if notion_sourced:
+        # Read the operator-reviewed copy straight from Notion — no LLM, no second version.
+        captions = load_from_notion(notion_client(settings), settings, units)
+    else:
+        llm = llm_client(settings)
+        captions = generate_for_units(llm, settings, units)
 
     entities = build_1_1_10.build(graph, settings, units, captions, dry_run=False)
 
     docs = docs_client(settings)
     docwriter.write_caption_log(docs, settings, units, captions)
 
-    if settings.notion.enabled and settings.secrets.notion_api_key and settings.notion.database_id:
+    # Mirror to Notion only when the copy did NOT come from Notion (otherwise we'd duplicate
+    # the very rows we just read).
+    if (not notion_sourced and settings.notion.enabled and settings.secrets.notion_api_key
+            and settings.notion.database_id):
         try:
             docwriter.write_notion_captions(notion_client(settings), settings, units, captions)
         except Exception as exc:  # noqa: BLE001 - Notion logging must never break a build

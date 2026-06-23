@@ -59,12 +59,14 @@ google_docs:
   caption_log_doc_id: ""                 # empty -> auto-create on first write
   idea_backlog_doc_id: ""                # empty -> auto-create on first write
 
-notion:                                  # mirror each caption+headline to the Notion content DB
+notion:                                  # Notion content DB = single source of truth for ad copy
   enabled: true                          # needs NOTION_API_KEY (repo secret) + DB shared with the integration
   database_id: "4bb82b42449682c294e881448aa21435"   # 🎬 MARTIN Content Pipeline Template
   brand: "Martin MY"
   default_status: "In Review"            # Status set on each new row (Idea/Draft/In Review/Approved/Published)
   default_type: "Caption"                # Type when kind isn't video/carousel/single_image
+  captions_source: true                  # build READS caption+headline FROM Notion (by Content ID) — no second LLM version
+  require_status: "Approved"             # only use rows you've reviewed to "Approved" in Notion (empty = any status)
 
 kpi:
   cpl_threshold_myr: 55.00               # pause an ad above this CPL (MYR)
