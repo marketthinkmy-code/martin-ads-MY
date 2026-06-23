@@ -1,0 +1,60 @@
+name: adbot · daily report (22:00 MYT)
+
+# Read-only whole-account performance report, posted to the "Daily Ads Report" issue so the
+# owner gets a GitHub notification (email by default) every night without having to ask.
+# Cron is UTC: 14:00 UTC == 22:00 Asia/Kuala_Lumpur (GMT+8, no DST).
+
+on:
+  schedule:
+    - cron: "9 14 * * *"        # 22:09 MYT daily (off the congested ":00" slot)
+  workflow_dispatch: {}          # allow manual runs from the Actions tab
+
+permissions:
+  issues: write                  # post the report as an issue comment
+  contents: read
+
+concurrency:
+  group: adbot-daily-report
+  cancel-in-progress: false
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install .
+      - name: Generate report
+        env:
+          # pip install . is non-editable; point settings at the checkout (not site-packages).
+          ADBOT_ROOT: ${{ github.workspace }}
+          ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
+          META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
+          META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
+          GOOGLE_SERVICE_ACCOUNT_JSON_B64: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON_B64 }}
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+        run: python scripts/daily_report.py > report.md
+      - name: Post to "Daily Ads Report" issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const body = fs.readFileSync('report.md', 'utf8');
+            const { owner, repo } = context.repo;
+            const found = await github.rest.issues.listForRepo({
+              owner, repo, state: 'open', labels: 'daily-report', per_page: 1,
+            });
+            let issue_number;
+            if (found.data.length) {
+              issue_number = found.data[0].number;
+            } else {
+              const created = await github.rest.issues.create({
+                owner, repo, title: '📊 Daily Ads Report',
+                body: 'Automated nightly whole-account performance report (22:00 MYT). See comments below.',
+                labels: ['daily-report'],
+              });
+              issue_number = created.data.number;
+            }
+            await github.rest.issues.createComment({ owner, repo, issue_number, body });

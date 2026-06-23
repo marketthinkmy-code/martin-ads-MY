@@ -1,0 +1,43 @@
+name: adbot · sync (real upload, branch)
+
+# Real media upload: downloads the creatives folder from Drive and uploads them to the Meta
+# ad account's media library. Creates NO campaign/ad set/ad and spends NOTHING. Triggers only
+# on manual dispatch or when THIS file changes (the auto-commit of state/ does not re-trigger).
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches: ["claude/sweet-curie-b6vql4"]
+    paths:
+      - ".github/workflows/adbot-sync.yml"
+
+concurrency:
+  group: adbot-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write          # to persist state/media_cache.json back to the branch
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install .
+      - name: Real sync — upload media to Meta (no campaigns, no spend)
+        env:
+          ADBOT_ROOT: ${{ github.workspace }}
+          ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
+          META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
+          META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
+          GOOGLE_SERVICE_ACCOUNT_JSON_B64: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON_B64 }}
+        run: python -m adbot sync
+      - name: Persist media cache (so the next sync/build won't re-upload)
+        run: |
+          git config user.name "adbot"
+          git config user.email "noreply@anthropic.com"
+          git add state/media_cache.json || true
+          git commit -m "sync: persist media_cache [skip ci]" || echo "no media_cache change"
+          git push || echo "push skipped"

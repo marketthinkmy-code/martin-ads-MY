@@ -1,0 +1,29 @@
+name: adbot · read ad set (manual)
+
+# Manual, read-only: dumps one ad set's targeting + delivery settings as JSON,
+# so a winning ad set can be faithfully cloned into a new campaign. No writes.
+
+on:
+  workflow_dispatch:
+    inputs:
+      adset_id:
+        description: "Ad set ID to read"
+        required: true
+
+jobs:
+  read:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install .
+      - name: Read ad set
+        env:
+          ADBOT_ROOT: ${{ github.workspace }}
+          ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
+          ADSET_ID: ${{ github.event.inputs.adset_id }}
+          META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
+          META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
+        run: python scripts/read_adset.py

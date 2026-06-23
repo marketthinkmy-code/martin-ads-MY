@@ -1,0 +1,25 @@
+# Secrets — never commit
+.env
+secrets/
+*.token
+*.pem
+service-account*.json
+sa.json
+
+# Downloaded media (re-fetched from Drive on demand)
+downloads/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+
+# Local run state that should NOT be shared (see state/README.md for what IS committed)
+state/local/

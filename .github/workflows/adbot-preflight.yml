@@ -1,0 +1,51 @@
+name: adbot · preflight (branch, manual)
+
+# Read-only preflight so the operator can review credential + config validation BEFORE
+# going live: runs `doctor` then the two dry-runs (which create/upload NOTHING). Triggers
+# only on pushes to the dev branch (and manual dispatch) — there is NO `schedule:` here, so
+# this never starts the cron automation. Safe to delete after go-live.
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches: ["claude/sweet-curie-b6vql4"]
+    paths:
+      - "config/**"
+      - "prompts/**"
+      - "src/**"
+      - ".github/workflows/adbot-preflight.yml"
+
+concurrency:
+  group: adbot-preflight
+  cancel-in-progress: true
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install .
+      - name: doctor + dry-runs (read-only)
+        env:
+          ADBOT_ROOT: ${{ github.workspace }}
+          ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
+          META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
+          META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
+          GOOGLE_SERVICE_ACCOUNT_JSON_B64: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON_B64 }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
+        run: |
+          echo "==================== python -m adbot doctor ===================="
+          python -m adbot doctor || true
+          echo ""
+          echo "==================== python -m adbot sync --dry-run ===================="
+          python -m adbot sync --dry-run || true
+          echo ""
+          echo "==================== python -m adbot build --dry-run ===================="
+          python -m adbot build --dry-run || true
+          echo ""
+          echo "==================== notion connectivity ===================="
+          python -c "import os; from adbot.settings import load_settings; from adbot.commands import notion_client; s=load_settings(); print('Notion DB reachable:', notion_client(s).get_database(s.notion.database_id).get('title')) if os.environ.get('NOTION_API_KEY') else print('NOTION_API_KEY not visible to this workflow — add it as a REPO secret; Notion write will be skipped until then')" || true

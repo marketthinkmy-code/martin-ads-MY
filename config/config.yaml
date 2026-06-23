@@ -1,0 +1,100 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# adbot — non-secret operator config for martin-ads-MY
+# Brand: Martin MY ·《儿童长高方程式》· 馬丁藥師 (kids-growth conditioning course)
+# Secrets live in .env (see .env.example).  `python -m adbot doctor` validates this file.
+#
+# Confirmed SAME as the soocheng template: country MY · currency MYR · timezone GMT+8 ·
+# language Chinese (locale 1004) · objective OUTCOME_SALES / OFFSITE_CONVERSIONS /
+# COMPLETE_REGISTRATION.  cron schedules in .github/workflows are UNCHANGED.
+# ─────────────────────────────────────────────────────────────────────────────
+
+meta:
+  ad_account_id: "act_1011719073600566"   # Martin MY ad account
+  page_id: "341825319024143"               # FB Page the ads run under
+  instagram_user_id: null                  # @martinyaoshi (7085012808290550) is the right IG, but it must be ASSIGNED TO THIS AD ACCOUNT (Business Settings -> Accounts -> Instagram) before it works as an explicit actor (app is already Live; that wasn't the cause). Omitted for now -> IG placements run via the 马丁药师 Page's linked IG. Restore the id once the IG is assigned to the ad account.
+  pixel_id: "1189593242351293"             # pixel / dataset id for conversion tracking
+
+  objective: "OUTCOME_SALES"             # confirmed same as template
+  optimization_goal: "OFFSITE_CONVERSIONS"   # "Maximize number of conversions"
+  conversion_event: "COMPLETE_REGISTRATION"  # Ads Manager "Complete registration" (custom_event_type)
+  special_ad_categories: []              # none (kids-growth education — not a restricted category)
+
+  lead_destination:
+    type: "WEBSITE"                      # WEBSITE | INSTANT_FORM | MESSENGER | WHATSAPP
+    link_url: "https://as.dr-martin.com.tw/kids-growth-formula-landing"
+  conversion_domain: "https://as.dr-martin.com.tw/"   # bare domain derived = as.dr-martin.com.tw (verify it in Meta Business settings)
+  call_to_action: "LEARN_MORE"           # SIGN_UP / LEARN_MORE / GET_OFFER / SUBSCRIBE ...
+  url_tags: "utm_source={{adset.name}}&utm_medium={{placement}}&utm_campaign={{campaign.name}}&utm_content={{ad.name}}"
+
+  budget:
+    level: "CAMPAIGN"                    # CBO — campaign-level budget
+    daily_amount_myr: 250                # CBO daily budget (MYR)
+    currency: "MYR"                      # confirmed same
+    adset_min_spend_myr: 50              # per-ad-set minimum daily spend (>=50)
+
+  targeting:
+    # Mirrors the operator's live ad set (see docs/adset_targeting.md). Advantage+ audience ON
+    # makes age a SUGGESTION (min 25), not a hard cap — do NOT raise age_min as a hard floor here
+    # or Meta rejects it ("add a higher minimum age as a suggestion instead").
+    countries: ["MY"]                    # confirmed same
+    age_min: 25                          # Advantage+ suggestion floor (not a hard cap)
+    age_max: 65
+    advantage_audience: 1                # Advantage+ audience ON (broad; Meta expands beyond the age suggestion)
+    locales: [1004]                      # confirmed same — 1004 = Chinese (All)
+    excluded_custom_audiences:           # exclude existing leads + paid customers (reach fresh prospects)
+      - "120224052749710575"             # 马丁 15days complete registration (website/pixel CA)
+      - "120242141920810575"             # MARTIN MYSG PAID CUSTOMER - 13 APR (customer list)
+
+  build:
+    creatives_per_adset: 10              # the "N" in 1-1-N
+    activate_after_build: false          # SAFETY: batch builds create everything PAUSED — you activate after review (no spend until then)
+
+naming:
+  prefix: "MARTIN-MY"                    # name prefix scoping every entity this bot creates
+  weekly_off_label: "ADBOT_WEEKLY_OFF"   # structural — do not change
+
+drive:
+  # Curated 1-1-10 set "MARTIN-MY ADBOT 1-1-10 (JUNE)" (assembled from your archives;
+  # lives inside "JUNE 2" so the SA inherits read access): 6 videos + 3 single images +
+  # 1 CAROUSEL subfolder (6 cards) = 10 creative units.
+  creatives_folder_id: "1XTztY2xvAKY0YfZW3spZi3ZEKqu3lHlF"
+  carousel_subfolder_marker: "carousel"     # matches the CAROUSEL subfolder
+  script_sidecar_ext: ".txt"                # optional per-asset .txt brief (same basename)
+
+google_docs:
+  caption_log_doc_id: ""                 # empty -> auto-create on first write
+  idea_backlog_doc_id: ""                # empty -> auto-create on first write
+
+notion:                                  # Notion content DB = single source of truth for ad copy
+  enabled: true                          # needs NOTION_API_KEY (repo secret) + DB shared with the integration
+  database_id: "4bb82b42449682c294e881448aa21435"   # 🎬 MARTIN Content Pipeline Template
+  brand: "Martin MY"
+  default_status: "In Review"            # Status set on each new row (Idea/Draft/In Review/Approved/Published)
+  default_type: "Caption"                # Type when kind isn't video/carousel/single_image
+  captions_source: true                  # build READS caption+headline FROM Notion (by Content ID) — no second LLM version
+  require_status: ""                      # use the Notion row regardless of Status (operator: no Approved gate — use directly)
+
+kpi:
+  cpl_threshold_myr: 55.00               # pause an ad above this CPL (MYR)
+  cpl_min_spend_myr: 100.00              # only judge an ad once it has spent >= this (MYR)
+  cpl_lookback: "week_thu"               # week-to-date from Thursday (the weekly ON/reset)
+  pause_zero_lead_after_spend: true      # spent >= cpl_min_spend with 0 results -> infinite CPL -> pause
+  cpl_hold: []                           # ad-name substrings temporarily exempt from auto-pause
+
+cpa:                                     # cost per real PAID acquisition (joins the paid-list sheet)
+  enabled: true
+  spreadsheet_id: "1DsKtcDpsWp3Njfah6Fw3PBizhGiy017ULw5qKeV-RSA"   # "Paid Student List" sheet (share with the SA email)
+  sales_tab: "Paid Student List (RM1997)"   # NOTE: tab label says RM1997 but price_myr below is 2591 — confirm
+  price_myr: 2591.00                     # default pax price (sheet's Amount column overrides per row)
+  target_myr: 740.00                     # primary target CPA
+  healthy_max_myr: 860.00                # end of healthy range (NOT an auto-pause line)
+  max_acceptable_myr: 1040.00            # above here -> pause candidate after diagnosis
+  hard_stop_myr: 1300.00                 # above here (with real sales) -> auto-pause
+  conversion_days: 14                    # don't judge CPA / 'no sales' until this old
+  min_spend_myr: 1000.00                 # need >= this spend before a CPA verdict is fair
+
+schedule:                                # informational; the real schedule lives in .github/workflows (UNCHANGED)
+  timezone: "Asia/Kuala_Lumpur"          # GMT+8 (no DST) — confirmed same
+  weekly_off: { day: "WED", time: "15:00" }   # pause ALL            -> workflow cron 9 7 * * 3 (+16:09 backup)
+  weekly_on:  { day: "THU", time: "00:00" }   # resume what Wed paused -> workflow cron 9 16 * * 3 (+ backups)
+  monitor_interval_hours: 1

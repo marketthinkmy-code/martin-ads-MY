@@ -1,0 +1,37 @@
+name: adbot · weekly ON (Thu 00:00 MYT)
+
+# Resumes exactly the ads that weekly-off paused (matched by the ADBOT_WEEKLY_OFF label).
+# Cron is UTC: Wed 16:00 UTC == Thu 00:00 Asia/Kuala_Lumpur (GMT+8).
+
+on:
+  schedule:
+    # Resume is the costliest tick to miss (ads stay paused = lost revenue), so run it off
+    # the congested ":00" slot AND retry hourly through the morning. Re-running is a no-op:
+    # weekly-on clears the label as it resumes, so later attempts find nothing to do.
+    - cron: "9 16 * * 3"       # Thu 00:09 MYT (Wed 16:09 UTC) — primary
+    - cron: "9 17 * * 3"       # Thu 01:09 MYT — backup if the first was dropped
+    - cron: "9 18 * * 3"       # Thu 02:09 MYT — backup
+  workflow_dispatch: {}
+
+concurrency:
+  group: adbot-weekly
+  cancel-in-progress: false
+
+jobs:
+  weekly-on:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install .
+      - name: Resume the ads weekly-off paused (weekly ON)
+        env:
+          # pip install . is non-editable, so settings.py lands in site-packages and its
+          # __file__-relative repo-root guess misses config/config.yaml. Point it at the checkout.
+          ADBOT_ROOT: ${{ github.workspace }}
+          ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
+          META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
+          META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
+        run: python -m adbot weekly_on
