@@ -66,7 +66,7 @@ notion:                                  # Notion content DB = single source of 
   default_status: "In Review"            # Status set on each new row (Idea/Draft/In Review/Approved/Published)
   default_type: "Caption"                # Type when kind isn't video/carousel/single_image
   captions_source: true                  # build READS caption+headline FROM Notion (by Content ID) — no second LLM version
-  require_status: "Approved"             # only use rows you've reviewed to "Approved" in Notion (empty = any status)
+  require_status: ""                      # use the Notion row regardless of Status (operator: no Approved gate — use directly)
 
 kpi:
   cpl_threshold_myr: 55.00               # pause an ad above this CPL (MYR)
