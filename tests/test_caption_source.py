@@ -48,6 +48,12 @@ def _page(pid, caption, headline, status="Approved", edited="2026-06-22T00:00:00
     }}
 
 
+def _page_with_title(pid, caption, headline, title, status="Approved"):
+    p = _page(pid, caption, headline, status)
+    p["properties"]["Title"] = {"title": [{"plain_text": title}]}
+    return p
+
+
 def _card(text):
     return {"type": "numbered_list_item",
             "numbered_list_item": {"rich_text": [{"plain_text": text}]}}
@@ -80,6 +86,23 @@ def test_load_from_notion_reads_copy_and_parses_cards(tmp_path):
     cards = caps["carousel"]["carousel_card_texts"]
     assert cards == [{"name": "卡一", "description": "描述一"},
                      {"name": "卡二", "description": "描述二"}]
+
+
+def test_ad_name_derived_from_notion_title(tmp_path):
+    s = _settings(tmp_path)
+    s.notion.require_status = ""
+    # Title '马丁MY | <angle> | <descriptor>' -> ad name '<KindLabel>：<descriptor>' (no month prefix).
+    rows = {"image_1": [_page_with_title("p1", "cap", "🔴 h", "马丁MY | 体质 | 书包·姿势")]}
+    caps = load_from_notion(FakeNotion(rows), s, [_units()[0]])  # _units()[0] is SINGLE_IMAGE
+    assert caps["image_1"]["name"] == "Single image：书包·姿势"
+
+
+def test_no_title_means_no_ad_name(tmp_path):
+    s = _settings(tmp_path)
+    s.notion.require_status = ""
+    rows = {"image_1": [_page("p1", "cap", "🔴 h")]}  # no Title property
+    caps = load_from_notion(FakeNotion(rows), s, [_units()[0]])
+    assert "name" not in caps["image_1"]  # build falls back to its default 'PREFIX | content_id'
 
 
 def test_require_status_excludes_unapproved(tmp_path):

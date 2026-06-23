@@ -12,8 +12,10 @@ from __future__ import annotations
 
 from typing import Any, Dict, List
 
-from .creative_groups import CAROUSEL, Unit
+from .creative_groups import CAROUSEL, SINGLE_IMAGE, VIDEO, Unit
 from .logging import get_logger
+
+_KIND_LABEL = {VIDEO: "Video", SINGLE_IMAGE: "Single image", CAROUSEL: "CAROUSEL"}
 
 
 def _plain(prop: Dict[str, Any]) -> str:
@@ -26,6 +28,18 @@ def _plain(prop: Dict[str, Any]) -> str:
 
 def _status(props: Dict[str, Any]) -> str:
     return ((props.get("Status") or {}).get("status") or {}).get("name", "")
+
+
+def _ad_name(props: Dict[str, Any], kind: str) -> str:
+    """Operator's ad-name convention, derived from the Notion Title: 'Video：<descriptor>'.
+
+    Titles are written as '马丁MY | <angle> | <descriptor>', so we take the last '|' segment as the
+    descriptor and prefix it with the creative-kind label (Video / Single image / CAROUSEL — no
+    month prefix, per the operator). Empty string when the row has no Title (build then falls back
+    to its default 'PREFIX | content_id' name)."""
+    title = _plain(props.get("Title", {}))
+    desc = title.split("|")[-1].strip() if title else ""
+    return f"{_KIND_LABEL.get(kind, 'Video')}：{desc}" if desc else ""
 
 
 _CARD_SEPS = ("—", "–", " - ")  # em dash / en dash / hyphen — author format is "name — desc"
@@ -80,6 +94,9 @@ def load_from_notion(notion, settings, units: List[Unit], *,
             continue
         entry: Dict[str, Any] = {"content_id": u.content_id, "caption": caption,
                                  "headline": headline}
+        name = _ad_name(props, u.kind)
+        if name:
+            entry["name"] = name  # ad name -> 'Video：<descriptor>' (see _ad_name)
         if u.kind == CAROUSEL:
             entry["carousel_card_texts"] = _carousel_cards(notion, chosen.get("id", ""))
         out[u.content_id] = entry
