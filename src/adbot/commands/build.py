@@ -25,6 +25,7 @@ def run(settings, *, dry_run: bool = False) -> Dict[str, Any]:
     _, units = load_units(drive, settings)
     log.info("Loaded %d creative unit(s) from Drive.", len(units))
     notion_sourced = _notion_is_source(settings)
+    label, state_key = settings.meta.build.label, settings.meta.build.state_key
 
     if dry_run:
         # Preview structure without uploading media or calling the LLM (no spend/cost). When
@@ -35,7 +36,8 @@ def run(settings, *, dry_run: bool = False) -> Dict[str, Any]:
         else:
             captions = {u.content_id: {"caption": "<generated on live run>",
                                        "headline": "<generated>"} for u in units}
-        return build_1_1_10.build(graph, settings, units, captions, dry_run=True)
+        return build_1_1_10.build(graph, settings, units, captions, dry_run=True,
+                                  label=label, state_key=state_key)
 
     download_assets(drive, units)
     media.sync_media(graph, settings, units, dry_run=False)
@@ -47,7 +49,8 @@ def run(settings, *, dry_run: bool = False) -> Dict[str, Any]:
         llm = llm_client(settings)
         captions = generate_for_units(llm, settings, units)
 
-    entities = build_1_1_10.build(graph, settings, units, captions, dry_run=False)
+    entities = build_1_1_10.build(graph, settings, units, captions, dry_run=False,
+                                  label=label, state_key=state_key)
 
     # The Google Doc caption-log is a nicety; never fail a completed build over it (a service
     # account has no Drive storage quota to create Docs, and Notion already holds the captions).

@@ -116,6 +116,22 @@ def build_units(node: Dict[str, Any], marker: str = "carousel") -> List[Unit]:
     return units
 
 
+def uniquify_ids(units: List[Unit]) -> List[Unit]:
+    """Make content_ids unique IN PLACE so distinct files that slugify the same are all kept.
+
+    CJK / non-ascii filenames all collapse to ``asset`` via slugify; without this they'd share a
+    content_id and select_ten would drop all but the first. Colliding ids get ``_2``, ``_3`` …
+    suffixes in stable order (first occurrence keeps the bare slug).
+    """
+    counts: Dict[str, int] = {}
+    for u in units:
+        base = u.content_id
+        counts[base] = counts.get(base, 0) + 1
+        if counts[base] > 1:
+            u.content_id = f"{base}_{counts[base]}"
+    return units
+
+
 def select_ten(units: List[Unit], n: int = 10) -> List[Unit]:
     """Pick the first ``n`` units, de-duplicating by content_id (stable order)."""
     seen, out = set(), []

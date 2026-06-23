@@ -1,13 +1,22 @@
-name: adbot · build (real 1-1-10, PAUSED)
+name: adbot · build (1-1-N, PAUSED)
 
-# Real build of the JUNE 1-1-10: creates 1 CBO campaign + 1 broad ad set + 10 ads, ALL PAUSED
-# (build.activate_after_build is false -> nothing delivers, ZERO spend until you activate in Ads
-# Manager). Captions are READ from Notion by Content ID (notion.captions_source). Media is reused
-# from the cache (no re-upload). Entity IDs are persisted back to the branch. Triggers on manual
-# dispatch or when THIS file changes.
+# Real build of a 1-1-N batch: 1 CBO campaign + 1 broad ad set + N ads, ALL PAUSED
+# (build.activate_after_build is false -> nothing delivers, ZERO spend until you activate).
+# Pick the batch with the `config_file` input (config.yaml = JUNE, grades.yaml = 成绩单, …).
+# Captions are READ from Notion by Content ID. Each config has its own build.state_key so
+# batches never collide. Use dry_run to preview (no Meta writes).
 
 on:
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      config_file:
+        description: "config filename under config/ (config.yaml, grades.yaml, …)"
+        type: string
+        default: "config.yaml"
+      dry_run:
+        description: "Dry run — preview units/specs, write nothing to Meta"
+        type: boolean
+        default: false
   push:
     branches: ["claude/sweet-curie-b6vql4"]
     paths:
@@ -28,20 +37,20 @@ jobs:
         with:
           python-version: "3.11"
       - run: pip install .
-      - name: Real build — 1 campaign + 1 ad set + 10 ads, ALL PAUSED (no spend)
+      - name: Build (PAUSED) — config ${{ inputs.config_file || 'config.yaml' }}${{ inputs.dry_run && ' (dry-run)' || '' }}
         env:
           ADBOT_ROOT: ${{ github.workspace }}
-          ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
           META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
           META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
           GOOGLE_SERVICE_ACCOUNT_JSON_B64: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON_B64 }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
-        run: python -m adbot build
+        run: python -m adbot --config "${{ github.workspace }}/config/${{ inputs.config_file || 'config.yaml' }}" build ${{ inputs.dry_run && '--dry-run' || '' }}
       - name: Persist created entity IDs + media cache back to the branch
+        if: ${{ !inputs.dry_run }}
         run: |
           git config user.name "adbot"
           git config user.email "noreply@anthropic.com"
-          git add state/entities.json state/media_cache.json state/doc_index.json || true
-          git commit -m "build: persist created 1-1-10 entity ids [skip ci]" || echo "no state change"
+          git add state/ || true
+          git commit -m "build: persist created entity ids [skip ci]" || echo "no state change"
           git push || echo "push skipped"

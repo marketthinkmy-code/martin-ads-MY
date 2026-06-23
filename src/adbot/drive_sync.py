@@ -5,7 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
 
-from .creative_groups import Unit, build_units, select_ten
+from .creative_groups import Unit, build_units, select_ten, uniquify_ids
 from .logging import get_logger
 from .settings import REPO_ROOT, Settings
 
@@ -29,7 +29,7 @@ def fetch_tree(drive, folder_id: str) -> Dict[str, Any]:
 def load_units(drive, settings: Settings) -> Tuple[Dict[str, Any], List[Unit]]:
     tree = fetch_tree(drive, settings.drive.creatives_folder_id)
     units = select_ten(
-        build_units(tree, settings.drive.carousel_subfolder_marker),
+        uniquify_ids(build_units(tree, settings.drive.carousel_subfolder_marker)),
         settings.meta.build.creatives_per_adset,
     )
     return tree, units
