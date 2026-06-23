@@ -1,5 +1,10 @@
 from adbot.creative_groups import (CAROUSEL, SINGLE_IMAGE, VIDEO, Unit,
-                                   build_units, select_ten, slugify, uniquify_ids)
+                                   build_units, content_key, select_ten, slugify, uniquify_ids)
+
+
+def test_content_key_keeps_cjk_filenames_verbatim():
+    assert content_key("sgmy_h1.mp4") == "sgmy_h1"                       # ascii -> slug stem
+    assert content_key("孩子書包特別長會影響長高嗎.mp4") == "孩子書包特別長會影響長高嗎.mp4"  # CJK -> verbatim (matches Notion id)
 
 FOLDER_MIME = "application/vnd.google-apps.folder"
 

@@ -58,6 +58,15 @@ def slugify(name: str) -> str:
     return slug or "asset"
 
 
+def content_key(name: str) -> str:
+    """Caption-matching id. Slugified stem for ascii names ('sgmy_h1.mp4' -> 'sgmy_h1'); the
+    ORIGINAL filename verbatim for CJK / non-ascii names (which slugify would collapse to
+    'asset'), so the build matches the Notion Content IDs the operator wrote as full filenames
+    (e.g. '孩子書包特別長會影響長高嗎.mp4')."""
+    s = slugify(name)
+    return name if s == "asset" else s
+
+
 def is_video(mime: str) -> bool:
     return (mime or "").startswith("video/")
 
@@ -95,7 +104,7 @@ def build_units(node: Dict[str, Any], marker: str = "carousel") -> List[Unit]:
             if imgs:
                 texts = [c for c in (folder.get("children") or []) if _is_text(c)]
                 units.append(Unit(
-                    content_id=slugify(name),
+                    content_id=content_key(name),
                     kind=CAROUSEL,
                     assets=[Asset(i["id"], i["name"], i["mimeType"]) for i in imgs],
                     script_file_id=texts[0]["id"] if texts else None,
@@ -107,10 +116,10 @@ def build_units(node: Dict[str, Any], marker: str = "carousel") -> List[Unit]:
         mime = f.get("mimeType", "")
         sidecar = scripts.get(slugify(f["name"]))
         if is_video(mime):
-            units.append(Unit(slugify(f["name"]), VIDEO,
+            units.append(Unit(content_key(f["name"]), VIDEO,
                               [Asset(f["id"], f["name"], mime, sidecar)], sidecar))
         elif is_image(mime):
-            units.append(Unit(slugify(f["name"]), SINGLE_IMAGE,
+            units.append(Unit(content_key(f["name"]), SINGLE_IMAGE,
                               [Asset(f["id"], f["name"], mime, sidecar)], sidecar))
 
     return units
