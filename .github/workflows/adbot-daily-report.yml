@@ -6,7 +6,13 @@ name: adbot · daily report (22:00 MYT)
 
 on:
   schedule:
-    - cron: "9 14 * * *"        # 22:09 MYT daily (off the congested ":00" slot)
+    # GitHub drops/delays scheduled runs, so fire a few times across the evening; the post step is
+    # idempotent (one report per MYT day via a hidden date marker) so extra ticks are no-ops, not
+    # duplicate comments. Cron is UTC: 14:xx == 22:xx MYT.
+    - cron: "9 14 * * *"        # 22:09 MYT daily (primary)
+    - cron: "24 14 * * *"       # 22:24 MYT — backup
+    - cron: "39 14 * * *"       # 22:39 MYT — backup
+    - cron: "9 15 * * *"        # 23:09 MYT — last-chance backup
   workflow_dispatch: {}          # allow manual runs from the Actions tab
 
 permissions:
@@ -43,6 +49,13 @@ jobs:
             const fs = require('fs');
             const body = fs.readFileSync('report.md', 'utf8');
             const { owner, repo } = context.repo;
+
+            // Idempotency marker: one report per MYT (GMT+8) day, so dense backup ticks that fire
+            // after a dropped primary don't post duplicates. Hidden HTML comment — invisible in the
+            // rendered issue.
+            const day = new Date(Date.now() + 8 * 3600 * 1000).toISOString().slice(0, 10);
+            const marker = `<!-- daily-report ${day} -->`;
+
             const found = await github.rest.issues.listForRepo({
               owner, repo, state: 'open', labels: 'daily-report', per_page: 1,
             });
@@ -57,4 +70,16 @@ jobs:
               });
               issue_number = created.data.number;
             }
-            await github.rest.issues.createComment({ owner, repo, issue_number, body });
+
+            // Skip if today's report is already posted (i.e. this is a backup tick). Only scan
+            // recent comments — the date marker keeps it correct even if the window spans days.
+            const since = new Date(Date.now() - 48 * 3600 * 1000).toISOString();
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner, repo, issue_number, since, per_page: 100,
+            });
+            if (comments.some(c => c.body && c.body.includes(marker))) {
+              core.info(`Daily report for ${day} already posted — skipping backup tick.`);
+              return;
+            }
+            await github.rest.issues.createComment({ owner, repo, issue_number, body: `${marker}\n${body}` });
+            core.info(`Posted daily report for ${day}.`);
