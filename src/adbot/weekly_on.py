@@ -37,16 +37,39 @@ def run(graph, settings: Settings, *, dry_run: bool = False) -> Dict[str, Any]:
     campaign_ids = {ad["campaign_id"] for ad in labeled if ad.get("campaign_id")}
     adset_ids = {ad["adset_id"] for ad in labeled if ad.get("adset_id")}
 
-    # Activate top-down so the hierarchy can deliver, then the ads, then untag.
+    # Activate top-down so the hierarchy can deliver, then the ads, then untag. Each activation is
+    # ISOLATED: one misconfigured entity (e.g. a campaign whose ad sets' combined minimum spend
+    # exceeds its budget — a Meta 400) must never abort the resume of the rest of the account.
+    # Failures are logged; the affected ads keep their label so a later weekly_on retries them.
+    bad: set = set()
+
+    def _activate(entity_id: str, kind: str) -> bool:
+        try:
+            graph.update_status(entity_id, "ACTIVE")
+            return True
+        except Exception as exc:  # noqa: BLE001 - one bad entity must not stop the others
+            log.warning("  [skip] could not resume %s %s: %s", kind, entity_id, exc)
+            bad.add(entity_id)
+            return False
+
     for campaign_id in campaign_ids:
-        graph.update_status(campaign_id, "ACTIVE")
+        _activate(campaign_id, "campaign")
     for adset_id in adset_ids:
-        graph.update_status(adset_id, "ACTIVE")
+        _activate(adset_id, "adset")
+
+    resumed, stuck = 0, 0
     for ad in labeled:
-        graph.update_status(ad["id"], "ACTIVE")
-        graph.set_ad_labels(ad["id"], [])  # clear the weekly-off tag
+        parent_failed = ad.get("campaign_id") in bad or ad.get("adset_id") in bad
+        if parent_failed or not _activate(ad["id"], "ad"):
+            stuck += 1            # leave the label ON so the next run retries this ad
+            continue
+        graph.set_ad_labels(ad["id"], [])  # clear the weekly-off tag only once the ad is live
         state.append_pause_log(ad["id"], "ad", "weekly_on_resume", {"name": ad.get("name")})
+        resumed += 1
         log.info("  [RESUMED+untagged] %s", ad.get("name", ad["id"]))
 
-    final_summary(log, f"weekly_on: resumed {len(labeled)} ads across {len(campaign_ids)} campaign(s)")
-    return {"resumed": len(labeled), "campaigns": len(campaign_ids), "dry_run": False}
+    summary = f"weekly_on: resumed {resumed}/{len(labeled)} ads across {len(campaign_ids)} campaign(s)"
+    if stuck:
+        summary += f"; {stuck} left tagged (entity failed to activate — see [skip] warnings, fix & re-run)"
+    final_summary(log, summary)
+    return {"resumed": resumed, "stuck": stuck, "campaigns": len(campaign_ids), "dry_run": False}

@@ -44,21 +44,41 @@ def run(graph, settings: Settings, *, dry_run: bool = False) -> Dict[str, Any]:
 
     label_id = graph.get_or_create_label(settings.meta.account_path, settings.naming.weekly_off_label)
     adset_ids, campaign_ids = set(), set()
+    paused, failed = 0, 0
+
+    def _pause(entity_id: str, kind: str) -> bool:
+        nonlocal failed
+        try:
+            graph.update_status(entity_id, "PAUSED")
+            return True
+        except Exception as exc:  # noqa: BLE001 - one bad entity must not stop the kill switch
+            log.warning("  [skip] could not pause %s %s: %s", kind, entity_id, exc)
+            failed += 1
+            return False
+
     for ad in active:
-        graph.set_ad_labels(ad["id"], [label_id])
-        graph.update_status(ad["id"], "PAUSED")
-        if ad.get("adset_id"):
-            adset_ids.add(ad["adset_id"])
-        campaign_ids.add(ad["_campaign_id"])
-        state.append_pause_log(ad["id"], "ad", "weekly_off", {"name": ad.get("name")})
-        log.info("  [PAUSED+tagged] %s", ad.get("name", ad["id"]))
+        # Tag first so a later run can still find the ad even if this pause fails; then pause.
+        try:
+            graph.set_ad_labels(ad["id"], [label_id])
+        except Exception as exc:  # noqa: BLE001
+            log.warning("  [skip] could not tag ad %s: %s", ad["id"], exc)
+        if _pause(ad["id"], "ad"):
+            paused += 1
+            if ad.get("adset_id"):
+                adset_ids.add(ad["adset_id"])
+            campaign_ids.add(ad["_campaign_id"])
+            state.append_pause_log(ad["id"], "ad", "weekly_off", {"name": ad.get("name")})
+            log.info("  [PAUSED+tagged] %s", ad.get("name", ad["id"]))
 
     for adset_id in adset_ids:
-        graph.update_status(adset_id, "PAUSED")
+        _pause(adset_id, "adset")
     for campaign_id in campaign_ids:
-        graph.update_status(campaign_id, "PAUSED")
+        _pause(campaign_id, "campaign")
 
-    final_summary(log, f"weekly_off: paused {len(active)} ads, {len(adset_ids)} ad set(s), "
-                       f"{len(campaign_ids)} campaign(s); tagged for Thursday resume")
-    return {"paused": len(active), "adsets": len(adset_ids), "campaigns": len(campaign_ids),
-            "dry_run": False}
+    summary = (f"weekly_off: paused {paused}/{len(active)} ads, {len(adset_ids)} ad set(s), "
+               f"{len(campaign_ids)} campaign(s); tagged for Thursday resume")
+    if failed:
+        summary += f"; {failed} entity(ies) failed (see [skip] warnings)"
+    final_summary(log, summary)
+    return {"paused": paused, "adsets": len(adset_ids), "campaigns": len(campaign_ids),
+            "failed": failed, "dry_run": False}
