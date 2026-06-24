@@ -38,6 +38,25 @@ class _Retryable(Exception):
     """Internal marker for transient failures worth retrying."""
 
 
+# Meta returns its throttles as an error *code*, usually on an HTTP 400 (not 429) — notably the
+# ad-account limit #80004 ("there have been too many calls from this ad account") that a
+# whole-account weekly pause/resume or monitor sweep can trip. These are transient: back off and
+# retry rather than fail the run. (Permanent 400s — validation errors — are NOT in this set and
+# still surface immediately.) Codes: 4/17/32 user+app+page limits, 613 custom rate limit,
+# 80000-80014 the ads-API per-account/per-app throttles.
+_RATE_LIMIT_CODES = {4, 17, 32, 613, 80000, 80001, 80002, 80003, 80004, 80005, 80006, 80008,
+                     80009, 80014}
+
+
+def _is_rate_limited(payload: Optional[Dict[str, Any]]) -> bool:
+    """True if a Meta error payload is a transient throttle worth retrying (not a hard 400)."""
+    err = (payload or {}).get("error") or {}
+    if err.get("code") in _RATE_LIMIT_CODES or err.get("is_transient"):
+        return True
+    msg = (err.get("message") or "").lower()
+    return any(s in msg for s in ("too many calls", "request limit reached", "rate limit"))
+
+
 class GraphClient:
     def __init__(self, token: str, app_secret: str = "", *, session: Optional[requests.Session] = None,
                  timeout: int = 60):
@@ -55,8 +74,8 @@ class GraphClient:
             ).hexdigest()
         return params
 
-    @retry(reraise=True, stop=stop_after_attempt(4),
-           wait=wait_exponential(multiplier=2, min=2, max=20),
+    @retry(reraise=True, stop=stop_after_attempt(6),
+           wait=wait_exponential(multiplier=2, min=2, max=60),
            retry=retry_if_exception_type(_Retryable))
     def _request(self, method: str, path: str, *, params: Optional[Dict] = None,
                  data: Optional[Dict] = None, files: Optional[Dict] = None) -> Dict[str, Any]:
@@ -77,6 +96,13 @@ class GraphClient:
         except ValueError:
             payload = {"raw": resp.text}
         if resp.status_code >= 400:
+            # Meta throttles usually arrive as HTTP 400 with a rate-limit code; retry those with
+            # backoff so a whole-account pause/resume finishes on its own instead of needing a
+            # human (or the backup cron) to re-run it. Permanent 400s still fail fast.
+            if _is_rate_limited(payload):
+                err = payload.get("error") or {}
+                raise _Retryable(f"Meta throttle [{resp.status_code}] code={err.get('code')}: "
+                                 f"{(err.get('message') or '')[:140]}")
             raise GraphError(resp.status_code, payload)
         return payload
 
