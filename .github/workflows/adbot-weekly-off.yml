@@ -6,8 +6,13 @@ name: adbot · weekly OFF (Wed 15:00 MYT)
 
 on:
   schedule:
-    - cron: "9 7 * * 3"        # Wed 15:09 MYT (off the congested ":00" slot)
-    - cron: "9 8 * * 3"        # Wed 16:09 MYT — backup if the first was dropped (re-pause is a no-op)
+    # GitHub drops/delays scheduled runs (the 15:09 primary was dropped on 2026-06-24), so fire
+    # several times across the OFF window and let idempotency sort it out: each re-run pauses only
+    # still-live ads, and a fully-paused account is a clean no-op. Minutes kept off ":00"/":30".
+    - cron: "9 7 * * 3"        # Wed 15:09 MYT (primary)
+    - cron: "24 7 * * 3"       # Wed 15:24 MYT — backup
+    - cron: "39 7 * * 3"       # Wed 15:39 MYT — backup
+    - cron: "9 8 * * 3"        # Wed 16:09 MYT — last-chance backup
   workflow_dispatch:           # allow manual runs from the Actions tab
     inputs:
       dry_run:

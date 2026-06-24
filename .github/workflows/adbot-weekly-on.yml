@@ -5,11 +5,14 @@ name: adbot · weekly ON (Thu 00:00 MYT)
 
 on:
   schedule:
-    # Resume is the costliest tick to miss (ads stay paused = lost revenue), so run it off
-    # the congested ":00" slot AND retry hourly through the morning. Re-running is a no-op:
-    # weekly-on clears the label as it resumes, so later attempts find nothing to do.
+    # Resume is the costliest tick to miss (ads stay paused = lost revenue), so fire densely right
+    # after midnight AND keep hourly backups. GitHub drops/delays scheduled runs, so we never rely
+    # on one tick. Re-running is a no-op: weekly-on clears the label as it resumes, so later
+    # attempts find nothing to do. Cron is UTC: Wed 16:xx == Thu 00:xx MYT.
     - cron: "9 16 * * 3"       # Thu 00:09 MYT (Wed 16:09 UTC) — primary
-    - cron: "9 17 * * 3"       # Thu 01:09 MYT — backup if the first was dropped
+    - cron: "24 16 * * 3"      # Thu 00:24 MYT — backup
+    - cron: "39 16 * * 3"      # Thu 00:39 MYT — backup
+    - cron: "9 17 * * 3"       # Thu 01:09 MYT — backup
     - cron: "9 18 * * 3"       # Thu 02:09 MYT — backup
   workflow_dispatch:           # allow manual runs from the Actions tab
     inputs:
