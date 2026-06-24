@@ -1,0 +1,96 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# adbot — SINGLE-IMAGE batch (run with: `python -m adbot --config config/singleimage.yaml build`)
+# One 1-1-N campaign "MARTIN-MY | 单图": 1 broad CBO ad set + N single-image ads (N = images in
+# the Drive folder). Broad targeting; Meta/Andromeda finds the audience from each image's hook.
+# Captions read from Notion by Content ID (= the exact filename). Built PAUSED; delivery is then
+# scheduled to start 2026-06-25 00:00 MYT via the ad set start_time (set after build).
+# ─────────────────────────────────────────────────────────────────────────────
+
+meta:
+  ad_account_id: "act_1011719073600566"
+  page_id: "341825319024143"
+  instagram_user_id: null
+  pixel_id: "1189593242351293"
+
+  objective: "OUTCOME_SALES"
+  optimization_goal: "OFFSITE_CONVERSIONS"
+  conversion_event: "COMPLETE_REGISTRATION"
+  special_ad_categories: []
+
+  lead_destination:
+    type: "WEBSITE"
+    link_url: "https://as.dr-martin.com.tw/kids-growth-formula-landing"
+  conversion_domain: "https://as.dr-martin.com.tw/"
+  call_to_action: "LEARN_MORE"
+  url_tags: "utm_source={{adset.name}}&utm_medium={{placement}}&utm_campaign={{campaign.name}}&utm_content={{ad.name}}"
+
+  budget:
+    level: "CAMPAIGN"
+    daily_amount_myr: 100                  # single-image test CBO daily budget
+    currency: "MYR"
+    adset_min_spend_myr: 50
+
+  targeting:                               # identical broad setup to the angle campaigns
+    countries: ["MY"]
+    age_min: 25
+    age_max: 65
+    advantage_audience: 1
+    locales: [1004]
+    excluded_custom_audiences:
+      - "120224052749710575"               # 马丁 15days complete registration
+      - "120242141920810575"               # MARTIN MYSG PAID CUSTOMER - 13 APR
+
+  build:
+    creatives_per_adset: 20                # cap; 14 single images sit in one ad set
+    activate_after_build: false            # SAFETY: built PAUSED — scheduled to start 6/25 00:00 MYT after build
+    label: "单图"                           # campaign -> "MARTIN-MY | 单图"
+    state_key: "entities_singleimage"
+
+naming:
+  prefix: "MARTIN-MY"
+  weekly_off_label: "ADBOT_WEEKLY_OFF"
+
+drive:
+  # "MARTIN-MY 单图 (JUNE25)" — clean-named copies of the operator's 14 single images. Lives in the
+  # FreeStyle parent (anyone-with-link reader) so the build service account inherits read access.
+  creatives_folder_id: "1GJh9qT-PKsgK1vM7dv3fNjzZ2SPn1chj"
+  carousel_subfolder_marker: "carousel"    # no carousels here — every file is a standalone single image
+  script_sidecar_ext: ".txt"
+
+google_docs:
+  caption_log_doc_id: ""
+  idea_backlog_doc_id: ""
+
+notion:                                    # same Notion DB; captions matched by Content ID (= filename)
+  enabled: true
+  database_id: "4bb82b42449682c294e881448aa21435"
+  brand: "Martin MY"
+  default_status: "In Review"
+  default_type: "Caption"
+  captions_source: true
+  require_status: ""
+
+kpi:
+  cpl_threshold_myr: 55.00
+  cpl_min_spend_myr: 100.00
+  cpl_lookback: "week_thu"
+  pause_zero_lead_after_spend: true
+  cpl_hold: []
+
+cpa:
+  enabled: true
+  spreadsheet_id: "1DsKtcDpsWp3Njfah6Fw3PBizhGiy017ULw5qKeV-RSA"
+  sales_tab: "Paid Student List (RM1997)"
+  price_myr: 2591.00
+  target_myr: 740.00
+  healthy_max_myr: 860.00
+  max_acceptable_myr: 1040.00
+  hard_stop_myr: 1300.00
+  conversion_days: 14
+  min_spend_myr: 1000.00
+
+schedule:
+  timezone: "Asia/Kuala_Lumpur"
+  weekly_off: { day: "WED", time: "15:00" }
+  weekly_on:  { day: "THU", time: "00:00" }
+  monitor_interval_hours: 1
