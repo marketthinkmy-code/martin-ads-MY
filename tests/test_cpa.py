@@ -22,6 +22,21 @@ def test_find_columns_handles_reordering_and_amount():
     assert (cols["date"], cols["ad"], cols["adset"], cols["campaign"], cols["amount"]) == (0, 1, 2, 3, 4)
 
 
+def test_find_columns_plain_campaign_name_header():
+    # Paid Student List (RM1997) tab labels the campaign column "Campaign Name" (no "UTM"
+    # prefix). It must still be located, or the CPA join matches 0 sales.
+    header = ["Name", "Email", "Created date", "Campaign Name", "UTM Ads Set", "UTM Ads Name"]
+    cols = cpa.find_columns(header)
+    assert (cols["date"], cols["campaign"], cols["adset"], cols["ad"]) == (2, 3, 4, 5)
+
+
+def test_find_columns_prefers_utm_campaign_over_plain():
+    # When both exist, the UTM-tagged column wins (it mirrors {{campaign.name}} verbatim).
+    header = ["Created date", "Campaign Name", "UTM Campaign", "UTM Ads Set", "UTM Ads Name"]
+    cols = cpa.find_columns(header)
+    assert cols["campaign"] == 2
+
+
 def test_parse_date_formats():
     assert cpa.parse_date("14/1/2026") == dt.date(2026, 1, 14)        # D/M/Y (MY locale)
     assert cpa.parse_date("2026-06-15") == dt.date(2026, 6, 15)       # ISO
