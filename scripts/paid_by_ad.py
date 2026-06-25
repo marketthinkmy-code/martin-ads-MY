@@ -90,6 +90,10 @@ def main() -> None:
               f"(campaign={tcols.get('campaign')},adset={tcols.get('adset')},ad={tcols.get('ad')},date={tcols.get('date')}) "
               f"· {len(tattr)} attributed · {len(dated)} dated · "
               f"range {dmin}..{dmax} · {in60} in last 60d")
+        di = tcols.get("date", -1)
+        if di >= 0:                      # show RAW date cells so an unparsed format is visible
+            raw = [r[di] for r in vals[-8:] if di < len(r) and (r[di] or "").strip()]
+            print(f"       raw date samples (bottom rows): {raw}")
         for x in sorted(dated, key=lambda r: r.date, reverse=True)[:5]:
             print(f"       recent {x.date}  ad={x.ad[:34]!r}  camp={x.campaign[:24]!r}")
     print()

@@ -37,6 +37,26 @@ def test_find_columns_prefers_utm_campaign_over_plain():
     assert cols["campaign"] == 2
 
 
+def test_find_columns_real_rm1997_header_with_cjk_date():
+    # The live RM1997 tab: a Chinese date header (報名日期) + plain "Campaign Name". The date
+    # column must resolve, or every CPA window reads 0 paid sales.
+    header = ['Name', '付費管道', 'email', 'whatsapp 號碼', '報名日期', 'Invite to Private Group',
+              'Remark', 'Purchase amount', 'Join 3 days Group', '', 'Kids Age', 'Ways',
+              'source ', 'Campaign Name', 'UTM Ads Set', 'UTM Ads Name']
+    cols = cpa.find_columns(header)
+    assert (cols["date"], cols["campaign"], cols["adset"], cols["ad"], cols["amount"]) == (4, 13, 14, 15, 7)
+
+
+def test_find_columns_simplified_chinese_date():
+    header = ["Name", "报名日期", "Campaign Name", "UTM Ads Set", "UTM Ads Name"]
+    assert cpa.find_columns(header)["date"] == 1
+
+
+def test_parse_date_cjk_year_month_day():
+    assert cpa.parse_date("2026年6月24日") == dt.date(2026, 6, 24)
+    assert cpa.parse_date("2026 年 6 月 24 日") == dt.date(2026, 6, 24)
+
+
 def test_parse_date_formats():
     assert cpa.parse_date("14/1/2026") == dt.date(2026, 1, 14)        # D/M/Y (MY locale)
     assert cpa.parse_date("2026-06-15") == dt.date(2026, 6, 15)       # ISO
