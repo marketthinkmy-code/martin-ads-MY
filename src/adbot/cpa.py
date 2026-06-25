@@ -52,7 +52,10 @@ def find_columns(header: List[str]) -> Dict[str, int]:
 
     return {
         "date": first("createddate", "date"),
-        "campaign": first("utmcampaign"),
+        # Prefer a UTM-tagged campaign column, but fall back to a plain "Campaign Name"
+        # header (the Paid Student List (RM1997) tab labels it that way) so the sheet<->Meta
+        # join still finds the campaign — without it the CPA gate silently matches 0 sales.
+        "campaign": first("utmcampaign", "campaignname", "campaign"),
         "adset": first("utmadset", "utmadsset"),
         "ad": first("utmadname", "utmadsname"),
         "amount": first("purchaseamount", "amount"),
