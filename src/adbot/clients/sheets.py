@@ -24,3 +24,10 @@ class SheetsClient:
                      dateTimeRenderOption="FORMATTED_STRING")
                 .execute())
         return resp.get("values", [])
+
+    def tab_titles(self, spreadsheet_id: str) -> List[str]:
+        """Every tab title in the workbook (in sheet order)."""
+        meta = (self._svc.spreadsheets()
+                .get(spreadsheetId=spreadsheet_id, fields="sheets.properties.title")
+                .execute())
+        return [s["properties"]["title"] for s in meta.get("sheets", [])]
