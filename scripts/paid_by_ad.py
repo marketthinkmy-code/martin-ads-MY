@@ -60,8 +60,42 @@ def main() -> None:
     acct = s.meta.account_path
     token = result_action_type(s.meta.conversion_event)
 
-    # ── 1. paid sales per ad from the sheet ──────────────────────────────────
-    values = SheetsClient(s.secrets.google_sa_json).read_tab(s.cpa.spreadsheet_id, s.cpa.sales_tab)
+    sheets = SheetsClient(s.secrets.google_sa_json)
+
+    # ── 0. data-freshness diagnostic across every "Paid"-like tab ────────────
+    # Why: the configured tab can hold lifetime attribution yet 0 recent-dated sales (e.g.
+    # historical import, or recent rows missing dates / UTM). Surface WHERE the recent
+    # attributed sales actually live before trusting any CPA window.
+    print(f"=== TAB DIAGNOSTIC · today MYT={today} ===")
+    try:
+        titles = sheets.tab_titles(s.cpa.spreadsheet_id)
+        print(f"Workbook tabs ({len(titles)}): {titles}")
+    except Exception as exc:  # noqa: BLE001
+        titles = [s.cpa.sales_tab]
+        print(f"(could not list tabs: {exc}; falling back to configured tab only)")
+    for t in [t for t in titles if "paid" in t.lower()] or [s.cpa.sales_tab]:
+        try:
+            vals = sheets.read_tab(s.cpa.spreadsheet_id, t)
+        except Exception as exc:  # noqa: BLE001
+            print(f"  · {t!r}: read failed ({exc})")
+            continue
+        tsales, tcols, _h = cpa.parse_sales(vals, s.cpa.price_myr)
+        tattr = [x for x in tsales if x.ad]
+        dated = [x for x in tattr if x.date]
+        has_ad_cols = tcols.get("campaign", -1) >= 0 and tcols.get("ad", -1) >= 0
+        dmin = min((x.date for x in dated), default=None)
+        dmax = max((x.date for x in dated), default=None)
+        in60 = sum(1 for x in dated if x.date > today - dt.timedelta(days=60))
+        print(f"  · {t!r}: {len(vals)} rows · ad-cols={has_ad_cols} "
+              f"(campaign={tcols.get('campaign')},adset={tcols.get('adset')},ad={tcols.get('ad')},date={tcols.get('date')}) "
+              f"· {len(tattr)} attributed · {len(dated)} dated · "
+              f"range {dmin}..{dmax} · {in60} in last 60d")
+        for x in sorted(dated, key=lambda r: r.date, reverse=True)[:5]:
+            print(f"       recent {x.date}  ad={x.ad[:34]!r}  camp={x.campaign[:24]!r}")
+    print()
+
+    # ── 1. paid sales per ad from the configured tab ─────────────────────────
+    values = sheets.read_tab(s.cpa.spreadsheet_id, s.cpa.sales_tab)
     sales, cols, hdr = cpa.parse_sales(values, s.cpa.price_myr)
     attributed = [x for x in sales if x.ad]
 
