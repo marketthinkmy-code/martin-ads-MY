@@ -32,7 +32,11 @@ def norm(s: str) -> str:
 
 
 def _hkey(s: str) -> str:
-    return re.sub(r"[^a-z0-9]", "", (s or "").casefold())
+    # Keep CJK ideographs (U+4E00–U+9FFF) alongside ASCII alphanumerics: the Paid Student
+    # List (RM1997) tab labels its date column 報名日期 (Chinese). Stripping non-ASCII would
+    # collapse every CJK header to "" and leave the date column unmatched -> no sale dated
+    # -> every CPA window reads 0.
+    return re.sub(r"[^a-z0-9一-鿿]", "", (s or "").casefold())
 
 
 def find_columns(header: List[str]) -> Dict[str, int]:
@@ -51,8 +55,13 @@ def find_columns(header: List[str]) -> Dict[str, int]:
         return -1
 
     return {
-        "date": first("createddate", "date"),
-        "campaign": first("utmcampaign"),
+        # 日期 (= "date", identical in Traditional & Simplified) matches the RM1997 tab's
+        # 報名日期 column; English names still win when present.
+        "date": first("createddate", "date", "日期"),
+        # Prefer a UTM-tagged campaign column, but fall back to a plain "Campaign Name"
+        # header (the Paid Student List (RM1997) tab labels it that way) so the sheet<->Meta
+        # join still finds the campaign — without it the CPA gate silently matches 0 sales.
+        "campaign": first("utmcampaign", "campaignname", "campaign"),
         "adset": first("utmadset", "utmadsset"),
         "ad": first("utmadname", "utmadsname"),
         "amount": first("purchaseamount", "amount"),
@@ -95,6 +104,9 @@ def parse_date(s: str) -> Optional[dt.date]:
     m = re.match(r"([A-Za-z]+)\.?\s+(\d{1,2}),?\s+(\d{2,4})", s)        # Jan 14, 2026
     if m and m.group(1).lower() in _MONTHS:
         return _safe(int(m.group(3)), _MONTHS[m.group(1).lower()], int(m.group(2)))
+    m = re.match(r"(\d{4})\s*年\s*(\d{1,2})\s*月\s*(\d{1,2})\s*日?", s)   # 2026年6月24日
+    if m:
+        return _safe(int(m.group(1)), int(m.group(2)), int(m.group(3)))
     if re.fullmatch(r"\d{4,6}", s):                                     # Sheets serial
         try:
             return dt.date(1899, 12, 30) + dt.timedelta(days=int(s))
