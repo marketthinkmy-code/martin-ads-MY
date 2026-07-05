@@ -151,6 +151,30 @@ def test_week_to_date_cpl_window_from_thursday():
     assert cpl_window(Settings(kpi=KpiCfg(cpl_lookback="last_3d")), dt.date(2026, 6, 22)) == ("last_3d", None)
 
 
+def test_run_isolates_a_failed_pause(monkeypatch):
+    # A Meta write error on ONE ad (e.g. the account briefly blocking writes) must NOT crash the
+    # whole monitor run — a crash fails the scheduled job and emails the operator. The other
+    # over-CPL ads still get paused; the failed one is left for the next run to retry.
+    from adbot import monitor_cpl, state
+    monkeypatch.setattr(state, "append_pause_log", lambda *a, **k: None)  # no disk writes in the test
+
+    settings = Settings(meta=MetaCfg(conversion_event="COMPLETE_REGISTRATION"),
+                        kpi=KpiCfg(cpl_threshold_myr=40, cpl_min_spend_myr=80,
+                                   cpl_lookback="last_3d", pause_zero_lead_after_spend=True))
+    campaigns = [{"id": "A", "name": "MTC", "effective_status": "ACTIVE"}]
+    ads = {"A": [_ad("bad"), _ad("good")]}                 # both CPL 100 > 40 -> both flagged to pause
+    insights = {"bad": _reg_insight(100, 1), "good": _reg_insight(100, 1)}
+
+    class _GraphRaisingOnBad(_FakeGraph):
+        def update_status(self, entity_id, status):
+            if entity_id == "bad":
+                raise RuntimeError("temporarily blocked from performing this action")
+            return {"id": entity_id, "status": status}
+
+    result = monitor_cpl.run(_GraphRaisingOnBad(campaigns, ads, insights), settings, dry_run=False)
+    assert result["paused"] == 1 and result["failed"] == 1  # 'good' paused; 'bad' isolated, no crash
+
+
 def test_evaluate_account_cpa_rescues_and_hard_stops():
     # CPA folded into the CPL decision (60-day window), via an injected context.
     settings = Settings(meta=MetaCfg(conversion_event="COMPLETE_REGISTRATION"),

@@ -229,10 +229,17 @@ def run(graph, settings: Settings, *, dry_run: bool = False) -> Dict[str, Any]:
         log.info("  [%s] %s  spend=%.2f %s=%.0f CPL=%s%s (%s)",
                  verb, d.name, d.spend, event.lower(), d.results, cpl_str, cpa_str, d.reason)
 
-    paused = 0
+    paused, failed = 0, 0
     if not dry_run:
         for d in to_pause:
-            graph.update_status(d.ad_id, "PAUSED")
+            try:
+                graph.update_status(d.ad_id, "PAUSED")
+            except Exception as exc:  # noqa: BLE001 - one un-pausable ad (e.g. Meta briefly blocking
+                # writes on the account) must NOT crash the whole run and fail the scheduled job.
+                # Log and move on; the ad is still over threshold so the next run retries it.
+                log.warning("  [skip] could not pause %s: %s", d.name, exc)
+                failed += 1
+                continue
             state.append_pause_log(d.ad_id, "ad", d.reason,
                                    {"spend": d.spend, "results": d.results,
                                     "cpl": None if d.cpl is None or d.cpl == math.inf else round(d.cpl, 2),
@@ -244,6 +251,8 @@ def run(graph, settings: Settings, *, dry_run: bool = False) -> Dict[str, Any]:
     summary = (f"CPL monitor ({event}): evaluated {len(decisions)} active ads, "
                f"{'would pause' if dry_run else 'paused'} {len(to_pause) if dry_run else paused}, "
                f"{active_left} remain under CPL {settings.kpi.cpl_threshold_myr:.0f} MYR")
+    if not dry_run and failed:
+        summary += f"; {failed} pause(s) failed, will retry next run (see [skip] warnings)"
     final_summary(log, summary)
     return {"evaluated": len(decisions), "paused": (len(to_pause) if dry_run else paused),
-            "remaining": active_left, "dry_run": dry_run}
+            "remaining": active_left, "failed": (0 if dry_run else failed), "dry_run": dry_run}
