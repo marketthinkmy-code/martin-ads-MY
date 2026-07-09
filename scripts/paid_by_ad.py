@@ -234,6 +234,30 @@ def main() -> None:
         roas_s = "n/a" if roas30 is None else f"{roas30:.1f}x"
         print(f"  {n30:>6} {sp30:8.0f} {cpa_s:>7} {roas_s:>7}  {ad_norm[:40]:40} [{camp[:24]}]")
 
+    # ── WHERE the paused winners convert: interest (campaign) + audience (ad set) ──
+    # Answers "which interest / audience to run each reopened winner in" — tally each off
+    # creative's recent sales by the sheet's Campaign Name (interest) and UTM Ads Set (audience).
+    print("\n--- WHERE the paused winners convert (last 60d) → which interest / audience to run them in ---")
+    shown = 0
+    for ad_norm, rows in sorted(by_adname.items(), key=lambda kv: -len(kv[1])):
+        if ad_norm in active_adnorms:
+            continue
+        recent = [r for r in rows if r.date and r.date > cutoff60]
+        if len(recent) < 2:                       # need ≥2 recent sales to name an audience
+            continue
+        by_camp, by_aud = defaultdict(int), defaultdict(int)
+        for r in recent:
+            by_camp[(r.campaign or "?").strip()] += 1
+            by_aud[(r.adset or "?").strip()] += 1
+        tc = " · ".join(f"{c[:32]}×{n}" for c, n in sorted(by_camp.items(), key=lambda x: -x[1])[:3])
+        ta = " · ".join(f"{a[:24]}×{n}" for a, n in sorted(by_aud.items(), key=lambda x: -x[1])[:3])
+        print(f"  {ad_norm[:34]:34} ({len(recent)} sales/60d)")
+        print(f"      interest (campaign): {tc}")
+        print(f"      audience (ad set):   {ta}")
+        shown += 1
+    if not shown:
+        print("  (no paused creative has ≥2 recent sales to place)")
+
     # ── account totals ───────────────────────────────────────────────────────
     tot_life = len(attributed)
     tot_60 = sum(1 for x in attributed if x.date and x.date > cutoff60)
