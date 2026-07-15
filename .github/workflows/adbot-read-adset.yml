@@ -1,14 +1,21 @@
 name: adbot · read ad set (manual)
 
-# Manual, read-only: dumps one ad set's targeting + delivery settings as JSON,
+# Manual, read-only: dumps one or more ad sets' targeting + delivery settings as JSON,
 # so a winning ad set can be faithfully cloned into a new campaign. No writes.
+# Dispatch with one id, or push (the baked ADSET_IDS below reads the 3 standard interest
+# audiences: Food&Drink+Milk / Housewife / Education — to lift their real interest IDs).
 
 on:
   workflow_dispatch:
     inputs:
       adset_id:
-        description: "Ad set ID to read"
+        description: "Ad set ID(s) to read (comma-separated)"
         required: true
+  push:
+    branches: ["claude/sweet-curie-b6vql4"]
+    paths:
+      - ".github/workflows/adbot-read-adset.yml"
+      - "scripts/read_adset.py"
 
 jobs:
   read:
@@ -23,7 +30,7 @@ jobs:
         env:
           ADBOT_ROOT: ${{ github.workspace }}
           ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
-          ADSET_ID: ${{ github.event.inputs.adset_id }}
+          ADSET_IDS: ${{ github.event.inputs.adset_id || '120234502959470575,120229305610310575,120233432387830575' }}
           META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
           META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
         run: python scripts/read_adset.py
