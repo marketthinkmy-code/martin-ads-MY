@@ -162,8 +162,8 @@ def test_evaluate_account_cpa_rescues_and_hard_stops():
     ads = {"A": [_ad("rescue_me"), _ad("kill_me")]}
     insights = {"rescue_me": _reg_insight(300, 3),   # CPL 100 > 40 -> CPL would pause
                 "kill_me": _reg_insight(100, 4)}      # CPL 25 -> CPL keeps
-    ck = cpa.norm("mtc - news")
-    sold = {(ck, cpa.norm("rescue_me")): 10, (ck, cpa.norm("kill_me")): 2}
+    ck = cpa.ad_key("mtc - news")
+    sold = {(ck, cpa.ad_key("rescue_me")): 10, (ck, cpa.ad_key("kill_me")): 2}
     spend60 = {"rescue_me": 7000.0, "kill_me": 4000.0}  # CPA 700 (rescue) / 2000 (hard stop)
 
     by_name = {d.name: d for d in evaluate_account(
@@ -173,3 +173,43 @@ def test_evaluate_account_cpa_rescues_and_hard_stops():
     assert by_name["rescue_me"].reason == cpa.CPL_RESCUED          # over-CPL but profitable
     assert by_name["kill_me"].should_pause is True
     assert by_name["kill_me"].reason == cpa.HARD_STOP              # CPA>1200, matured -> pause
+
+
+def test_cpa_match_is_width_and_punctuation_robust():
+    # A sale logged with a full-width colon and no spaces still credits the Meta ad whose name
+    # uses a half-width colon and spaces — ad_key (NFKC + strip punctuation) folds both to one key.
+    settings = Settings(meta=MetaCfg(conversion_event="COMPLETE_REGISTRATION"),
+                        kpi=KpiCfg(cpl_threshold_myr=40, cpl_min_spend_myr=80,
+                                   cpl_lookback="last_3d", pause_zero_lead_after_spend=True),
+                        cpa=CpaCfg(enabled=True, hard_stop_myr=1200, conversion_days=14,
+                                   min_spend_myr=1000))
+    campaigns = [{"id": "A", "name": "MARTIN-MY | Scale", "effective_status": "ACTIVE"}]
+    ads = {"A": [_ad("MAR Video 5: 林書豪 story")]}                  # Meta: half-width colon + spaces
+    insights = {"MAR Video 5: 林書豪 story": _reg_insight(300, 3)}   # CPL 100 > 40 -> would pause
+    sold = {(cpa.ad_key("martin-my | scale"),                       # sheet: full-width ：, no spaces
+             cpa.ad_key("mar video 5：林書豪story")): 10}
+    spend60 = {"MAR Video 5: 林書豪 story": 7000.0}                  # CPA 700 -> healthy rescue
+    d = {x.name: x for x in evaluate_account(
+        _FakeGraph(campaigns, ads, insights), settings, cpa_ctx=(sold, spend60))}
+    assert d["MAR Video 5: 林書豪 story"].cpa_sales == 10           # matched despite width/space
+    assert d["MAR Video 5: 林書豪 story"].reason == cpa.CPL_RESCUED
+
+
+def test_cpa_match_keeps_campaign_so_other_campaign_sales_dont_leak():
+    # The same ad name selling under a DIFFERENT campaign must NOT credit this ad — this is why
+    # campaign stays in the key: MY must never inherit an SG campaign's sales on a shared name.
+    settings = Settings(meta=MetaCfg(conversion_event="COMPLETE_REGISTRATION"),
+                        kpi=KpiCfg(cpl_threshold_myr=40, cpl_min_spend_myr=80,
+                                   cpl_lookback="last_3d", pause_zero_lead_after_spend=True),
+                        cpa=CpaCfg(enabled=True, hard_stop_myr=1200, conversion_days=14,
+                                   min_spend_myr=1000))
+    campaigns = [{"id": "A", "name": "[MY] Housewife", "effective_status": "ACTIVE"}]
+    ads = {"A": [_ad("MAR Video 5: 林書豪 story")]}
+    insights = {"MAR Video 5: 林書豪 story": _reg_insight(300, 3)}   # CPL 100 -> would pause
+    sold = {(cpa.ad_key("[sg] scale-cbo"),                          # the sale is under an SG campaign
+             cpa.ad_key("mar video 5：林書豪story")): 5}
+    spend60 = {"MAR Video 5: 林書豪 story": 300.0}
+    d = {x.name: x for x in evaluate_account(
+        _FakeGraph(campaigns, ads, insights), settings, cpa_ctx=(sold, spend60))}
+    assert d["MAR Video 5: 林書豪 story"].cpa_sales == 0            # SG sale did NOT leak into MY
+    assert d["MAR Video 5: 林書豪 story"].should_pause is True      # so the CPL pause stands

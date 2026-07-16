@@ -23,7 +23,7 @@ def _mkey(name: str) -> str:
     s = (name or "").strip()
     if s.lower().startswith("(image)"):
         s = s[len("(image)"):]
-    return cpa.norm(s)
+    return cpa.ad_key(s)
 
 
 def _f(v) -> float:
@@ -45,7 +45,7 @@ def main() -> None:
     sales, _cols, _hdr = cpa.parse_sales(values, s.cpa.price_myr)
     sold = defaultdict(int)
     for sale in sales:
-        sold[(_mkey(sale.campaign), sale.ad)] += 1  # lifetime count per (campaign, ad)
+        sold[(_mkey(sale.campaign), cpa.ad_key(sale.ad))] += 1  # lifetime per (campaign, ad)
 
     # --- Meta: active ads + lifetime/3d spend (account-level, cheap) ------------
     g = graph_client(s)
@@ -76,7 +76,7 @@ def main() -> None:
             cpl_pause, cpl_reason, _cpl = decide(spend3, results3, s.kpi)
 
         spend_life = life.get(ad["id"], 0.0)
-        n_sales = sold.get((_mkey(camp), name and cpa.norm(name)), 0)
+        n_sales = sold.get((_mkey(camp), cpa.ad_key(name)), 0)
         cpa_val = cpa.cpa(spend_life, n_sales)
         created = cpa.parse_date((ad.get("created_time") or "")[:10])
         age = (today - created).days if created else None

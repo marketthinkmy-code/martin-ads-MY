@@ -103,11 +103,11 @@ class AdDecision:
 
 
 def _mkey(name: str) -> str:
-    """Campaign match key: drop a leading '(Image)' tag Meta adds, then normalise."""
+    """Campaign match key: drop a leading '(Image)' tag Meta adds, then width/punct-robust key."""
     s = (name or "").strip()
     if s.lower().startswith("(image)"):
         s = s[len("(image)"):]
-    return cpa.norm(s)
+    return cpa.ad_key(s)
 
 
 def build_cpa_context(graph, settings: Settings, today: dt.date):
@@ -127,7 +127,7 @@ def build_cpa_context(graph, settings: Settings, today: dt.date):
         sold: Dict[Tuple[str, str], int] = {}
         for s in sales:
             if s.date and s.date > cutoff:
-                key = (_mkey(s.campaign), s.ad)
+                key = (_mkey(s.campaign), cpa.ad_key(s.ad))
                 sold[key] = sold.get(key, 0) + 1
         spend: Dict[str, float] = {}
         for row in graph.account_insights(
@@ -200,7 +200,7 @@ def evaluate_account(graph, settings: Settings, *, cpa_ctx=None) -> List[AdDecis
             n_sales, age = 0, None
             should_pause, reason = cpl_pause, cpl_reason
             if use_cpa:
-                n_sales = sold60.get((camp_key, cpa.norm(name)), 0)
+                n_sales = sold60.get((camp_key, cpa.ad_key(name)), 0)
                 sp60 = spend60.get(ad["id"], 0.0)
                 cpa_val = cpa.cpa(sp60, n_sales)
                 created = cpa.parse_date((ad.get("created_time") or "")[:10])
