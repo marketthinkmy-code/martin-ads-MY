@@ -1,0 +1,30 @@
+name: adbot · recent paid sales (manual)
+
+# Read-only: dump recent paid sales (yesterday / last few days) mapped to campaign / ad set /
+# ad name, so the operator can confirm converting ads are still running and won't be mis-paused.
+# No writes. Runs on the service account (Sheets) via the push trigger below or manual dispatch.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["claude/sweet-curie-b6vql4"]
+    paths:
+      - ".github/workflows/adbot-recent-sales.yml"
+      - "scripts/recent_sales.py"
+
+jobs:
+  sales:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install .
+      - name: Recent paid sales
+        env:
+          ADBOT_ROOT: ${{ github.workspace }}
+          ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
+          GOOGLE_SERVICE_ACCOUNT_JSON_B64: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON_B64 }}
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+        run: python scripts/recent_sales.py
