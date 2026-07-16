@@ -12,6 +12,7 @@ import calendar
 import datetime as dt
 import math
 import re
+import unicodedata
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Tuple
 
@@ -29,6 +30,18 @@ def norm(s: str) -> str:
     """Normalise a UTM/name value for matching: unescape, collapse whitespace, casefold."""
     s = (s or "").replace("\\", "")
     return " ".join(s.split()).casefold()
+
+
+def ad_key(s: str) -> str:
+    """Width/punctuation-robust match key for a campaign or ad name.
+
+    NFKC folds full-width forms to half-width (：->:, full-width digits/spaces), then casefold
+    and drop every non-word char. So 'MAR Video 5: 林書豪 story' and 'mar video 5：林書豪story'
+    both key to 'marvideo5林書豪story' — CJK ideographs are word chars so they survive, while the
+    colon / space / full-vs-half-width differences that broke exact matching fall away.
+    """
+    s = unicodedata.normalize("NFKC", (s or "").replace("\\", "")).casefold()
+    return re.sub(r"[\W_]+", "", s)
 
 
 def _hkey(s: str) -> str:
