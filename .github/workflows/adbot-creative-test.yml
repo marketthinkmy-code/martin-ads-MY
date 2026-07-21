@@ -1,0 +1,46 @@
+name: adbot · build creative-test (manual)
+
+# Build N new videos across M new CBO campaigns, each cloning a source ad set's targeting and
+# running every video as its own ad (a "1-1-2 creative test"). SU-token path — the only channel
+# that can upload the video files. Reads scripts/ad_specs/creative_test_1_1_2.json by default.
+# Everything is created PAUSED; the operator activates after review. The Drive files must be
+# readable by the service account (share the folder — the July folder already is).
+
+on:
+  workflow_dispatch:
+    inputs:
+      spec_path:
+        description: "path to the creative-test spec JSON"
+        type: string
+        required: false
+        default: "scripts/ad_specs/creative_test_1_1_2.json"
+  push:
+    branches: ["claude/sweet-curie-b6vql4"]
+    paths:
+      - ".github/workflows/adbot-creative-test.yml"
+      - "scripts/build_creative_test.py"
+      - "scripts/ad_specs/creative_test_1_1_2.json"
+
+concurrency:
+  group: adbot-creative-test
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install .
+      - name: Build creative-test (PAUSED)
+        env:
+          ADBOT_ROOT: ${{ github.workspace }}
+          ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
+          ADBOT_AD_SPEC: ${{ inputs.spec_path || 'scripts/ad_specs/creative_test_1_1_2.json' }}
+          META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
+          META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
+          GOOGLE_SERVICE_ACCOUNT_JSON_B64: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON_B64 }}
+        run: python scripts/build_creative_test.py

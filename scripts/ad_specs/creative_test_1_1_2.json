@@ -1,0 +1,37 @@
+{
+  "budget_myr": 100,
+  "videos": [
+    {
+      "key": "v3",
+      "drive_file_id": "16rmsI2MjxGcCT8Br7jrXwVGDRBaQo7e3",
+      "video_name": "马丁 July Video 3",
+      "content_id": "july_v3_experience",
+      "ad_name": "Video 3 别再拿你的经验",
+      "headline": "🔴 别再拿你的经验，赌孩子的身高",
+      "body_file": "scripts/ad_specs/july_v3.body.txt"
+    },
+    {
+      "key": "v4",
+      "drive_file_id": "13ztt-jYHTmK7X93Is84GQ1L_8Oc6xd8f",
+      "video_name": "马丁 July Video 4",
+      "content_id": "july_v4_misjudge",
+      "ad_name": "Video 4 孩子长高最大的敌人",
+      "headline": "🔴 孩子长高最大的敌人，是遗传还是误判？",
+      "body_file": "scripts/ad_specs/july_v4.body.txt"
+    }
+  ],
+  "campaigns": [
+    {
+      "name": "[MY] 儿童长高方程式 | Parents 3-17 + Engaged | 1-1-2",
+      "adset_name": "Parents 兴趣定向 (克隆自 Parents 3-17 + Engaged)",
+      "source_adset_id": "120247591888380575",
+      "videos": ["v3", "v4"]
+    },
+    {
+      "name": "[MY] 儿童长高方程式 | Family and Relationships | 1-1-2",
+      "adset_name": "Family 兴趣定向 (克隆自 Interest: Family and Relationships)",
+      "source_adset_id": "120247591901700575",
+      "videos": ["v3", "v4"]
+    }
+  ]
+}
