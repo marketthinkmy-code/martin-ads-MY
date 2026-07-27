@@ -4,9 +4,10 @@ name: adbot · activate entities (manual)
 # the same credential weekly ON/OFF and the monitor write with. Useful when the operator's
 # interactive identity is advertising-restricted but the SU is healthy. Dispatch with a
 # comma-separated id list; the push trigger runs the ids baked into env below (the
-# 2026-07-23 winner reopen: MARTIN-MY | 基因决定论 campaign + its ad set + the
-# 爸妈165突破175 converter ad, CPA ~RM332 — the ad itself was PAUSED, so it needs
-# ad-level activation on top of the campaign).
+# 2026-07-27 reopen: re-activate MARTIN-MY | 基因决定论 campaign + its ad set + the
+# 爸妈165突破175 winner ad — the campaign got force-paused when its budget was raised to
+# RM100 via the connector — PLUS reopen the two Hook 4：想要加入州队？ creative-test ads the
+# CPL monitor paused too early, 120247753204940575 (Parents) + 120247753205830575 (Family)).
 
 on:
   workflow_dispatch:
@@ -40,5 +41,5 @@ jobs:
           ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
           META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
           META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
-          ADBOT_ACTIVATE_IDS: ${{ inputs.entity_ids || '120246581925510575,120246581926390575,120246606776730575' }}
+          ADBOT_ACTIVATE_IDS: ${{ inputs.entity_ids || '120246581925510575,120246581926390575,120246606776730575,120247753204940575,120247753205830575' }}
         run: python scripts/activate_entities.py
