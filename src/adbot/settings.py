@@ -140,6 +140,11 @@ class KpiCfg(BaseModel):
     cpl_min_spend_myr: float = 80.0
     cpl_lookback: str = "last_3d"  # 'week_thu' = week-to-date from Thursday, or any Meta date_preset
     pause_zero_lead_after_spend: bool = True
+    # Brand-new ads younger than this many days are exempt from a CPL-only pause: a fresh creative
+    # pulling registrations hasn't had time for those webinar sign-ups to mature into paid sales,
+    # so pausing it on registration-cost alone kills the test prematurely. A zero-lead ad and a
+    # proven CPA hard-stop still pause. 0 disables the grace (original behaviour).
+    cpl_grace_days: int = 0
     cpl_hold: List[str] = Field(default_factory=list)  # ad-name substrings temporarily exempt from auto-pause
 
 

@@ -23,6 +23,7 @@ OVER_THRESHOLD = "cpl_over_threshold"
 WITHIN_THRESHOLD = "within_threshold"
 NO_RESULTS_YET = "no_results_yet"
 MANUAL_HOLD = "manual_hold"  # owner asked to keep this ad running despite CPL
+CPL_GRACE_NEW = "cpl_grace_new_ad"  # young ad over CPL — exempted so its leads can mature to sales
 
 def _week_start_thursday(today: dt.date) -> dt.date:
     """Most recent Thursday (the weekly ON/reset day) on or before `today`."""
@@ -188,6 +189,8 @@ def evaluate_account(graph, settings: Settings, *, cpa_ctx=None) -> List[AdDecis
             name = ad.get("name", ad["id"])
             insight = insight_by_ad.get(ad["id"])
             spend, results = parse_metrics(insight, token)
+            created = cpa.parse_date((ad.get("created_time") or "")[:10])
+            age = (today - created).days if created else None
 
             held = any(h and h in name for h in settings.kpi.cpl_hold)
             if held:                                   # a hold exempts from CPL (not CPA)
@@ -197,18 +200,24 @@ def evaluate_account(graph, settings: Settings, *, cpa_ctx=None) -> List[AdDecis
                 cpl_pause, cpl_reason, cpl = decide(spend, results, settings.kpi)
 
             cpa_val: Optional[float] = None
-            n_sales, age = 0, None
+            n_sales = 0
             should_pause, reason = cpl_pause, cpl_reason
             if use_cpa:
                 n_sales = sold60.get((camp_key, cpa.ad_key(name)), 0)
                 sp60 = spend60.get(ad["id"], 0.0)
                 cpa_val = cpa.cpa(sp60, n_sales)
-                created = cpa.parse_date((ad.get("created_time") or "")[:10])
-                age = (today - created).days if created else None
                 should_pause, reason = cpa.combined_decision(
                     cpl_pause=cpl_pause, cpl_reason=cpl_reason, cpa_value=cpa_val,
                     cpa_sales=n_sales, cpa_spend=sp60, age_days=age, tiers=tiers,
                     conversion_days=settings.cpa.conversion_days, min_spend=settings.cpa.min_spend_myr)
+
+            # CPL grace for brand-new ads: a young ad over CPL but still pulling registrations hasn't
+            # had time for those webinar sign-ups to mature into paid sales, so a CPL-only pause kills
+            # the creative test prematurely. Exempt OVER_THRESHOLD only — a zero-lead ad (ZERO_RESULTS)
+            # or a proven CPA hard-stop still pauses.
+            if (should_pause and reason == OVER_THRESHOLD and age is not None
+                    and age < settings.kpi.cpl_grace_days):
+                should_pause, reason = False, CPL_GRACE_NEW
 
             decisions.append(AdDecision(ad["id"], name, spend, results, cpl, should_pause, reason,
                                         cpa=cpa_val, cpa_sales=n_sales, age_days=age))
