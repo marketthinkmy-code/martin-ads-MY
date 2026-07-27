@@ -3,9 +3,9 @@ import math
 import datetime as dt
 
 from adbot import cpa
-from adbot.monitor_cpl import (INSUFFICIENT_SPEND, MANUAL_HOLD, NO_RESULTS_YET, OVER_THRESHOLD,
-                               WITHIN_THRESHOLD, ZERO_RESULTS, cpl_window, decide, evaluate_account,
-                               extract_results, parse_metrics, result_action_type,
+from adbot.monitor_cpl import (CPL_GRACE_NEW, INSUFFICIENT_SPEND, MANUAL_HOLD, NO_RESULTS_YET,
+                               OVER_THRESHOLD, WITHIN_THRESHOLD, ZERO_RESULTS, cpl_window, decide,
+                               evaluate_account, extract_results, parse_metrics, result_action_type,
                                _week_start_thursday)
 from adbot.settings import CpaCfg, KpiCfg, MetaCfg, Settings
 
@@ -237,3 +237,28 @@ def test_cpa_match_keeps_campaign_so_other_campaign_sales_dont_leak():
         _FakeGraph(campaigns, ads, insights), settings, cpa_ctx=(sold, spend60))}
     assert d["MAR Video 5: 林書豪 story"].cpa_sales == 0            # SG sale did NOT leak into MY
     assert d["MAR Video 5: 林書豪 story"].should_pause is True      # so the CPL pause stands
+
+
+def test_evaluate_account_cpl_grace_exempts_brand_new_ad():
+    # A brand-new ad over CPL but still pulling registrations is exempt from the CPL pause until it
+    # is old enough for its webinar sign-ups to convert. A same-aged ZERO-lead ad still pauses, and
+    # an aged over-CPL ad still pauses — grace only shields OVER_THRESHOLD within the window.
+    settings = Settings(meta=MetaCfg(conversion_event="COMPLETE_REGISTRATION"),
+                        kpi=KpiCfg(cpl_threshold_myr=40, cpl_min_spend_myr=80,
+                                   cpl_lookback="last_3d", pause_zero_lead_after_spend=True,
+                                   cpl_grace_days=7))
+    today = (dt.datetime.utcnow() + dt.timedelta(hours=8)).date()
+    fresh = (today - dt.timedelta(days=3)).isoformat()    # inside the 7-day grace
+    aged = (today - dt.timedelta(days=30)).isoformat()    # past the grace
+    campaigns = [{"id": "A", "name": "MARTIN-MY | Test", "effective_status": "ACTIVE"}]
+    ads = {"A": [_ad("new_over", created_time=fresh),      # CPL 60>40, has leads, young -> graced
+                 _ad("new_zero", created_time=fresh),      # young but 0 leads -> still pauses
+                 _ad("old_over", created_time=aged)]}      # CPL 60>40, aged -> pauses
+    insights = {"new_over": _reg_insight(300, 5), "new_zero": _reg_insight(100, 0),
+                "old_over": _reg_insight(300, 5)}
+    by_name = {d.name: d for d in evaluate_account(_FakeGraph(campaigns, ads, insights), settings)}
+
+    assert by_name["new_over"].should_pause is False
+    assert by_name["new_over"].reason == CPL_GRACE_NEW
+    assert by_name["new_zero"].should_pause is True        # zero leads is never graced
+    assert by_name["old_over"].should_pause is True        # aged over-CPL still pauses
