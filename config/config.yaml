@@ -79,6 +79,7 @@ kpi:
   cpl_min_spend_myr: 100.00              # only judge an ad once it has spent >= this (MYR)
   cpl_lookback: "week_thu"               # week-to-date from Thursday (the weekly ON/reset)
   pause_zero_lead_after_spend: true      # spent >= cpl_min_spend with 0 results -> infinite CPL -> pause
+  cpl_grace_days: 7                      # a new ad younger than this is exempt from CPL-only pauses — its webinar registrants haven't had time to convert to a paid sale yet (zero-lead + CPA hard-stop still pause)
   cpl_hold: []                           # ad-name substrings temporarily exempt from auto-pause
 
 cpa:                                     # cost per real PAID acquisition (joins the paid-list sheet)
