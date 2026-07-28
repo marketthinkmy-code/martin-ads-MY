@@ -21,7 +21,7 @@ on:
         description: "path to the attach spec JSON"
         type: string
         required: false
-        default: "scripts/attach_specs/hook4.json"
+        default: "scripts/attach_specs/may_v14.json"
   push:
     branches: ["claude/sweet-curie-b6vql4"]
     paths:
@@ -45,7 +45,7 @@ jobs:
         env:
           ADBOT_ROOT: ${{ github.workspace }}
           ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
-          ADBOT_AD_SPEC: ${{ inputs.spec_path || 'scripts/attach_specs/hook4.json' }}
+          ADBOT_AD_SPEC: ${{ inputs.spec_path || 'scripts/attach_specs/may_v14.json' }}
           META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
           META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
           GOOGLE_SERVICE_ACCOUNT_JSON_B64: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON_B64 }}
