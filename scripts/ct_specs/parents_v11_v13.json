@@ -1,0 +1,31 @@
+{
+  "budget_myr": 100,
+  "videos": [
+    {
+      "key": "v11",
+      "drive_file_id": "17EC5vCjPQBbs7tPIbPg8RKfXsGUkbnZx",
+      "video_name": "马丁 May Video 11 孩子来MC了",
+      "content_id": "may_v11_mc",
+      "ad_name": "Video 11：孩子來MC了",
+      "headline": "🔴 女儿来M、儿子变声了，孩子的长高窗口还剩多少？｜免费公开课",
+      "body_file": "scripts/ct_specs/may_v11.body.txt"
+    },
+    {
+      "key": "v13",
+      "drive_file_id": "1VCbh8D55mDlMz78D1l9CQvusAp1gLNCC",
+      "video_name": "马丁 May Video 13 三年前长10公分",
+      "content_id": "may_v13_10cm",
+      "ad_name": "Video 13：三年前他長了10公分",
+      "headline": "🔴 三年前长10公分，今年却0？孩子可能提前踩了长高刹车｜免费课",
+      "body_file": "scripts/ct_specs/may_v13.body.txt"
+    }
+  ],
+  "campaigns": [
+    {
+      "name": "[MY] 儿童长高方程式 | Parents 3-17 + Engaged | Video 11+13 | 1-1-2",
+      "adset_name": "Parents 兴趣定向 (克隆自 Advantage+ Parents + Engaged)",
+      "source_adset_id": "120247591888380575",
+      "videos": ["v11", "v13"]
+    }
+  ]
+}
