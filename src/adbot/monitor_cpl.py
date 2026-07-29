@@ -24,6 +24,24 @@ WITHIN_THRESHOLD = "within_threshold"
 NO_RESULTS_YET = "no_results_yet"
 MANUAL_HOLD = "manual_hold"  # owner asked to keep this ad running despite CPL
 CPL_GRACE_NEW = "cpl_grace_new_ad"  # young ad over CPL — exempted so its leads can mature to sales
+GRACE_BRAKE = "cpl_grace_brake"     # young ad burning too hard with no sales — grace withdrawn
+
+
+def grace_braked(spend: float, cpl: Optional[float], cpa_sales: int, kpi: KpiCfg) -> bool:
+    """True when a young ad is burning hard enough that the CPL grace must NOT protect it.
+
+    Only ever brakes an ad with ZERO matched paid sales — one with real sales at an acceptable CPA
+    is rescued by cpa.combined_decision before this runs, and that rescue wins. Either trigger
+    fires: a CPL far above the ceiling, or spend past a hard cash cap with nothing to show for it.
+    """
+    if cpa_sales > 0:
+        return False                       # real sales -> CPA decides, never the brake
+    multiple = kpi.cpl_grace_max_cpl_multiple
+    if (multiple > 0 and cpl is not None and cpl != math.inf
+            and cpl > kpi.cpl_threshold_myr * multiple):
+        return True
+    cap = kpi.cpl_grace_max_spend_myr
+    return cap > 0 and spend >= cap
 
 def _week_start_thursday(today: dt.date) -> dt.date:
     """Most recent Thursday (the weekly ON/reset day) on or before `today`."""
@@ -217,7 +235,10 @@ def evaluate_account(graph, settings: Settings, *, cpa_ctx=None) -> List[AdDecis
             # or a proven CPA hard-stop still pauses.
             if (should_pause and reason == OVER_THRESHOLD and age is not None
                     and age < settings.kpi.cpl_grace_days):
-                should_pause, reason = False, CPL_GRACE_NEW
+                if grace_braked(spend, cpl, n_sales, settings.kpi):
+                    reason = GRACE_BRAKE   # burning too hard to shelter — the pause stands
+                else:
+                    should_pause, reason = False, CPL_GRACE_NEW
 
             decisions.append(AdDecision(ad["id"], name, spend, results, cpl, should_pause, reason,
                                         cpa=cpa_val, cpa_sales=n_sales, age_days=age))

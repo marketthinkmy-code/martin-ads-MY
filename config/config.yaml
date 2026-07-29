@@ -80,6 +80,11 @@ kpi:
   cpl_lookback: "week_thu"               # week-to-date from Thursday (the weekly ON/reset)
   pause_zero_lead_after_spend: true      # spent >= cpl_min_spend with 0 results -> infinite CPL -> pause
   cpl_grace_days: 7                      # a new ad younger than this is exempt from CPL-only pauses — its webinar registrants haven't had time to convert to a paid sale yet (zero-lead + CPA hard-stop still pause)
+  # Brakes on that grace, so a young ad can't burn unchecked (Hook 4 reached CPL 93 / ~RM1,200 with
+  # 0 sales while "protected"). Both only ever fire on an ad with ZERO matched paid sales — one with
+  # real sales at an acceptable CPA is kept by CPA-rescue, which runs first and wins.
+  cpl_grace_max_cpl_multiple: 1.5        # CPL above 1.5x the threshold (= RM82.50) -> grace off, pause now
+  cpl_grace_max_spend_myr: 500.00        # spent this much with 0 sales -> grace off, pause now
   # Proven SG winners ported into "MARTIN-MY | Scale CBO": held so the monitor gives them a runway
   # to accrue MY sales under THIS campaign's UTM (their past sales attribute to the original SG /
   # interest-andro campaigns, so there's no CPA-rescue here yet). REVIEW ~2026-08-10 — drop any that
