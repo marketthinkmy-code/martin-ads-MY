@@ -3,10 +3,10 @@ import math
 import datetime as dt
 
 from adbot import cpa
-from adbot.monitor_cpl import (CPL_GRACE_NEW, INSUFFICIENT_SPEND, MANUAL_HOLD, NO_RESULTS_YET,
-                               OVER_THRESHOLD, WITHIN_THRESHOLD, ZERO_RESULTS, cpl_window, decide,
-                               evaluate_account, extract_results, parse_metrics, result_action_type,
-                               _week_start_thursday)
+from adbot.monitor_cpl import (CPL_GRACE_NEW, GRACE_BRAKE, INSUFFICIENT_SPEND, MANUAL_HOLD,
+                               NO_RESULTS_YET, OVER_THRESHOLD, WITHIN_THRESHOLD, ZERO_RESULTS,
+                               cpl_window, decide, evaluate_account, extract_results, parse_metrics,
+                               result_action_type, _week_start_thursday)
 from adbot.settings import CpaCfg, KpiCfg, MetaCfg, Settings
 
 KPI = KpiCfg(cpl_threshold_myr=40, cpl_min_spend_myr=80, pause_zero_lead_after_spend=True)
@@ -262,3 +262,57 @@ def test_evaluate_account_cpl_grace_exempts_brand_new_ad():
     assert by_name["new_over"].reason == CPL_GRACE_NEW
     assert by_name["new_zero"].should_pause is True        # zero leads is never graced
     assert by_name["old_over"].should_pause is True        # aged over-CPL still pauses
+
+
+def _grace_brake_settings():
+    # threshold 40 -> brake at CPL > 60 (1.5x); spend cap 500.
+    return Settings(meta=MetaCfg(conversion_event="COMPLETE_REGISTRATION"),
+                    kpi=KpiCfg(cpl_threshold_myr=40, cpl_min_spend_myr=80, cpl_lookback="last_3d",
+                               pause_zero_lead_after_spend=True, cpl_grace_days=7,
+                               cpl_grace_max_cpl_multiple=1.5, cpl_grace_max_spend_myr=500),
+                    cpa=CpaCfg(enabled=True, hard_stop_myr=1200, conversion_days=14,
+                               min_spend_myr=1000))
+
+
+def test_grace_brake_stops_a_young_ad_burning_with_no_sales():
+    # The Hook 4 failure: a young ad stayed "protected" at CPL 93 until it had burned ~RM1,200.
+    # Grace must be withdrawn once a no-sale ad blows past the CPL multiple OR the spend cap;
+    # a mildly-over young ad still gets its runway.
+    settings = _grace_brake_settings()
+    today = (dt.datetime.utcnow() + dt.timedelta(hours=8)).date()
+    fresh = (today - dt.timedelta(days=3)).isoformat()
+    campaigns = [{"id": "A", "name": "MARTIN-MY | Test", "effective_status": "ACTIVE"}]
+    ads = {"A": [_ad("mild", created_time=fresh),        # CPL 50: over 40, under 60 -> graced
+                 _ad("cpl_blowout", created_time=fresh),  # CPL 100 > 60 -> braked
+                 _ad("cash_burn", created_time=fresh)]}   # CPL 50 but spent 600 >= 500 -> braked
+    insights = {"mild": _reg_insight(300, 6), "cpl_blowout": _reg_insight(300, 3),
+                "cash_burn": _reg_insight(600, 12)}
+    by_name = {d.name: d for d in evaluate_account(          # empty ctx = no matched sales
+        _FakeGraph(campaigns, ads, insights), settings, cpa_ctx=({}, {}))}
+
+    assert by_name["mild"].should_pause is False
+    assert by_name["mild"].reason == CPL_GRACE_NEW
+    assert by_name["cpl_blowout"].should_pause is True
+    assert by_name["cpl_blowout"].reason == GRACE_BRAKE
+    assert by_name["cash_burn"].should_pause is True
+    assert by_name["cash_burn"].reason == GRACE_BRAKE
+
+
+def test_grace_brake_never_touches_an_ad_with_sales_at_acceptable_cpa():
+    # The operator's rule: "CPL RM65, if there are sales and CPA is okay, don't close it."
+    # Real sales at CPA <= hard stop are rescued BEFORE the brake can apply — even when the ad is
+    # young and would otherwise trip both brake triggers (huge CPL, spend past the cap).
+    settings = _grace_brake_settings()
+    today = (dt.datetime.utcnow() + dt.timedelta(hours=8)).date()
+    fresh = (today - dt.timedelta(days=3)).isoformat()
+    campaigns = [{"id": "A", "name": "MARTIN-MY | Winner", "effective_status": "ACTIVE"}]
+    ads = {"A": [_ad("earner", created_time=fresh)]}
+    insights = {"earner": _reg_insight(900, 9)}            # CPL 100 > 60 AND spend 900 > 500 cap
+    sold = {(cpa.ad_key("martin-my | winner"), cpa.ad_key("earner")): 3}
+    spend60 = {"earner": 1500.0}                            # CPA 500 -> comfortably under 1200
+
+    d = {x.name: x for x in evaluate_account(
+        _FakeGraph(campaigns, ads, insights), settings, cpa_ctx=(sold, spend60))}
+
+    assert d["earner"].should_pause is False
+    assert d["earner"].reason == cpa.CPL_RESCUED           # sales win over both brake triggers
