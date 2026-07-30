@@ -14,7 +14,7 @@ on:
         description: "path to the clone spec JSON"
         type: string
         required: false
-        default: "scripts/clone_specs/fnr_v11_v15.json"
+        default: "scripts/clone_specs/fnr_top5_winners.json"
   push:
     branches: ["claude/sweet-curie-b6vql4"]
     paths:
@@ -38,7 +38,7 @@ jobs:
         env:
           ADBOT_ROOT: ${{ github.workspace }}
           ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
-          ADBOT_AD_SPEC: ${{ inputs.spec_path || 'scripts/clone_specs/fnr_v11_v15.json' }}
+          ADBOT_AD_SPEC: ${{ inputs.spec_path || 'scripts/clone_specs/fnr_top5_winners.json' }}
           META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
           META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
         run: python scripts/clone_test.py
