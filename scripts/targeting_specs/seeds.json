@@ -1,0 +1,23 @@
+{
+  "① 过敏 / 鼻敏感 (winner: 孩子如果有鼻窦炎)": [
+    "Allergy", "Allergic rhinitis", "Sinusitis", "Air purifier", "Antihistamine",
+    "Eczema", "Asthma"
+  ],
+  "② 中医 / 体质调理 (Martin 的方法本身)": [
+    "Traditional Chinese medicine", "Herbal medicine", "Acupuncture",
+    "Alternative medicine", "Chinese herbology"
+  ],
+  "③ 生长激素 / 增高 (solution-aware, V15 直接对话)": [
+    "Growth hormone", "Human growth hormone", "Height", "Dietary supplement",
+    "Pediatrics", "Nutrition", "Vitamin"
+  ],
+  "④ 男孩运动圈 (买家 70% 男孩)": [
+    "Badminton", "Football", "Swimming", "Taekwondo", "Basketball", "Cycling"
+  ],
+  "⑤ 青春期 / 发育 (21% 家长: 已进青春期怕来不及)": [
+    "Puberty", "Adolescence", "Parenting", "Mother", "Child development"
+  ],
+  "⑥ 睡眠 (三条件之一)": [
+    "Sleep", "Insomnia", "Sleep hygiene", "Melatonin", "Mattress"
+  ]
+}
