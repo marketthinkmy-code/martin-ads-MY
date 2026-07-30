@@ -11,7 +11,8 @@ Spec JSON (path via ADBOT_AD_SPEC, default scripts/clone_specs/fnr_v11_v15.json)
   budget_myr       CBO daily budget (default 100)
   campaign_name    name for the new campaign
   adset_name       name for the new ad set
-  source_adset_id  ad set whose targeting is cloned
+  source_adset_id  ad set whose targeting is cloned   (either this...)
+  interests[]      {id, name} real Meta interest ids  (...or this — config targeting + these)
   ads[]            {name, creative_id} — one PAUSED ad per entry
 """
 from __future__ import annotations
@@ -52,8 +53,18 @@ def main() -> None:
     graph = graph_client(settings)
     account = m.account_path
 
-    targeting = _clone_targeting(graph, spec["source_adset_id"])
-    print(f"[targeting] cloned from {spec['source_adset_id']}: {json.dumps(targeting, ensure_ascii=False)[:220]}")
+    if spec.get("interests"):
+        # Brand-new audience: the account's standard targeting (MY / age / Chinese locale /
+        # excluded customer lists) plus the interest ids, so the ONLY variable versus a proven
+        # ad set is the interest itself. Ids must come from find_interests.py — never invented.
+        targeting = m.targeting.to_spec()
+        targeting["flexible_spec"] = [{"interests": [
+            {"id": str(i["id"]), "name": i.get("name", "")} for i in spec["interests"]]}]
+        print(f"[targeting] built from {len(spec['interests'])} interest id(s)")
+    else:
+        targeting = _clone_targeting(graph, spec["source_adset_id"])
+        print(f"[targeting] cloned from {spec['source_adset_id']}")
+    print(f"           {json.dumps(targeting, ensure_ascii=False)[:300]}")
 
     cid = graph.create_campaign(
         account, name=spec["campaign_name"], objective=m.objective, buying_type="AUCTION",
