@@ -1,0 +1,11 @@
+{
+  "budget_myr": 100,
+  "campaign_name": "[MY] 儿童长高方程式 | Family and Relationships | V16+V11+V13 | 1-1-3 (A)",
+  "adset_name": "F&R 兴趣定向 · A (克隆自 Interest: Family and Relationships)",
+  "source_adset_id": "120247702962070575",
+  "ads": [
+    { "name": "Video 16：身高永遠停在15歲",     "post_id": "341825319024143_122192841890485585" },
+    { "name": "Video 11：孩子來MC了",           "post_id": "341825319024143_122192682740485585" },
+    { "name": "Video 13：三年前他長了10公分",    "post_id": "341825319024143_122192682734485585" }
+  ]
+}
