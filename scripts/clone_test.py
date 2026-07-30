@@ -13,7 +13,10 @@ Spec JSON (path via ADBOT_AD_SPEC, default scripts/clone_specs/fnr_v11_v15.json)
   adset_name       name for the new ad set
   source_adset_id  ad set whose targeting is cloned   (either this...)
   interests[]      {id, name} real Meta interest ids  (...or this — config targeting + these)
-  ads[]            {name, creative_id} — one PAUSED ad per entry
+  ads[]            {name, creative_id} or {name, post_id} — one PAUSED ad per entry.
+                   post_id ("<page>_<post>") is the EXISTING-POST route: a fresh creative is
+                   minted against that page post, so every ad pointing at it accumulates the same
+                   likes / comments / shares instead of each ad building proof from zero.
 """
 from __future__ import annotations
 
@@ -80,13 +83,24 @@ def main() -> None:
 
     ad_ids = []
     for item in spec["ads"]:
+        if item.get("post_id"):
+            # Existing-post ad: mint a creative that points at the page post. url_tags still ride
+            # along so UTMs keep resolving per ad name.
+            fields = {"object_story_id": str(item["post_id"])}
+            if m.url_tags:
+                fields["url_tags"] = m.url_tags
+            creative_id = graph.create_adcreative(account, **fields)["id"]
+            src = f"post {item['post_id']} -> creative {creative_id}"
+        else:
+            creative_id = str(item["creative_id"])
+            src = f"creative {creative_id}"
         ad = graph.create_ad(
             account, name=item["name"], adset_id=aid,
-            creative={"creative_id": str(item["creative_id"])}, status="PAUSED",
+            creative={"creative_id": creative_id}, status="PAUSED",
             conversion_domain=m.conversion_domain_bare or None,
         )
         ad_ids.append(ad["id"])
-        print(f"  ad {ad['id']} <- creative {item['creative_id']} ({item['name']}) — PAUSED")
+        print(f"  ad {ad['id']} <- {src} ({item['name']}) — PAUSED")
 
     print("DONE " + json.dumps(
         {"campaign_id": cid, "adset_id": aid, "ad_ids": ad_ids}, ensure_ascii=False))
