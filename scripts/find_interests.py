@@ -40,7 +40,7 @@ def main() -> None:
         found_names = []
         for kw in keywords:
             try:
-                rows = graph.search_interests(kw, limit=8)
+                rows = graph.search_interests(kw, limit=int(os.environ.get("ADBOT_TOP", "3")))
             except Exception as exc:  # noqa: BLE001 - one bad keyword must not kill the sweep
                 print(f"\n-- {kw!r}: search failed ({exc})")
                 continue
@@ -51,7 +51,9 @@ def main() -> None:
                 if r.get("name"):
                     found_names.append(r["name"])
 
-        if found_names:
+        # Meta's related-interest expansion is noisy (it happily returns "Facebook access
+        # (mobile)"), so it's opt-in rather than part of every sweep.
+        if found_names and os.environ.get("ADBOT_SUGGEST") == "1":
             try:
                 sugg = graph.suggest_interests(found_names[:8], limit=15)
             except Exception as exc:  # noqa: BLE001
