@@ -1,0 +1,12 @@
+{
+  "budget_myr": 100,
+  "campaign_name": "[MY] 儿童长高方程式 | Family and Relationships | Video 11-15 | 1-1-4",
+  "adset_name": "F&R 兴趣定向 (克隆自 Interest: Family and Relationships)",
+  "source_adset_id": "120247702962070575",
+  "ads": [
+    { "name": "Video 11：孩子來MC了",        "creative_id": "1060884766387733" },
+    { "name": "Video 13：三年前他長了10公分", "creative_id": "1357533155835026" },
+    { "name": "Video 14：身高停在小學",       "creative_id": "1029641666373854" },
+    { "name": "Video 15：不到160慌了",        "creative_id": "1611742350543010" }
+  ]
+}
