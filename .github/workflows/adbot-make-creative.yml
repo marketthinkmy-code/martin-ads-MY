@@ -4,6 +4,9 @@ name: adbot · mint creatives (get existing-post ids)
 # the page-post id an "existing post" ad needs. Step 1 of the existing-post flow; the post ids go
 # into a clone spec so every ad shares one post and pools its social proof. No campaign/ad set/ad,
 # so nothing can spend. SU-token path (only channel that can upload video).
+#
+# Specs live in scripts/mint_specs/** — its OWN dir, not scripts/ct_specs/**, because that path
+# fires adbot-creative-test-parents and would rebuild the Parents 1-1-2 campaign as a side effect.
 
 on:
   workflow_dispatch:
@@ -12,12 +15,13 @@ on:
         description: "path to the creatives spec JSON"
         type: string
         required: false
-        default: "scripts/ct_specs/new_creatives.json"
+        default: "scripts/mint_specs/v12.json"
   push:
     branches: ["claude/sweet-curie-b6vql4"]
     paths:
       - ".github/workflows/adbot-make-creative.yml"
       - "scripts/make_creative.py"
+      - "scripts/mint_specs/**"
 
 concurrency:
   group: adbot-make-creative
@@ -37,7 +41,7 @@ jobs:
         env:
           ADBOT_ROOT: ${{ github.workspace }}
           ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
-          ADBOT_AD_SPEC: ${{ inputs.spec_path || 'scripts/ct_specs/new_creatives.json' }}
+          ADBOT_AD_SPEC: ${{ inputs.spec_path || 'scripts/mint_specs/v12.json' }}
           META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
           META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
           GOOGLE_SERVICE_ACCOUNT_JSON_B64: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON_B64 }}
