@@ -145,6 +145,13 @@ class KpiCfg(BaseModel):
     # so pausing it on registration-cost alone kills the test prematurely. A zero-lead ad and a
     # proven CPA hard-stop still pause. 0 disables the grace (original behaviour).
     cpl_grace_days: int = 0
+    # Brakes on that grace — a young ad burning hard is not worth protecting. Grace is voided when
+    # the ad has ZERO matched paid sales AND either its CPL is this multiple of the threshold
+    # (1.5 -> 82.5 at a 55 ceiling) or it has already spent this much with nothing to show. An ad
+    # with real sales at an acceptable CPA never reaches these: CPA-rescue keeps it first.
+    # 0 disables that brake.
+    cpl_grace_max_cpl_multiple: float = 0.0
+    cpl_grace_max_spend_myr: float = 0.0
     cpl_hold: List[str] = Field(default_factory=list)  # ad-name substrings temporarily exempt from auto-pause
 
 

@@ -133,6 +133,7 @@ def main() -> None:
                                 time_range={"since": cutoff60.isoformat(), "until": today.isoformat()}):
         if r.get("ad_id"):
             spend60[r["ad_id"]] = _money(r.get("spend"))
+<<<<<<< HEAD
     # 30-day spend summed by normalised ad NAME (a creative may have many copies/ad_ids) — used
     # to score paused-but-converting creatives on CPA/ROAS.
     cutoff30 = today - dt.timedelta(days=30)
@@ -142,6 +143,8 @@ def main() -> None:
         nm = cpa.norm(r.get("ad_name") or "")
         if nm:
             spend30_byname[nm] += _money(r.get("spend"))
+=======
+>>>>>>> origin/main
 
     # ── 3. currently-ACTIVE ads (campaign walk; status lives here, not in insights) ──
     active = []                         # (ad_id, ad_name, campaign_name)
@@ -206,6 +209,7 @@ def main() -> None:
         print(f"  {ad_name[:40]:40} {wk_spend:6.0f} {wk_reg:4.0f} {_fmt(cpl):>5}  "
               f"{paid['30d']:>3} {paid['60d']:>3} {sp60:6.0f} {_fmt(cpa_val):>5}  {flag}")
 
+<<<<<<< HEAD
     # ── GOOD 30d CPA/ROAS but NOT currently running (the operator's exact question) ─
     # For each creative with NO live copy, sum its 30-day spend across all its ad_ids and its
     # 30-day attributed sales/revenue → CPA (spend/sale) and ROAS (revenue/spend). Sorted by
@@ -257,6 +261,23 @@ def main() -> None:
         shown += 1
     if not shown:
         print("  (no paused creative has ≥2 recent sales to place)")
+=======
+    # ── proven winners that are NOT currently active (reactivation candidates) ─
+    print("\n--- Proven winners NOT currently active (consider reactivating) ---")
+    offwins = [(an, rows) for an, rows in by_adname.items() if an not in active_adnorms]
+    offwins = sorted(offwins, key=lambda kv: -len(kv[1]))
+    shown = 0
+    for ad_norm, rows in offwins:
+        w = _wins(rows, today)
+        if w["60d"] <= 0:           # only those with a sale in the last 60d are worth reviving
+            continue
+        camp = rows[-1].campaign or "?"
+        print(f"  life {w['life']:>3} · 60d {w['60d']:>2} · 30d {w['30d']:>2}   "
+              f"{ad_norm[:44]:44}  [{camp[:26]}]")
+        shown += 1
+    if not shown:
+        print("  (none with a sale in the last 60 days)")
+>>>>>>> origin/main
 
     # ── account totals ───────────────────────────────────────────────────────
     tot_life = len(attributed)
