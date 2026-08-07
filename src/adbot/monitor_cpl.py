@@ -43,6 +43,33 @@ def grace_braked(spend: float, cpl: Optional[float], cpa_sales: int, kpi: KpiCfg
     cap = kpi.cpl_grace_max_spend_myr
     return cap > 0 and spend >= cap
 
+
+def webinars_since(created: dt.date, today: dt.date, kpi: KpiCfg) -> Optional[int]:
+    """How many webinars have both RUN and had time to be banked since an ad went live.
+
+    Sales only happen on webinar nights, so calendar age is the wrong clock: an ad born the day
+    after a webinar is six days old before its registrants get their first chance to buy, while
+    one born the day before gets its chance immediately. Counting webinars measures the thing that
+    actually decides the ad's fate.
+
+    A webinar counts once `settle_days` have passed since it ran, because the paid list is filled
+    in by hand and same-night sales are not in the sheet yet — judging before then reads a real
+    sale as a zero. Returns None when no webinar weekday is configured, so callers fall back to
+    the day-count grace.
+    """
+    weekday = kpi.webinar_weekday
+    if weekday is None or not 0 <= weekday <= 6:
+        return None
+    cutoff = today - dt.timedelta(days=max(kpi.webinar_settle_days, 0))
+    # first webinar STRICTLY after the ad was created
+    step = (weekday - created.weekday()) % 7 or 7
+    when, n = created + dt.timedelta(days=step), 0
+    while when <= cutoff:
+        n += 1
+        when += dt.timedelta(days=7)
+    return n
+
+
 def _week_start_thursday(today: dt.date) -> dt.date:
     """Most recent Thursday (the weekly ON/reset day) on or before `today`."""
     return today - dt.timedelta(days=(today.weekday() - 3) % 7)  # Mon=0..Thu=3
@@ -233,8 +260,14 @@ def evaluate_account(graph, settings: Settings, *, cpa_ctx=None) -> List[AdDecis
             # had time for those webinar sign-ups to mature into paid sales, so a CPL-only pause kills
             # the creative test prematurely. Exempt OVER_THRESHOLD only — a zero-lead ad (ZERO_RESULTS)
             # or a proven CPA hard-stop still pauses.
-            if (should_pause and reason == OVER_THRESHOLD and age is not None
-                    and age < settings.kpi.cpl_grace_days):
+            #
+            # Whether an ad is "young" is measured in webinars when one is configured, not days: the
+            # webinar is the only moment a registration can turn into a sale, so an ad that has not
+            # sat through one has provably not had its chance yet. cpl_grace_days is the fallback.
+            passed = webinars_since(created, today, settings.kpi) if created else None
+            unproven = (passed is not None and passed < settings.kpi.cpl_grace_webinars) if \
+                passed is not None else (age is not None and age < settings.kpi.cpl_grace_days)
+            if should_pause and reason == OVER_THRESHOLD and unproven:
                 if grace_braked(spend, cpl, n_sales, settings.kpi):
                     reason = GRACE_BRAKE   # burning too hard to shelter — the pause stands
                 else:

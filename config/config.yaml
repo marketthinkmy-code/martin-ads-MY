@@ -80,9 +80,14 @@ kpi:
   cpl_lookback: "week_thu"               # week-to-date from Thursday (the weekly ON/reset)
   pause_zero_lead_after_spend: true      # spent >= cpl_min_spend with 0 results -> infinite CPL -> pause
   cpl_grace_days: 7                      # a new ad younger than this is exempt from CPL-only pauses — its webinar registrants haven't had time to convert to a paid sale yet (zero-lead + CPA hard-stop still pause)
-<<<<<<< HEAD
-  cpl_hold: []                           # ad-name substrings temporarily exempt from auto-pause
-=======
+  # Sales only ever close on a webinar night, so "has this ad had its chance?" is counted in
+  # webinars, not days — an ad born the day after one waits six days for its first shot, an ad born
+  # the day before gets it immediately, and calendar age cannot tell those apart. This is what
+  # 马六甲 cost: paused on 08-05 at noon for "RM1,281 / 0 sales", it took 2 sales that same evening.
+  # settle_days covers the paid list being filled in by hand after the webinar runs.
+  webinar_weekday: 2                     # Mon=0 .. Wed=2 — the weekly webinar
+  cpl_grace_webinars: 1                  # an ad must sit through this many before CPL can pause it
+  webinar_settle_days: 1                 # wait this long after a webinar before counting it
   # Brakes on that grace, so a young ad can't burn unchecked (Hook 4 reached CPL 93 / ~RM1,200 with
   # 0 sales while "protected"). Both only ever fire on an ad with ZERO matched paid sales — one with
   # real sales at an acceptable CPA is kept by CPA-rescue, which runs first and wins.
@@ -93,7 +98,6 @@ kpi:
   # interest-andro campaigns, so there's no CPA-rescue here yet). REVIEW ~2026-08-10 — drop any that
   # proved out (CPA-rescue takes over) or clearly failed.
   cpl_hold: ["什麼樣的孩子", "孩子15岁以上", "面包牛奶一点都不健康"]
->>>>>>> origin/main
 
 cpa:                                     # cost per real PAID acquisition (joins the paid-list sheet)
   enabled: true
