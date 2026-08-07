@@ -265,8 +265,10 @@ def evaluate_account(graph, settings: Settings, *, cpa_ctx=None) -> List[AdDecis
             # webinar is the only moment a registration can turn into a sale, so an ad that has not
             # sat through one has provably not had its chance yet. cpl_grace_days is the fallback.
             passed = webinars_since(created, today, settings.kpi) if created else None
-            unproven = (passed is not None and passed < settings.kpi.cpl_grace_webinars) if \
-                passed is not None else (age is not None and age < settings.kpi.cpl_grace_days)
+            if passed is not None:
+                unproven = passed < settings.kpi.cpl_grace_webinars
+            else:
+                unproven = age is not None and age < settings.kpi.cpl_grace_days
             if should_pause and reason == OVER_THRESHOLD and unproven:
                 if grace_braked(spend, cpl, n_sales, settings.kpi):
                     reason = GRACE_BRAKE   # burning too hard to shelter — the pause stands
