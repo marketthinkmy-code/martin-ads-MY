@@ -1,0 +1,47 @@
+name: adbot · set daily budget (manual)
+
+# Change a campaign's / ad set's daily budget WITHOUT stopping delivery. The interactive
+# connector's ads_update_entity force-pauses whatever it edits, so budget changes must go through
+# the system-user token instead. Status is never written here.
+#
+# Push trigger fires on THIS file and its script only — isolated from every other workflow.
+
+on:
+  workflow_dispatch:
+    inputs:
+      budget_spec:
+        description: "comma-separated <entity_id>=<MYR per day> pairs"
+        type: string
+        required: true
+  push:
+    branches: ["claude/sweet-curie-b6vql4"]
+    paths:
+      - ".github/workflows/adbot-set-budget.yml"
+      - "scripts/set_budget.py"
+
+concurrency:
+  group: adbot-set-budget
+  cancel-in-progress: false
+
+jobs:
+  budget:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install .
+      - name: Set daily budgets
+        env:
+          ADBOT_ROOT: ${{ github.workspace }}
+          ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
+          META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
+          META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
+          # 2026-08-07: MARTIN-MY | 营养·方向错了 sits at RM200/day but now runs a single ad
+          # (面包牛奶不开玩笑) — RM341 and 3 registrations in 2 days, CPL RM114 against a healthy
+          # account CPL of RM30-40. Its July sale keeps CPA-rescue holding it open, so the lever
+          # that matters is the burn rate: halve it to RM100/day and let the next webinar judge.
+          ADBOT_BUDGET_SPEC: ${{ inputs.budget_spec || '120246582171650575=100' }}
+        run: python scripts/set_budget.py
