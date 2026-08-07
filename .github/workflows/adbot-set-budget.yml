@@ -39,9 +39,15 @@ jobs:
           ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
           META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
           META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
-          # 2026-08-07: MARTIN-MY | 营养·方向错了 sits at RM200/day but now runs a single ad
-          # (面包牛奶不开玩笑) — RM341 and 3 registrations in 2 days, CPL RM114 against a healthy
-          # account CPL of RM30-40. Its July sale keeps CPA-rescue holding it open, so the lever
-          # that matters is the burn rate: halve it to RM100/day and let the next webinar judge.
-          ADBOT_BUDGET_SPEC: ${{ inputs.budget_spec || '120246582171650575=100' }}
+          # 2026-08-07b: move budget off the idling campaigns and onto the cheap registrations.
+          # July's problem was nine campaigns with one sale each and no scale, while the RM13-33
+          # CPL ads sat in RM100/day boxes they could not grow out of.
+          #  · 120247433765670575  Scale CBO - Winners Hook-Matched  RM100 -> RM200
+          #      孩子15岁以上 CPL33 · H2 面包牛奶 Hook CPL24 · H2 早餐卡 CPL32 — all three well
+          #      under the RM55 threshold, and this is the ported-SG-winner campaign.
+          #  · 120247917148460575  F&R Top 5 Winners 1-1-5           RM100 -> RM150
+          #      什麼樣的孩子 CPL13.81 and 孩子15岁以上 CPL22.89 — the cheapest in the account.
+          #  · 120246581925510575  基因决定论                        RM100 -> RM150
+          #      林书豪 CPL29, best of the large spenders; 爸妈165突破175 converted in July.
+          ADBOT_BUDGET_SPEC: ${{ inputs.budget_spec || '120247433765670575=200,120247917148460575=150,120246581925510575=150' }}
         run: python scripts/set_budget.py
