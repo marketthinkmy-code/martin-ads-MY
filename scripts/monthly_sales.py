@@ -1,23 +1,29 @@
 """Read-only: month-by-month MY paid-sales analysis straight from the Paid Student List.
 
 The workbook is SHARED between the MY and SG ad accounts, so the whole exercise turns on getting
-the market of each row right. A prefix heuristic alone is not enough — plenty of older rows carry
-no [MY]/[SG] tag at all. So each row is resolved in three passes, most trustworthy first:
+the market of each row right — and the obvious signals are the weak ones:
 
-  1. TAG    — campaign name contains [my]/martin-my (or [sg]/martin-sg)  -> that market, certain.
-  2. MATCH  — untagged, but its campaign / ad set / ad name matches a real entity in THIS ad
-              account (act_...MY) by ad_key (width- and punctuation-insensitive)  -> MY.
-  3. UNKNOWN— neither. Printed in full rather than silently bucketed: this token only sees the MY
-              account, so a non-match may be an SG row OR a deleted MY campaign. Guessing either
-              way would corrupt the number the operator is asking for.
+  · Campaign-name tags ([my]/[sg]) are missing on most historical rows.
+  · Matching the ad NAME against the MY account is actively misleading: the same creatives are
+    uploaded to BOTH accounts, so an SG sale whose ad name also exists in MY looks MY.
 
-Only rows resolved MY are counted in the monthly figures. No writes.
+The one signal that identifies the customer's market directly is the phone number: +60 Malaysia,
++65 Singapore. That is the buyer, not a naming convention, so it leads. Resolution order:
+
+  1. PHONE  — whatsapp/phone column dial code            -> MY / SG / other, strongest.
+  2. TAG    — [my]/martin-my (or [sg]/martin-sg) appearing in campaign, ad set OR ad name.
+  3. MATCH  — untagged, but campaign/ad set name (NOT the ad name — creatives are shared) is a
+              real entity in THIS account -> MY.
+  4. UNKNOWN— printed in full rather than guessed.
+
+Rows where phone and campaign tag disagree are reported separately: phone wins, but a silent
+override would hide a mis-tagged campaign. No writes.
 """
 from __future__ import annotations
 
 import calendar
 import datetime as dt
-import os
+import re
 from collections import defaultdict
 
 from adbot import cpa
@@ -26,118 +32,160 @@ from adbot.clients.sheets import SheetsClient
 from adbot.settings import load_settings
 
 MONTHS = [(2026, 6), (2026, 7), (2026, 8)]
+PHONE_HEADERS = ("whatsapp", "號碼", "号码", "phone", "电话", "電話")
 
 
-def tagged_market(campaign: str) -> str | None:
-    """MY / SG when the campaign name says so outright, else None."""
-    c = campaign or ""
-    if "[sg]" in c or "martin-sg" in c:
+def phone_market(raw: str) -> str | None:
+    """MY / SG / OTHER from a dial code, or None when the cell has no usable number.
+
+    Malaysian mobiles are +60 1x (9-10 national digits); Singapore is +65 with 8 digits. Local
+    formats appear too: a bare 01x... is Malaysian, a bare 8/9xxxxxxx is Singaporean.
+    """
+    d = re.sub(r"\D", "", raw or "")
+    if not d:
+        return None
+    if d.startswith("60"):
+        return "MY"
+    if d.startswith("65") and len(d) >= 9:
         return "SG"
-    if "[my]" in c or "martin-my" in c:
+    if d.startswith("1") and len(d) == 11:
+        return "US"
+    if d.startswith("0"):                       # local MY form: 012-345 6789
+        return "MY"
+    if len(d) == 8 and d[0] in "3689":          # local SG form: 9123 4567
+        return "SG"
+    return "OTHER"
+
+
+def tagged_market(*names: str) -> str | None:
+    """MY / SG when ANY of campaign / ad set / ad says so outright."""
+    blob = " ".join(n or "" for n in names)
+    if "[sg]" in blob or "martin-sg" in blob:
+        return "SG"
+    if "[my]" in blob or "martin-my" in blob:
         return "MY"
     return None
 
 
-def my_name_keys(graph: GraphClient, account: str) -> tuple[set, set, set]:
-    """ad_key sets for every campaign / ad set / ad name living in the MY account."""
+def my_name_keys(graph: GraphClient, account: str) -> tuple[set, set]:
+    """ad_key sets for campaign and ad set names in the MY account.
+
+    Deliberately NOT ads: creative names are duplicated across the MY and SG accounts, so an ad
+    name is evidence of nothing.
+    """
     def keys(edge: str) -> set:
         rows = graph._get_all(f"{account}/{edge}", {"fields": "name", "limit": 500})
         return {cpa.ad_key(r.get("name", "")) for r in rows if r.get("name")}
-    camps, adsets, ads = keys("campaigns"), keys("adsets"), keys("ads")
-    print(f"MY account inventory: {len(camps)} campaigns · {len(adsets)} ad sets · {len(ads)} ads")
-    return camps, adsets, ads
+    camps, adsets = keys("campaigns"), keys("adsets")
+    print(f"MY account inventory: {len(camps)} campaigns · {len(adsets)} ad sets")
+    return camps, adsets
 
 
-def resolve(sale, my_camps, my_adsets, my_ads) -> tuple[str, str]:
-    """(market, how) for one sale row."""
-    tag = tagged_market(sale.campaign)
-    if tag:
-        return tag, "tag"
-    if cpa.ad_key(sale.campaign) in my_camps:
-        return "MY", "match:campaign"
-    if sale.adset and cpa.ad_key(sale.adset) in my_adsets:
-        return "MY", "match:adset"
-    if sale.ad and cpa.ad_key(sale.ad) in my_ads:
-        return "MY", "match:ad"
-    return "UNKNOWN", "-"
-
-
-def month_of(d: dt.date) -> tuple[int, int]:
-    return (d.year, d.month)
-
-
-def _table(rows, key_fn, label, indent="  "):
-    groups = defaultdict(list)
-    for r in rows:
-        k = (key_fn(r) or "").strip()
-        groups[k or "(空白)"].append(r)
-    ranked = sorted(groups.items(), key=lambda kv: -len(kv[1]))
-    print(f"{indent}--- {label} ---")
-    for name, rs in ranked:
-        rev = sum(r.amount for r in rs)
-        print(f"{indent}  {len(rs):>3} 单  RM{rev:>9,.0f}   {name[:66]}")
-    return ranked
+class Row:
+    __slots__ = ("date", "campaign", "adset", "ad", "amount", "phone", "market", "how")
 
 
 def main() -> None:
     s = load_settings()
     today = (dt.datetime.utcnow() + dt.timedelta(hours=8)).date()
     graph = GraphClient(s.secrets.meta_token, s.secrets.meta_app_secret or "")
-    account = s.meta.account_path
 
     values = SheetsClient(s.secrets.google_sa_json).read_tab(
         s.cpa.spreadsheet_id, s.cpa.sales_tab)
-    sales, cols, header = cpa.parse_sales(values, s.cpa.price_myr)
+
+    # Header discovery mirrors cpa.parse_sales, plus the phone column it does not need.
+    header_idx, cols = 0, cpa.find_columns(values[0])
+    for i, row in enumerate(values[:8]):
+        cand = cpa.find_columns(row)
+        if cand.get("campaign", -1) >= 0 and cand.get("ad", -1) >= 0:
+            header_idx, cols = i, cand
+            break
+    header = values[header_idx]
+    phone_idx = next((i for i, h in enumerate(header)
+                      if any(t in (h or "").casefold() for t in PHONE_HEADERS)), -1)
 
     print(f"=== MONTHLY MY SALES · today MYT={today} ===")
-    print(f"sheet '{s.cpa.sales_tab}' · {len(values)} rows · {len(sales)} sales parsed")
-    print(f"columns: {cols}")
-    dated = [x for x in sales if x.date]
-    if dated:
-        print(f"dated {len(dated)} · range {min(d.date for d in dated)} .. {max(d.date for d in dated)}")
-    print(f"undated (excluded from monthly figures): {len(sales) - len(dated)}")
+    print(f"sheet '{s.cpa.sales_tab}' · {len(values)} rows · header row {header_idx}")
+    print(f"columns: {cols} · phone col: {phone_idx} "
+          f"({header[phone_idx] if phone_idx >= 0 else 'NOT FOUND'})")
+    if phone_idx < 0:
+        raise SystemExit("no phone column — refusing to report a market split without it")
 
-    my_camps, my_adsets, my_ads = my_name_keys(graph, account)
+    my_camps, my_adsets = my_name_keys(graph, s.meta.account_path)
 
-    resolved = []
+    rows: list[Row] = []
+    for raw in values[header_idx + 1:]:
+        def cell(i: int) -> str:
+            return raw[i] if 0 <= i < len(raw) else ""
+        campaign = cpa.norm(cell(cols.get("campaign", -1)))
+        ad = cpa.norm(cell(cols.get("ad", -1)))
+        if not campaign and not ad:
+            continue
+        r = Row()
+        r.date = cpa.parse_date(cell(cols.get("date", -1)))
+        r.campaign, r.ad = campaign, ad
+        r.adset = cpa.norm(cell(cols.get("adset", -1)))
+        r.amount = cpa._money(cell(cols.get("amount", -1)), s.cpa.price_myr)
+        r.phone = cell(phone_idx)
+        rows.append(r)
+
+    conflicts = []
     how_counts = defaultdict(int)
-    for x in sales:
-        mkt, how = resolve(x, my_camps, my_adsets, my_ads)
-        resolved.append((x, mkt, how))
-        how_counts[f"{mkt}/{how}"] += 1
+    for r in rows:
+        pm = phone_market(r.phone)
+        tm = tagged_market(r.campaign, r.adset, r.ad)
+        if pm in ("MY", "SG", "US", "OTHER"):
+            r.market, r.how = pm, "phone"
+            if tm and tm != pm:
+                conflicts.append((r, pm, tm))
+        elif tm:
+            r.market, r.how = tm, "tag"
+        elif cpa.ad_key(r.campaign) in my_camps or (r.adset and cpa.ad_key(r.adset) in my_adsets):
+            r.market, r.how = "MY", "match:campaign/adset"
+        else:
+            r.market, r.how = "UNKNOWN", "-"
+        how_counts[f"{r.market}/{r.how}"] += 1
+
+    dated = [r for r in rows if r.date]
+    print(f"{len(rows)} sales parsed · {len(dated)} dated · "
+          f"undated excluded from monthly figures: {len(rows) - len(dated)}")
+    if dated:
+        print(f"date range {min(r.date for r in dated)} .. {max(r.date for r in dated)}")
     print("\nmarket resolution over ALL rows:")
     for k, v in sorted(how_counts.items(), key=lambda kv: -kv[1]):
         print(f"  {v:>5}  {k}")
+    print(f"\nphone-vs-tag conflicts (phone wins): {len(conflicts)}")
+    for r, pm, tm in conflicts[:15]:
+        print(f"    phone={pm} but name says {tm}  {r.date}  camp='{r.campaign[:40]}'")
 
-    # ---- the answer: MY only, month by month -------------------------------------------------
+    def table(rs, key_fn, label):
+        groups = defaultdict(list)
+        for r in rs:
+            groups[(key_fn(r) or "").strip() or "(空白)"].append(r)
+        print(f"  --- {label} ---")
+        for name, g in sorted(groups.items(), key=lambda kv: -len(kv[1])):
+            print(f"    {len(g):>3} 单  RM{sum(x.amount for x in g):>9,.0f}   {name[:66]}")
+
     for (yr, mo) in MONTHS:
         last = calendar.monthrange(yr, mo)[1]
-        rows = [x for x, m, _ in resolved if m == "MY" and x.date and month_of(x.date) == (yr, mo)]
-        rev = sum(r.amount for r in rows)
-        label = f"{yr}-{mo:02d}"
-        span = f"{yr}-{mo:02d}-01..{yr}-{mo:02d}-{last:02d}"
-        print(f"\n\n########## {label} · MY · {len(rows)} 单 · RM{rev:,.0f} ({span}) ##########")
-        if not rows:
+        rs = [r for r in dated if r.market == "MY" and (r.date.year, r.date.month) == (yr, mo)]
+        rev = sum(r.amount for r in rs)
+        print(f"\n\n########## {yr}-{mo:02d} · MY · {len(rs)} 单 · RM{rev:,.0f} "
+              f"({yr}-{mo:02d}-01..{yr}-{mo:02d}-{last:02d}) ##########")
+        if not rs:
             print("  (no MY sales dated in this month)")
             continue
-        _table(rows, lambda r: r.ad, "转化的广告 (ad)")
-        _table(rows, lambda r: r.adset, "广告组 (ad set)")
-        _table(rows, lambda r: r.campaign, "campaign")
+        table(rs, lambda r: r.ad, "转化的广告 (ad)")
+        table(rs, lambda r: r.adset, "广告组 (ad set)")
+        table(rs, lambda r: r.campaign, "campaign")
 
-    # ---- what we could NOT place, printed in full so nothing hides ---------------------------
-    unknown = [x for x, m, _ in resolved
-               if m == "UNKNOWN" and x.date and month_of(x.date) in MONTHS]
-    print(f"\n\n########## UNKNOWN market · {len(unknown)} 单 in Jun-Aug (NOT counted above) ##########")
-    print("这些行的 campaign/adset/ad 名字在 MY 账户里找不到，也没有 [MY]/[SG] 标签。")
-    ug = defaultdict(list)
-    for x in unknown:
-        ug[(x.campaign, x.ad)].append(x)
-    for (c, a), rs in sorted(ug.items(), key=lambda kv: -len(kv[1])):
-        months = sorted({f"{r.date:%Y-%m}" for r in rs})
-        print(f"  {len(rs):>3} 单  {','.join(months)}  ad='{a[:44]}'  camp='{c[:44]}'")
-
-    sg = [x for x, m, _ in resolved if m == "SG" and x.date and month_of(x.date) in MONTHS]
-    print(f"\n(参考) 同期 SG: {len(sg)} 单 — 已排除，不进 MY 数字")
+    print("\n\n########## 同期其他市场 (已排除) ##########")
+    for mkt in ("SG", "US", "OTHER", "UNKNOWN"):
+        rs = [r for r in dated if r.market == mkt and (r.date.year, r.date.month) in MONTHS]
+        print(f"  {mkt:8} {len(rs):>3} 单")
+    unk = [r for r in dated if r.market == "UNKNOWN" and (r.date.year, r.date.month) in MONTHS]
+    for r in unk:
+        print(f"    {r.date}  phone='{r.phone[:18]}'  ad='{r.ad[:38]}'  camp='{r.campaign[:38]}'")
 
 
 if __name__ == "__main__":
