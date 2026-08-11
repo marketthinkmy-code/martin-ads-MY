@@ -1,0 +1,37 @@
+name: adbot · Mirror SG batch into MY via page posts (manual)
+
+# LIVE build in the MY account. Creates 6 CBO campaigns + ad sets + 18 ads, all PAUSED.
+# Each ad points at the SAME page post as its SG twin (both markets share page 341825319024143),
+# so nothing is re-uploaded and engagement pools across the two markets.
+#
+# Idempotent: per-group state files track campaign/adset ids and which post ids are already
+# built, so a re-dispatch reuses instead of duplicating. Note state/ is not committed, so if a
+# run dies part-way, download the artifact and commit state/ before re-dispatching.
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install .
+      - name: Build MY mirror (PAUSED)
+        env:
+          ADBOT_ROOT: ${{ github.workspace }}
+          ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
+          GOOGLE_SERVICE_ACCOUNT_JSON_B64: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON_B64 }}
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
+          META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
+        run: python scripts/build_my_from_sg_posts.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: my-mirror-state
+          path: state/
+          if-no-files-found: warn
