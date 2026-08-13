@@ -1,0 +1,44 @@
+name: adbot · find real interest ids for keywords (manual)
+
+# Read-only: resolve human keywords into REAL Meta interest ids (search?type=adinterest) via the
+# system-user token, plus Meta's own related-interest suggestions. The interactive connector has
+# no interest search, and interest ids cannot be guessed — this is how a new audience idea becomes
+# something an ad set can actually target. No writes.
+
+on:
+  workflow_dispatch:
+    inputs:
+      seeds_path:
+        description: "path to the seeds JSON"
+        type: string
+        required: false
+        default: "scripts/targeting_specs/seeds.json"
+  push:
+    branches: ["claude/sweet-curie-b6vql4"]
+    paths:
+      - ".github/workflows/adbot-find-interests.yml"
+      - "scripts/find_interests.py"
+      - "scripts/targeting_specs/**"
+
+concurrency:
+  group: adbot-find-interests
+  cancel-in-progress: false
+
+jobs:
+  find:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install .
+      - name: Resolve keywords -> interest ids
+        env:
+          ADBOT_ROOT: ${{ github.workspace }}
+          ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
+          ADBOT_SEEDS: ${{ inputs.seeds_path || 'scripts/targeting_specs/seeds.json' }}
+          META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
+          META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
+        run: python scripts/find_interests.py

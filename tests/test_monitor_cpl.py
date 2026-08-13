@@ -6,7 +6,7 @@ from adbot import cpa
 from adbot.monitor_cpl import (CPL_GRACE_NEW, GRACE_BRAKE, INSUFFICIENT_SPEND, MANUAL_HOLD,
                                NO_RESULTS_YET, OVER_THRESHOLD, WITHIN_THRESHOLD, ZERO_RESULTS,
                                cpl_window, decide, evaluate_account, extract_results, parse_metrics,
-                               result_action_type, _week_start_thursday)
+                               result_action_type, webinars_since, _week_start_thursday)
 from adbot.settings import CpaCfg, KpiCfg, MetaCfg, Settings
 
 KPI = KpiCfg(cpl_threshold_myr=40, cpl_min_spend_myr=80, pause_zero_lead_after_spend=True)
@@ -316,3 +316,34 @@ def test_grace_brake_never_touches_an_ad_with_sales_at_acceptable_cpa():
 
     assert d["earner"].should_pause is False
     assert d["earner"].reason == cpa.CPL_RESCUED           # sales win over both brake triggers
+
+
+# ── webinar-clock grace ────────────────────────────────────────────────────────────────────
+# Sales only close on webinar nights, so the grace counts webinars survived, not days lived.
+
+WEBINAR_KPI = KpiCfg(cpl_threshold_myr=40, cpl_min_spend_myr=80,
+                     webinar_weekday=2, cpl_grace_webinars=1, webinar_settle_days=1)
+
+
+def test_webinars_since_counts_only_settled_webinars():
+    # Wed 2026-08-05 is a webinar; born Mon 08-03, judged Thu 08-06 -> that Wednesday has run and
+    # settled (1 day), so the ad has had its chance.
+    assert webinars_since(dt.date(2026, 8, 3), dt.date(2026, 8, 6), WEBINAR_KPI) == 1
+    # Judged the morning after: the sheet is not filled in yet, so it does not count.
+    assert webinars_since(dt.date(2026, 8, 3), dt.date(2026, 8, 5), WEBINAR_KPI) == 0
+    # Born ON a webinar day: that night's buyers were never its registrants — count from the next.
+    assert webinars_since(dt.date(2026, 8, 5), dt.date(2026, 8, 7), WEBINAR_KPI) == 0
+    assert webinars_since(dt.date(2026, 8, 5), dt.date(2026, 8, 13), WEBINAR_KPI) == 1
+    # Three weeks on, three webinars.
+    assert webinars_since(dt.date(2026, 7, 16), dt.date(2026, 8, 7), WEBINAR_KPI) == 3
+    # No webinar weekday configured -> caller falls back to the day-count grace.
+    assert webinars_since(dt.date(2026, 8, 3), dt.date(2026, 8, 6), KPI) is None
+
+
+def test_calendar_age_and_webinar_clock_disagree():
+    """The 马六甲 case: old enough for the day-grace to expire, but no webinar has settled."""
+    born, judged = dt.date(2026, 7, 30), dt.date(2026, 8, 5)   # Thu -> the Wed webinar is same-day
+    kpi = KpiCfg(cpl_threshold_myr=40, cpl_min_spend_myr=80, cpl_grace_days=3,
+                 webinar_weekday=2, cpl_grace_webinars=1, webinar_settle_days=1)
+    assert (judged - born).days > kpi.cpl_grace_days          # day-clock says "judge it"
+    assert webinars_since(born, judged, kpi) == 0             # webinar-clock says "not yet"

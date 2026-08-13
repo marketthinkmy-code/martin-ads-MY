@@ -126,6 +126,22 @@ class GraphClient:
     def get_object(self, object_id: str, fields: str) -> Dict[str, Any]:
         return self._request("GET", object_id, params={"fields": fields})
 
+    # ── targeting discovery (the interactive connector has no interest search) ──
+    def search_interests(self, query: str, limit: int = 25) -> List[Dict[str, Any]]:
+        """Meta's ad-interest search: real interest ids + names + audience size for a keyword.
+
+        This is the only way to turn a human keyword ("allergy") into the interest_id an ad set
+        actually needs — guessing ids is not possible, and the MCP connector exposes no equivalent.
+        """
+        return self._request("GET", "search", params={
+            "type": "adinterest", "q": query, "limit": limit}).get("data", [])
+
+    def suggest_interests(self, names: List[str], limit: int = 25) -> List[Dict[str, Any]]:
+        """Interests Meta considers related to a list of interest NAMES (its own expansion)."""
+        return self._request("GET", "search", params={
+            "type": "adinterestsuggestion", "interest_list": json.dumps(names),
+            "limit": limit}).get("data", [])
+
     # ── media upload (impossible via MCP) ──────────────────────────────────────
     def upload_image(self, account_path: str, file_path: str) -> str:
         """Upload an image; return its image_hash."""

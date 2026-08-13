@@ -1,0 +1,46 @@
+name: adbot · clone a creative line-up to a new audience (manual)
+
+# Build a new CBO campaign + ad set that clones a proven ad set's targeting and re-runs creatives
+# that ALREADY exist in the account (by creative_id) — no Drive download, no video re-upload, and
+# the ads keep pooling social proof with their twins. SU-token path. Everything PAUSED; the
+# operator activates after review.
+#
+# Isolated spec dir (scripts/clone_specs/**) so a push here fires ONLY this workflow.
+
+on:
+  workflow_dispatch:
+    inputs:
+      spec_path:
+        description: "path to the clone spec JSON"
+        type: string
+        required: false
+        default: "scripts/clone_specs/fnr_v12_1_1_1.json"
+  push:
+    branches: ["claude/sweet-curie-b6vql4"]
+    paths:
+      - "scripts/clone_specs/**"
+
+concurrency:
+  group: adbot-clone-test
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install .
+      # ONE step, pointing at the spec for the build being run right now. Leaving finished specs
+      # wired up here would rebuild them as duplicates on the next push.
+      - name: Build 1-1-1 — V12 on Family and Relationships
+        env:
+          ADBOT_ROOT: ${{ github.workspace }}
+          ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
+          ADBOT_AD_SPEC: ${{ inputs.spec_path || 'scripts/clone_specs/fnr_v12_1_1_1.json' }}
+          META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
+          META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
+        run: python scripts/clone_test.py

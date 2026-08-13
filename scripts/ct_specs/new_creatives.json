@@ -1,0 +1,22 @@
+{
+  "videos": [
+    {
+      "key": "v7",
+      "drive_file_id": "1zpCkfT3BNxbJrJ-SbXm1GsURzsFI4nvx",
+      "video_name": "马丁 May Video 7 15岁还没抽高",
+      "content_id": "may_v7_15too_late",
+      "ad_name": "Video 7：15 岁还没抽高，是不是已经太迟？",
+      "headline": "🔴 孩子15岁还没抽高，是不是太迟了？别再「等他自己长」｜免费公开课",
+      "body_file": "scripts/ct_specs/may_v7.body.txt"
+    },
+    {
+      "key": "v16",
+      "drive_file_id": "1U3m03mYstMMRQ4yRdJ-QzbxgV7mXj4UA",
+      "video_name": "马丁 May Video 16 身高永远停在15岁",
+      "content_id": "may_v16_stuck15",
+      "ad_name": "Video 16：身高永遠停在15歲",
+      "headline": "🔴 他不会永远15岁，但他的身高可能永远停在15岁｜免费公开课",
+      "body_file": "scripts/ct_specs/may_v16.body.txt"
+    }
+  ]
+}

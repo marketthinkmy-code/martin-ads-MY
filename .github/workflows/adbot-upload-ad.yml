@@ -1,0 +1,52 @@
+name: adbot · upload one video ad (manual)
+
+# Upload ONE new video ad from Google Drive via the adbot system-user token — the SU credential
+# the monitor / weekly / build already write with. This is the only channel that can push a NEW
+# video file into the account (the interactive Meta connector can't upload video). The Drive file
+# must be readable by the service account martin-ads-my@martin-as-my.iam.gserviceaccount.com
+# (share the folder with it). Reads an ad spec (default scripts/ad_specs/july_v1.json): downloads
+# the video, uploads it, then builds a PAUSED 1-1-1 CBO campaign (or attaches one ad to an existing
+# ad set if the spec sets adset_id). Nothing is activated — the operator reviews, then activates.
+#
+# workflow_dispatch only works once this file is on the default branch; the push trigger is what
+# runs it from the feature branch. It fires on a push that touches the paths below, so push the
+# spec + script together exactly when the video is shared and ready — one push, one clean run.
+
+on:
+  workflow_dispatch:
+    inputs:
+      spec_path:
+        description: "path to the ad spec JSON"
+        type: string
+        required: false
+        default: "scripts/ad_specs/july_v1.json"
+  push:
+    branches: ["claude/sweet-curie-b6vql4"]
+    paths:
+      - ".github/workflows/adbot-upload-ad.yml"
+      - "scripts/upload_ad.py"
+      - "scripts/ad_specs/**"
+
+concurrency:
+  group: adbot-upload-ad
+  cancel-in-progress: false
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install .
+      - name: Upload video ad (PAUSED)
+        env:
+          ADBOT_ROOT: ${{ github.workspace }}
+          ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
+          ADBOT_AD_SPEC: ${{ inputs.spec_path || 'scripts/ad_specs/july_v1.json' }}
+          META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
+          META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
+          GOOGLE_SERVICE_ACCOUNT_JSON_B64: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON_B64 }}
+        run: python scripts/upload_ad.py

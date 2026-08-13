@@ -133,6 +133,15 @@ def main() -> None:
                                 time_range={"since": cutoff60.isoformat(), "until": today.isoformat()}):
         if r.get("ad_id"):
             spend60[r["ad_id"]] = _money(r.get("spend"))
+    # 30-day spend summed by normalised ad NAME (a creative may have many copies/ad_ids) — used
+    # to score paused-but-converting creatives on CPA/ROAS.
+    cutoff30 = today - dt.timedelta(days=30)
+    spend30_byname = defaultdict(float)
+    for r in g.account_insights(acct, level="ad", fields="ad_name,spend",
+                                time_range={"since": cutoff30.isoformat(), "until": today.isoformat()}):
+        nm = cpa.norm(r.get("ad_name") or "")
+        if nm:
+            spend30_byname[nm] += _money(r.get("spend"))
 
     # ── 3. currently-ACTIVE ads (campaign walk; status lives here, not in insights) ──
     active = []                         # (ad_id, ad_name, campaign_name)
@@ -197,21 +206,57 @@ def main() -> None:
         print(f"  {ad_name[:40]:40} {wk_spend:6.0f} {wk_reg:4.0f} {_fmt(cpl):>5}  "
               f"{paid['30d']:>3} {paid['60d']:>3} {sp60:6.0f} {_fmt(cpa_val):>5}  {flag}")
 
-    # ── proven winners that are NOT currently active (reactivation candidates) ─
-    print("\n--- Proven winners NOT currently active (consider reactivating) ---")
-    offwins = [(an, rows) for an, rows in by_adname.items() if an not in active_adnorms]
-    offwins = sorted(offwins, key=lambda kv: -len(kv[1]))
+    # ── GOOD 30d CPA/ROAS but NOT currently running (the operator's exact question) ─
+    # For each creative with NO live copy, sum its 30-day spend across all its ad_ids and its
+    # 30-day attributed sales/revenue → CPA (spend/sale) and ROAS (revenue/spend). Sorted by
+    # ROAS so the best paused money-makers surface first.
+    print("\n--- GOOD CPA/ROAS (30d) but NOT currently running ---")
+    print(f"  {'sale30':>6} {'spend30':>8} {'CPA':>7} {'ROAS':>7}  creative  [last campaign]")
+    off_rows = []
+    for ad_norm, rows in by_adname.items():
+        if ad_norm in active_adnorms:
+            continue                              # a copy is still live → not "off"
+        s30 = [r for r in rows if r.date and r.date > cutoff30]
+        if not s30:
+            continue                              # no recent sale → not a current winner
+        n30 = len(s30)
+        rev30 = sum(r.amount for r in s30)
+        sp30 = spend30_byname.get(ad_norm, 0.0)
+        cpa30 = (sp30 / n30) if n30 else None
+        roas30 = (rev30 / sp30) if sp30 > 0 else None
+        off_rows.append((ad_norm, rows[-1].campaign or "?", n30, sp30, cpa30, roas30))
+    # best ROAS first; creatives with sales but ~no 30d spend (ROAS undefined) listed after.
+    off_rows.sort(key=lambda r: (r[5] is None, -(r[5] or 0)))
+    if not off_rows:
+        print("  (none — every creative with a 30d sale still has a live copy)")
+    for ad_norm, camp, n30, sp30, cpa30, roas30 in off_rows:
+        cpa_s = "n/a" if cpa30 is None else f"RM{cpa30:.0f}"
+        roas_s = "n/a" if roas30 is None else f"{roas30:.1f}x"
+        print(f"  {n30:>6} {sp30:8.0f} {cpa_s:>7} {roas_s:>7}  {ad_norm[:40]:40} [{camp[:24]}]")
+
+    # ── WHERE the paused winners convert: interest (campaign) + audience (ad set) ──
+    # Answers "which interest / audience to run each reopened winner in" — tally each off
+    # creative's recent sales by the sheet's Campaign Name (interest) and UTM Ads Set (audience).
+    print("\n--- WHERE the paused winners convert (last 60d) → which interest / audience to run them in ---")
     shown = 0
-    for ad_norm, rows in offwins:
-        w = _wins(rows, today)
-        if w["60d"] <= 0:           # only those with a sale in the last 60d are worth reviving
+    for ad_norm, rows in sorted(by_adname.items(), key=lambda kv: -len(kv[1])):
+        if ad_norm in active_adnorms:
             continue
-        camp = rows[-1].campaign or "?"
-        print(f"  life {w['life']:>3} · 60d {w['60d']:>2} · 30d {w['30d']:>2}   "
-              f"{ad_norm[:44]:44}  [{camp[:26]}]")
+        recent = [r for r in rows if r.date and r.date > cutoff60]
+        if len(recent) < 2:                       # need ≥2 recent sales to name an audience
+            continue
+        by_camp, by_aud = defaultdict(int), defaultdict(int)
+        for r in recent:
+            by_camp[(r.campaign or "?").strip()] += 1
+            by_aud[(r.adset or "?").strip()] += 1
+        tc = " · ".join(f"{c[:32]}×{n}" for c, n in sorted(by_camp.items(), key=lambda x: -x[1])[:3])
+        ta = " · ".join(f"{a[:24]}×{n}" for a, n in sorted(by_aud.items(), key=lambda x: -x[1])[:3])
+        print(f"  {ad_norm[:34]:34} ({len(recent)} sales/60d)")
+        print(f"      interest (campaign): {tc}")
+        print(f"      audience (ad set):   {ta}")
         shown += 1
     if not shown:
-        print("  (none with a sale in the last 60 days)")
+        print("  (no paused creative has ≥2 recent sales to place)")
 
     # ── account totals ───────────────────────────────────────────────────────
     tot_life = len(attributed)

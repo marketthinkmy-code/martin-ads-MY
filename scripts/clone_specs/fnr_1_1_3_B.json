@@ -1,0 +1,11 @@
+{
+  "budget_myr": 100,
+  "campaign_name": "[MY] 儿童长高方程式 | Family and Relationships | V7+V14+V15 | 1-1-3 (B)",
+  "adset_name": "F&R 兴趣定向 · B (克隆自 Interest: Family and Relationships)",
+  "source_adset_id": "120247702962070575",
+  "ads": [
+    { "name": "Video 7：15 岁还没抽高，是不是已经太迟？", "post_id": "341825319024143_122192841848485585" },
+    { "name": "Video 14：身高停在小學",                  "post_id": "341825319024143_122192690942485585" },
+    { "name": "Video 15：不到160慌了",                   "post_id": "341825319024143_122192697908485585" }
+  ]
+}

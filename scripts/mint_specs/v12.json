@@ -1,0 +1,13 @@
+{
+  "videos": [
+    {
+      "key": "v12",
+      "drive_file_id": "1VyXHppVN8AEcCBpniIWLup9is0s7mffX",
+      "video_name": "马丁 May Video 12 试了五六种方法没长高",
+      "content_id": "may_v12_tried_everything",
+      "ad_name": "Video 12：15歲以上的孩子，試了五六種方法，幾乎全部沒有長高",
+      "headline": "🔴 800位家长调研：15岁以上试了五六种方法，几乎全部没长高｜免费公开课",
+      "body_file": "scripts/mint_specs/v12.body.txt"
+    }
+  ]
+}

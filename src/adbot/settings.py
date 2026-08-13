@@ -152,6 +152,12 @@ class KpiCfg(BaseModel):
     # 0 disables that brake.
     cpl_grace_max_cpl_multiple: float = 0.0
     cpl_grace_max_spend_myr: float = 0.0
+    # Sales only close on webinar nights, so the grace is better measured in webinars than in days.
+    # webinar_weekday is Mon=0..Sun=6 (None disables and falls back to cpl_grace_days);
+    # webinar_settle_days is how long the paid list takes to be filled in after one runs.
+    webinar_weekday: Optional[int] = None
+    cpl_grace_webinars: int = 1
+    webinar_settle_days: int = 1
     cpl_hold: List[str] = Field(default_factory=list)  # ad-name substrings temporarily exempt from auto-pause
 
 

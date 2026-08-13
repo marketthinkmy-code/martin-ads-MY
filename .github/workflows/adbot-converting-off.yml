@@ -1,0 +1,55 @@
+name: adbot · converting-but-off report (manual)
+
+# Read-only: cross-reference recent PAID sales (Paid Student List) against the live Meta ad
+# inventory to answer "which ads converted but are now OFF?". Runs two proven read-only scripts
+# back to back:
+#   recent_sales.py  — yesterday / recent sales per campaign·ad set·ad (Sheets only)
+#   paid_by_ad.py    — paid-sales-per-ad joined to LIVE Meta status + CPL/CPA, incl. a
+#                      "GOOD CPA/ROAS (30d) but NOT currently running" section (Sheets + Meta)
+# No writes, no pauses. Both steps are continue-on-error so a transient Meta blip can never turn
+# a read-only report into a false "workflow failed" alert — the stdout captured so far still
+# shows in the log. Push trigger fires on THIS file only (isolated from every other workflow).
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches: ["claude/sweet-curie-b6vql4"]
+    paths:
+      - ".github/workflows/adbot-converting-off.yml"
+
+concurrency:
+  group: adbot-converting-off
+  cancel-in-progress: false
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install .
+      - name: Recent paid sales (yesterday / recent)
+        continue-on-error: true
+        env:
+          ADBOT_ROOT: ${{ github.workspace }}
+          ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
+          GOOGLE_SERVICE_ACCOUNT_JSON_B64: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON_B64 }}
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+        run: python scripts/recent_sales.py
+      - name: Paid-by-ad (converting but off + live status)
+        continue-on-error: true
+        env:
+          ADBOT_ROOT: ${{ github.workspace }}
+          ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
+          GOOGLE_SERVICE_ACCOUNT_JSON_B64: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON_B64 }}
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
+          META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
+        run: python scripts/paid_by_ad.py
+
+# Run: 2026-08-05 — check whether V13 (F&R 1-1-3 A, CPL RM29, 17 regs) produced paid sales.
+
+# Run: 2026-08-13 — post 08-12 webinar attribution.

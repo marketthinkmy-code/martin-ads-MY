@@ -1,0 +1,42 @@
+name: adbot · top winning ads + ad sets (manual)
+
+# Read-only: rank the winning ADS and AD SETS by real paid sales from the Paid Student List,
+# over 30d / 60d / lifetime, tagged MY vs SG (the sheet is shared between both ad accounts).
+# No writes. Push trigger fires on this file / the script only.
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches: ["claude/sweet-curie-b6vql4"]
+    paths:
+      - ".github/workflows/adbot-top-winners.yml"
+      - "scripts/top_winners.py"
+
+concurrency:
+  group: adbot-top-winners
+  cancel-in-progress: false
+
+jobs:
+  winners:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install .
+      - name: Top winning ads + ad sets
+        env:
+          ADBOT_ROOT: ${{ github.workspace }}
+          ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
+          GOOGLE_SERVICE_ACCOUNT_JSON_B64: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON_B64 }}
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+        run: python scripts/top_winners.py
+      - name: Audience profile (tried audiences + buyer persona)
+        env:
+          ADBOT_ROOT: ${{ github.workspace }}
+          ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
+          GOOGLE_SERVICE_ACCOUNT_JSON_B64: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON_B64 }}
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+        run: python scripts/audience_profile.py

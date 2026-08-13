@@ -1,0 +1,53 @@
+name: adbot · pause entities (manual)
+
+# Pause specific campaigns / ad sets / ads by id via the adbot system-user token — the mirror of
+# adbot-activate. Needed when the interactive Meta connector refuses an edit for a reason that has
+# nothing to do with stopping delivery (e.g. "reel contains licensed music", which blocks the ad
+# edit entirely). The SU path writes status straight through the Graph API. Per-entity failures are
+# isolated. Dispatch with a comma-separated id list; the push trigger runs the ids baked in below
+# (2026-07-28: Video 2 - 一个3～15岁正常健康的孩子, 60d 0 sales, connector-blocked).
+
+on:
+  workflow_dispatch:
+    inputs:
+      entity_ids:
+        description: "comma-separated campaign / ad set / ad ids to set PAUSED"
+        type: string
+        required: true
+  push:
+    branches: ["claude/sweet-curie-b6vql4"]
+    paths:
+      - ".github/workflows/adbot-pause.yml"
+      - "scripts/pause_entities.py"
+
+concurrency:
+  group: adbot-pause
+  cancel-in-progress: false
+
+jobs:
+  pause:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install .
+      - name: Pause entities
+        env:
+          ADBOT_ROOT: ${{ github.workspace }}
+          ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
+          META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
+          META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
+          # 2026-08-13: four campaigns closed after the 08-12 webinar — two that had their
+          # chance and missed it, two idling behind an ad the monitor already killed.
+          #  · 120247858765910575  Parents 3-17 + Engaged 1-1-4 — two webinars, RM1,900+, 0 MY
+          #    sales. Its best creative (V13, CPL RM34 on 35 regs) came up empty twice.
+          #  · 120247917672540575  Boys Sports Top 5 1-1-5 — RM844 on its lead ad, two webinars,
+          #    0 MY sales.
+          #  · 120246582171650575  营养·方向错了 — its only ad (面包牛奶不开玩笑) was auto-paused
+          #    at CPL RM123 with 0 sales; the campaign is holding budget for nothing.
+          #  · 120248085451810575  F&R 1-1-1 V12 — the grace brake correctly stopped V12 at CPL
+          #    RM88. New creative did not land; campaign now idle too.
+          ADBOT_PAUSE_IDS: ${{ inputs.entity_ids || '120247858765910575,120247917672540575,120246582171650575,120248085451810575' }}
+        run: python scripts/pause_entities.py
