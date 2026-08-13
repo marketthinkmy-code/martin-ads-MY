@@ -93,11 +93,14 @@ kpi:
   # real sales at an acceptable CPA is kept by CPA-rescue, which runs first and wins.
   cpl_grace_max_cpl_multiple: 1.5        # CPL above 1.5x the threshold (= RM82.50) -> grace off, pause now
   cpl_grace_max_spend_myr: 500.00        # spent this much with 0 sales -> grace off, pause now
-  # Proven SG winners ported into "MARTIN-MY | Scale CBO": held so the monitor gives them a runway
-  # to accrue MY sales under THIS campaign's UTM (their past sales attribute to the original SG /
-  # interest-andro campaigns, so there's no CPA-rescue here yet). REVIEW ~2026-08-10 — drop any that
-  # proved out (CPA-rescue takes over) or clearly failed.
-  cpl_hold: ["什麼樣的孩子", "孩子15岁以上", "面包牛奶一点都不健康"]
+  # Reviewed 2026-08-13, after the runway these three were given (08-05 and 08-12 webinars):
+  #   面包牛奶一点都不健康  2 MY sales, CPA RM702  -> graduated; CPA-rescue now protects it and the
+  #                                                 hold is redundant.
+  #   什麼樣的孩子          RM1,619 across two campaigns, 0 MY sales -> failed.
+  #   孩子15岁以上          RM1,497 across two campaigns, 0 MY sales -> failed.
+  # A hold is a promise to look again, not a permanent exemption — all three are handed back to the
+  # monitor. Re-add a name here only with a fresh review date attached.
+  cpl_hold: []                           # ad-name substrings temporarily exempt from auto-pause
 
 cpa:                                     # cost per real PAID acquisition (joins the paid-list sheet)
   enabled: true
