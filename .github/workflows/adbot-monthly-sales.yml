@@ -38,3 +38,5 @@ jobs:
           META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
           META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
         run: python scripts/monthly_sales.py
+
+# Run: 2026-08-13 — post 08-12 webinar MY monthly figures.
