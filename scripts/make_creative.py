@@ -9,6 +9,11 @@ No campaign, no ad set, no ad, no spend — creatives only.
 
 Spec JSON (path via ADBOT_AD_SPEC, default scripts/ct_specs/new_creatives.json):
   videos[]  {key, drive_file_id, video_name, content_id, ad_name, headline, body|body_file}
+
+Add `video_id` to an entry to reuse a clip ALREADY in the Meta library instead of fetching and
+uploading it again. Copy — headline especially — is baked into a creative and cannot be edited
+afterwards, so a wording change otherwise means re-uploading gigabytes to change one line. The
+video ids are printed by every run of this script.
 """
 from __future__ import annotations
 
@@ -48,10 +53,14 @@ def main() -> None:
     for v in spec["videos"]:
         asset = Asset(file_id=v["drive_file_id"], name=v.get("video_name", v["key"]), mime="video/mp4")
         unit = Unit(content_id=v.get("content_id", v["key"]), kind=VIDEO, assets=[asset])
-        target = Path(DOWNLOAD_DIR) / f"{asset.file_id}_{v['key']}.mp4"
-        drive.download_file(asset.file_id, target)
-        asset.local_path = str(target)
-        media.sync_media(graph, settings, [unit], dry_run=False)   # sets asset.meta_id
+        if v.get("video_id"):
+            asset.meta_id = str(v["video_id"])      # already in the library — skip Drive + upload
+            print(f"[{v['key']}] reusing video {asset.meta_id}")
+        else:
+            target = Path(DOWNLOAD_DIR) / f"{asset.file_id}_{v['key']}.mp4"
+            drive.download_file(asset.file_id, target)
+            asset.local_path = str(target)
+            media.sync_media(graph, settings, [unit], dry_run=False)   # sets asset.meta_id
         caption = {"caption": _body(v), "headline": v.get("headline", ""), "name": v.get("ad_name")}
         cspec = build_1_1_10.creative_spec(settings, unit, caption,
                                            thumbnail_url=graph.get_video_thumbnail(asset.meta_id))

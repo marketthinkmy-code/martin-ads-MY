@@ -6,7 +6,7 @@
       "video_name": "马丁 AUG 吃饭很慢 hook 1",
       "content_id": "aug_slow_eater_h1",
       "ad_name": "吃饭很慢 Hook 1",
-      "headline": "🔴 孩子吃饭很慢、吃两口就饱？可能不是挑食，是吸收出问题｜免费公开课",
+      "headline": "🔴 想让孩子健康长高？我可以帮助你！",
       "body_file": "scripts/mint_specs/aug_batch.body.txt"
     },
     {
@@ -15,7 +15,7 @@
       "video_name": "马丁 AUG 吃饭很慢 hook 2",
       "content_id": "aug_slow_eater_h2",
       "ad_name": "吃饭很慢 Hook 2",
-      "headline": "🔴 吃得少又长不高？先看孩子的脾胃吸收，不是逼他多吃｜免费公开课",
+      "headline": "🔴 想让孩子健康长高？我可以帮助你！",
       "body_file": "scripts/mint_specs/aug_batch.body.txt"
     },
     {
@@ -24,7 +24,7 @@
       "video_name": "马丁 AUG 还在喝牛奶长痘痘",
       "content_id": "aug_milk_acne",
       "ad_name": "还在喝牛奶、长痘痘？",
-      "headline": "🔴 一边喝牛奶一边长痘痘？这不是青春期，是身体在抗议｜免费公开课",
+      "headline": "🔴 想让孩子健康长高？我可以帮助你！",
       "body_file": "scripts/mint_specs/aug_batch.body.txt"
     },
     {
@@ -33,7 +33,7 @@
       "video_name": "马丁 AUG 我不会买牛奶给我孩子喝",
       "content_id": "aug_no_milk",
       "ad_name": "我不会买牛奶给我孩子喝",
-      "headline": "🔴 身为医师，我不会买牛奶给我自己的孩子喝｜免费公开课",
+      "headline": "🔴 想让孩子健康长高？我可以帮助你！",
       "body_file": "scripts/mint_specs/aug_batch.body.txt"
     },
     {
@@ -42,7 +42,7 @@
       "video_name": "马丁 AUG 生长激素",
       "content_id": "aug_growth_hormone",
       "ad_name": "生长激素",
-      "headline": "🔴 打生长激素之前，先搞清楚孩子为什么分泌不出来｜免费公开课",
+      "headline": "🔴 想让孩子健康长高？我可以帮助你！",
       "body_file": "scripts/mint_specs/aug_batch.body.txt"
     },
     {
@@ -51,7 +51,7 @@
       "video_name": "马丁 AUG 睡眠品质差",
       "content_id": "aug_sleep_quality",
       "ad_name": "睡眠品质差",
-      "headline": "🔴 睡够 8 小时还是长不高？关键不是睡多久，是睡得好不好｜免费公开课",
+      "headline": "🔴 想让孩子健康长高？我可以帮助你！",
       "body_file": "scripts/mint_specs/aug_batch.body.txt"
     },
     {
@@ -60,7 +60,7 @@
       "video_name": "马丁 AUG Sinus hook",
       "content_id": "aug_sinus",
       "ad_name": "Sinus：孩子鼻子敏感",
-      "headline": "🔴 孩子鼻塞、打呼、睡不沉 —— 这三件事正在偷走他的身高｜免费公开课",
+      "headline": "🔴 想让孩子健康长高？我可以帮助你！",
       "body_file": "scripts/mint_specs/aug_batch.body.txt"
     },
     {
@@ -69,7 +69,7 @@
       "video_name": "马丁 AUG 運動就能長高No",
       "content_id": "aug_sports_no",
       "ad_name": "運動就能長高？！No！",
-      "headline": "🔴 打篮球、跳绳就会长高？做错了反而在扣分｜免费公开课",
+      "headline": "🔴 想让孩子健康长高？我可以帮助你！",
       "body_file": "scripts/mint_specs/aug_batch.body.txt"
     },
     {
@@ -78,7 +78,7 @@
       "video_name": "马丁 AUG 我最討厭聽到",
       "content_id": "aug_hate_hearing",
       "ad_name": "我最討厭聽到的一句话",
-      "headline": "🔴 「等他发育就会长了」—— 这句话我最讨厌听到｜免费公开课",
+      "headline": "🔴 想让孩子健康长高？我可以帮助你！",
       "body_file": "scripts/mint_specs/aug_batch.body.txt"
     },
     {
@@ -87,7 +87,7 @@
       "video_name": "马丁 AUG 如果你有孩子是5-15岁 hook",
       "content_id": "aug_kids_5_15",
       "ad_name": "如果你的孩子是 5–15 岁",
-      "headline": "🔴 孩子 5–15 岁，这段黄金期只有一次，错过补不回来｜免费公开课",
+      "headline": "🔴 想让孩子健康长高？我可以帮助你！",
       "body_file": "scripts/mint_specs/aug_batch.body.txt"
     }
   ]
