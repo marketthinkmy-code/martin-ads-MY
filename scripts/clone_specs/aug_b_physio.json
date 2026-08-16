@@ -1,0 +1,11 @@
+{
+  "budget_myr": 100,
+  "campaign_name": "[MY] 儿童长高方程式 | Family and Relationships | 生理体质 | 1-1-3",
+  "adset_name": "F&R 兴趣定向 · 生理体质 (克隆自 Interest: Family and Relationships)",
+  "source_adset_id": "120247702962070575",
+  "ads": [
+    { "name": "生长激素",             "post_id": "341825319024143_122194360988485585" },
+    { "name": "睡眠品质差",           "post_id": "341825319024143_122194361210485585" },
+    { "name": "Sinus：孩子鼻子敏感",   "post_id": "341825319024143_122194361660485585" }
+  ]
+}

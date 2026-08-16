@@ -14,7 +14,7 @@ on:
         description: "path to the clone spec JSON"
         type: string
         required: false
-        default: "scripts/clone_specs/fnr_v12_1_1_1.json"
+        default: "scripts/clone_specs/aug_a_diet.json"
   push:
     branches: ["claude/sweet-curie-b6vql4"]
     paths:
@@ -34,13 +34,30 @@ jobs:
         with:
           python-version: "3.11"
       - run: pip install .
-      # ONE step, pointing at the spec for the build being run right now. Leaving finished specs
-      # wired up here would rebuild them as duplicates on the next push.
-      - name: Build 1-1-1 — V12 on Family and Relationships
+      # The August batch: 10 clips off one shared evergreen body, split into three themed
+      # campaigns on the same F&R audience. Leaving finished specs wired up here would
+      # rebuild them as duplicates on the next push, so this list is rewritten each time.
+      - name: Build 1-1-4 — 饮食吸收
         env:
           ADBOT_ROOT: ${{ github.workspace }}
           ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
-          ADBOT_AD_SPEC: ${{ inputs.spec_path || 'scripts/clone_specs/fnr_v12_1_1_1.json' }}
+          ADBOT_AD_SPEC: scripts/clone_specs/aug_a_diet.json
+          META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
+          META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
+        run: python scripts/clone_test.py
+      - name: Build 1-1-3 — 生理体质
+        env:
+          ADBOT_ROOT: ${{ github.workspace }}
+          ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
+          ADBOT_AD_SPEC: scripts/clone_specs/aug_b_physio.json
+          META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
+          META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
+        run: python scripts/clone_test.py
+      - name: Build 1-1-3 — 观念打破
+        env:
+          ADBOT_ROOT: ${{ github.workspace }}
+          ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
+          ADBOT_AD_SPEC: scripts/clone_specs/aug_c_mythbust.json
           META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
           META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
         run: python scripts/clone_test.py

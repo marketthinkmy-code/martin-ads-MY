@@ -1,0 +1,11 @@
+{
+  "budget_myr": 100,
+  "campaign_name": "[MY] 儿童长高方程式 | Family and Relationships | 观念打破 | 1-1-3",
+  "adset_name": "F&R 兴趣定向 · 观念打破 (克隆自 Interest: Family and Relationships)",
+  "source_adset_id": "120247702962070575",
+  "ads": [
+    { "name": "運動就能長高？！No！",      "post_id": "341825319024143_122194361852485585" },
+    { "name": "我最討厭聽到的一句话",      "post_id": "341825319024143_122194362230485585" },
+    { "name": "如果你的孩子是 5–15 岁",   "post_id": "341825319024143_122194362410485585" }
+  ]
+}

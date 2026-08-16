@@ -1,0 +1,12 @@
+{
+  "budget_myr": 100,
+  "campaign_name": "[MY] 儿童长高方程式 | Family and Relationships | 饮食吸收 | 1-1-4",
+  "adset_name": "F&R 兴趣定向 · 饮食吸收 (克隆自 Interest: Family and Relationships)",
+  "source_adset_id": "120247702962070575",
+  "ads": [
+    { "name": "吃饭很慢 Hook 1",        "post_id": "341825319024143_122194360304485585" },
+    { "name": "吃饭很慢 Hook 2",        "post_id": "341825319024143_122194360460485585" },
+    { "name": "还在喝牛奶、长痘痘？",     "post_id": "341825319024143_122194360544485585" },
+    { "name": "我不会买牛奶给我孩子喝",   "post_id": "341825319024143_122194360646485585" }
+  ]
+}
