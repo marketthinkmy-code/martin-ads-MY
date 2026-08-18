@@ -61,21 +61,33 @@ def mask_phone(p: str) -> str:
 
 
 def norm_phone(raw: str) -> tuple[str, str]:
-    """(e164-digits, market) — the dial code identifies the buyer's market."""
-    d = re.sub(r"\D", "", raw or "")
-    if not d:
-        return "", ""
-    if d.startswith("60"):
-        return d, "MY"
-    if d.startswith("65") and len(d) >= 9:
-        return d, "SG"
-    if d.startswith("0"):                      # local MY form 01x-xxx xxxx
-        return "60" + d[1:], "MY"
-    if len(d) == 8 and d[0] in "3689":         # local SG form 9xxx xxxx
-        return "65" + d, "SG"
-    if d.startswith("1") and len(d) == 11:
-        return d, "US"
-    return d, "?"
+    """(e164-digits, market) — the dial code identifies the buyer's market.
+
+    Cells are hand-typed and some hold two numbers ("0123456789 / 0129876543") or a number with a
+    note beside it. Stripping every non-digit from the whole cell welds them into one 21-digit
+    string that can never match anything at Meta, so each candidate is tried separately and only a
+    result of plausible E.164 length (max 15 digits) is accepted.
+    """
+    chunks = [c for c in re.split(r"[/,;、|\n]| or | OR ", raw or "") if any(x.isdigit() for x in c)]
+    for chunk in chunks or [raw or ""]:
+        d = re.sub(r"\D", "", chunk)
+        if not d:
+            continue
+        if d.startswith("60"):
+            market = "MY"
+        elif d.startswith("65") and len(d) >= 9:
+            market = "SG"
+        elif d.startswith("0"):                    # local MY form 01x-xxx xxxx
+            d, market = "60" + d[1:], "MY"
+        elif len(d) == 8 and d[0] in "3689":       # local SG form 9xxx xxxx
+            d, market = "65" + d, "SG"
+        elif d.startswith("1") and len(d) == 11:
+            market = "US"
+        else:
+            market = "?"                           # HK 852, AU 61, TH 66 ... kept, just untagged
+        if 9 <= len(d) <= 15:                      # E.164 caps at 15; anything longer is garbage
+            return d, market
+    return "", ""
 
 
 def main() -> None:
