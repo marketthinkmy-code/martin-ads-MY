@@ -16,6 +16,9 @@ Spec JSON (path via ADBOT_AD_SPEC, default scripts/clone_specs/fnr_v11_v15.json)
   custom_audience_ids[]  saved audience / lookalike ids (...or this — config targeting + these).
                    Lookalikes carry their own signal, so nothing else is layered on top: adding
                    interests would shrink an audience Meta already picked for resemblance.
+  start_time       ISO-8601 WITH offset — the ad set is created scheduled for that moment. Meta
+                   refuses to edit start_time once an ad set "has started", and it counts as
+                   started from creation even while PAUSED, so this can only be set here.
   also_exclude[]   extra audience ids to exclude on top of the ones in config (e.g. a freshly
                    rebuilt buyer list, so prospecting does not pay to reach existing customers)
   ads[]            {name, creative_id} or {name, post_id} — one PAUSED ad per entry.
@@ -93,11 +96,15 @@ def main() -> None:
         status="PAUSED", special_ad_categories=m.special_ad_categories,
         daily_budget=m.budget.daily_amount_cents, bid_strategy="LOWEST_COST_WITHOUT_CAP",
     )["id"]
-    aid = graph.create_adset(
-        account, campaign_id=cid, name=spec["adset_name"],
+    adset_fields = dict(
+        campaign_id=cid, name=spec["adset_name"],
         optimization_goal=m.optimization_goal, billing_event="IMPRESSIONS",
         promoted_object=m.promoted_object, targeting=targeting, status="PAUSED",
-    )["id"]
+    )
+    if spec.get("start_time"):
+        adset_fields["start_time"] = spec["start_time"]
+        print(f"[schedule] ad set starts {spec['start_time']}")
+    aid = graph.create_adset(account, **adset_fields)["id"]
     print(f"[campaign] {cid}  [adset] {aid}")
 
     ad_ids = []

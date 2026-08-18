@@ -14,7 +14,12 @@ The workbook is shared MY/SG, so the dial code also tells us each buyer's market
 monthly_sales.py uses. Both markets go into the seed (a Chinese-speaking SG parent who bought a
 height course is a good pattern for finding MY ones), but the lookalikes are generated in MY only.
 
+Set ADBOT_LAL_AUDIT=1 to run the exact same selection and print a masked sample WITHOUT creating
+or uploading anything — the point of an audit is that it shares this code path, so what it shows
+is by construction what a real run would send.
+
 Env:
+  ADBOT_LAL_AUDIT    "1" to report only, no writes
   ADBOT_LAL_LABEL    suffix for the audience names, e.g. "16 AUG"
   ADBOT_LAL_RATIOS   lookalike bands, default "0-1,1-2,2-3,3-4,4-5" (percent)
   ADBOT_LAL_COUNTRY  lookalike country, default MY
@@ -42,6 +47,17 @@ def sha(value: str) -> str:
 def norm_email(raw: str) -> str:
     e = (raw or "").strip().lower()
     return e if EMAIL_RE.match(e) else ""
+
+
+def mask_email(e: str) -> str:
+    if not e:
+        return "—"
+    user, _, domain = e.partition("@")
+    return f"{user[0]}{'*' * max(len(user) - 2, 1)}{user[-1] if len(user) > 1 else ''}@{domain}"
+
+
+def mask_phone(p: str) -> str:
+    return f"{p[:4]}{'*' * max(len(p) - 8, 1)}{p[-4:]}" if len(p) >= 8 else "*" * len(p)
 
 
 def norm_phone(raw: str) -> tuple[str, str]:
@@ -92,7 +108,7 @@ def main() -> None:
     if email_idx < 0 and phone_idx < 0:
         raise SystemExit("no email or phone column — refusing to build an unmatched audience")
 
-    rows, seen, markets, stats = [], set(), Counter(), Counter()
+    rows, preview, seen, markets, stats = [], [], set(), Counter(), Counter()
     for raw in values[header_idx + 1:]:
         cell = lambda i: raw[i] if 0 <= i < len(raw) else ""
         email = norm_email(cell(email_idx))
@@ -109,12 +125,34 @@ def main() -> None:
         stats["with_email"] += bool(email)
         stats["with_phone"] += bool(phone)
         rows.append([sha(email), sha(phone), sha(market.lower()) if market else ""])
+        preview.append((email, phone, market, cell(cols.get("date", -1))))
 
     print(f"seed records: {len(rows)}  (email {stats['with_email']} · phone {stats['with_phone']})")
     print(f"  deduplicated: {stats['duplicate']} · no identifier: {stats['skipped_no_identifier']}")
     print(f"  by market: {dict(markets)}")
     if len(rows) < 100:
         raise SystemExit(f"only {len(rows)} usable records — Meta needs 100+ for a lookalike")
+
+    if os.environ.get("ADBOT_LAL_AUDIT") == "1":
+        dates = sorted(d for *_, d in preview if d)
+        print(f"\n=== AUDIT ONLY — nothing created, nothing uploaded ===")
+        print(f"source: spreadsheet {s.cpa.spreadsheet_id} · tab '{s.cpa.sales_tab}'")
+        print(f"selection rule: every row with a usable email OR phone. No date filter, no market "
+              f"filter — the seed is every buyer on the list.")
+        if dates:
+            print(f"purchase dates present: {dates[0]} .. {dates[-1]}")
+        step = max(len(preview) // 25, 1)
+        print(f"\nsample (every {step}th of {len(preview)}, masked):")
+        print(f"  {'#':>5}  {'email':<34} {'phone (normalised)':<20} {'mkt':<4} date")
+        for i in range(0, len(preview), step):
+            e, ph, mk, dt_ = preview[i]
+            print(f"  {i + 1:>5}  {mask_email(e):<34} {mask_phone(ph):<20} {mk or '?':<4} {dt_}")
+        no_market = [p for p in preview if not p[2] or p[2] == "?"]
+        print(f"\nphone did not resolve to a market ({len(no_market)}) — still uploaded, "
+              f"they only affect the market tally, not the match:")
+        for e, ph, mk, dt_ in no_market[:15]:
+            print(f"  {mask_email(e):<34} {mask_phone(ph):<20} {dt_}")
+        raise SystemExit(0)
 
     ca_name = f"MARTIN MYSG PAID CUSTOMER - {label}"
     ca = graph._request("POST", f"{account}/customaudiences", data={

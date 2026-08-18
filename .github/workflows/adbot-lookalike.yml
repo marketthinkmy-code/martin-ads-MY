@@ -9,6 +9,11 @@ name: adbot · build paid-list lookalikes (manual)
 on:
   workflow_dispatch:
     inputs:
+      audit:
+        description: "1 = report the selection only, create nothing"
+        type: string
+        required: false
+        default: "0"
       label:
         description: "suffix for the audience names, e.g. 16 AUG"
         type: string
@@ -53,6 +58,8 @@ jobs:
           META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
           # 2026-08-16: the live paid-customer audience is "13 APR" — four months stale, and the
           # list has grown a lot since. Same ladder the April build used, so the naming lines up.
+          # 2026-08-18: audit pass — the operator asked to review the list before it goes live.
+          ADBOT_LAL_AUDIT: ${{ inputs.audit || '1' }}
           ADBOT_LAL_LABEL: ${{ inputs.label || '16 AUG' }}
           ADBOT_LAL_RATIOS: ${{ inputs.ratios || '0-1,1-2,2-3,3-4,4-5' }}
           ADBOT_LAL_COUNTRY: ${{ inputs.country || 'MY' }}
