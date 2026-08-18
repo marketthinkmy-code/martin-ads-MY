@@ -1,0 +1,59 @@
+name: adbot · build paid-list lookalikes (manual)
+
+# Rebuild the customer-list Custom Audience from the Paid Student List and its MY lookalike
+# ladder. Runs in CI so the buyers' emails and phone numbers are hashed on the runner and never
+# leave the job — only counts are logged. Creates audiences only; touches no campaign or budget.
+#
+# Push trigger fires on THIS file and its script only — isolated from every other workflow.
+
+on:
+  workflow_dispatch:
+    inputs:
+      label:
+        description: "suffix for the audience names, e.g. 16 AUG"
+        type: string
+        required: true
+      ratios:
+        description: "lookalike bands in percent"
+        type: string
+        required: false
+        default: "0-1,1-2,2-3,3-4,4-5"
+      country:
+        description: "lookalike country"
+        type: string
+        required: false
+        default: "MY"
+  push:
+    branches: ["claude/sweet-curie-b6vql4"]
+    paths:
+      - ".github/workflows/adbot-lookalike.yml"
+      - "scripts/build_lookalike.py"
+
+concurrency:
+  group: adbot-lookalike
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install .
+      - name: Build custom audience + lookalikes
+        env:
+          ADBOT_ROOT: ${{ github.workspace }}
+          ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
+          GOOGLE_SERVICE_ACCOUNT_JSON_B64: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON_B64 }}
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
+          META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
+          # 2026-08-16: the live paid-customer audience is "13 APR" — four months stale, and the
+          # list has grown a lot since. Same ladder the April build used, so the naming lines up.
+          ADBOT_LAL_LABEL: ${{ inputs.label || '16 AUG' }}
+          ADBOT_LAL_RATIOS: ${{ inputs.ratios || '0-1,1-2,2-3,3-4,4-5' }}
+          ADBOT_LAL_COUNTRY: ${{ inputs.country || 'MY' }}
+        run: python scripts/build_lookalike.py
