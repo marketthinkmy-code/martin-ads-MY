@@ -1,0 +1,46 @@
+name: adbot · delete never-run entities (manual)
+
+# Delete campaigns / ad sets / ads that were built wrong and replaced. Anything with lifetime
+# spend above zero is refused — spend means performance history, and that history is the only
+# record of what was learned. To stop something that ran, use adbot-pause instead.
+#
+# Push trigger fires on THIS file and its script only — isolated from every other workflow.
+
+on:
+  workflow_dispatch:
+    inputs:
+      entity_ids:
+        description: "comma-separated ids to delete (must never have spent)"
+        type: string
+        required: true
+  push:
+    branches: ["claude/sweet-curie-b6vql4"]
+    paths:
+      - ".github/workflows/adbot-delete.yml"
+      - "scripts/delete_entities.py"
+
+concurrency:
+  group: adbot-delete
+  cancel-in-progress: false
+
+jobs:
+  delete:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install .
+      - name: Delete entities
+        env:
+          ADBOT_ROOT: ${{ github.workspace }}
+          ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
+          META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
+          META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
+          # 2026-08-18: the first LAL Paid List campaign (120248429838020575). Its ad set was
+          # created without a start_time and Meta will not add one afterwards, so it was rebuilt
+          # as 120248431600650575 scheduled for 20 Aug. This one never delivered.
+          ADBOT_DELETE_IDS: ${{ inputs.entity_ids || '120248429838020575' }}
+        run: python scripts/delete_entities.py
