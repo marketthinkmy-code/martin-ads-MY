@@ -13,6 +13,11 @@ Spec JSON (path via ADBOT_AD_SPEC, default scripts/clone_specs/fnr_v11_v15.json)
   adset_name       name for the new ad set
   source_adset_id  ad set whose targeting is cloned   (either this...)
   interests[]      {id, name} real Meta interest ids  (...or this — config targeting + these)
+  custom_audience_ids[]  saved audience / lookalike ids (...or this — config targeting + these).
+                   Lookalikes carry their own signal, so nothing else is layered on top: adding
+                   interests would shrink an audience Meta already picked for resemblance.
+  also_exclude[]   extra audience ids to exclude on top of the ones in config (e.g. a freshly
+                   rebuilt buyer list, so prospecting does not pay to reach existing customers)
   ads[]            {name, creative_id} or {name, post_id} — one PAUSED ad per entry.
                    post_id ("<page>_<post>") is the EXISTING-POST route: a fresh creative is
                    minted against that page post, so every ad pointing at it accumulates the same
@@ -56,7 +61,14 @@ def main() -> None:
     graph = graph_client(settings)
     account = m.account_path
 
-    if spec.get("interests"):
+    if spec.get("custom_audience_ids"):
+        # Saved-audience targeting: the account's standard geo/age/locale plus the audiences
+        # themselves. A lookalike is already a similarity model, so layering interests on top
+        # only narrows what Meta chose — the audience IS the targeting.
+        targeting = m.targeting.to_spec()
+        targeting["custom_audiences"] = [{"id": str(a)} for a in spec["custom_audience_ids"]]
+        print(f"[targeting] {len(spec['custom_audience_ids'])} saved audience(s)")
+    elif spec.get("interests"):
         # Brand-new audience: the account's standard targeting (MY / age / Chinese locale /
         # excluded customer lists) plus the interest ids, so the ONLY variable versus a proven
         # ad set is the interest itself. Ids must come from find_interests.py — never invented.
@@ -67,6 +79,13 @@ def main() -> None:
     else:
         targeting = _clone_targeting(graph, spec["source_adset_id"])
         print(f"[targeting] cloned from {spec['source_adset_id']}")
+
+    for extra in spec.get("also_exclude", []):
+        excl = targeting.setdefault("excluded_custom_audiences", [])
+        if not any(str(e.get("id")) == str(extra) for e in excl):
+            excl.append({"id": str(extra)})
+            print(f"[targeting] also excluding {extra}")
+
     print(f"           {json.dumps(targeting, ensure_ascii=False)[:300]}")
 
     cid = graph.create_campaign(

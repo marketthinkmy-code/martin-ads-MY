@@ -1,0 +1,20 @@
+{
+  "budget_myr": 100,
+  "campaign_name": "[MY] 儿童长高方程式 | LAL Paid List 1-5% | Top 5 Winners | 1-1-5",
+  "adset_name": "LAL 付费名单 1-5% (MARTIN MYSG PAID CUSTOMER - 16 AUG)",
+  "custom_audience_ids": [
+    "120248429743830575",
+    "120248429744500575",
+    "120248429744960575",
+    "120248429745270575",
+    "120248429745600575"
+  ],
+  "also_exclude": ["120248429743500575"],
+  "ads": [
+    { "name": "Video: 孩子15岁以上还有机会长高吗？",  "creative_id": "2054735945280092" },
+    { "name": "Video 1：孩子如果有鼻窦炎",             "creative_id": "1313038780758717" },
+    { "name": "Video：H2 面包牛奶一点都不健康",        "creative_id": "2904644519883869" },
+    { "name": "Video: 什麼樣的孩子基本上不會再長高",    "creative_id": "4774412119504704" },
+    { "name": "JAN Video 6：如果你的孩子",             "creative_id": "735431222593122" }
+  ]
+}
