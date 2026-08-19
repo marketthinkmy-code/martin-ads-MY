@@ -117,7 +117,12 @@ def main() -> None:
         name=spec["campaign_name"], objective=m.objective, buying_type="AUCTION",
         status="PAUSED", special_ad_categories=m.special_ad_categories,
     )
-    if not abo:
+    if abo:
+        # Meta demands this be stated outright once the budget lives on the ad sets. "true" would
+        # let them lend each other 20% of their budget — which is precisely what a band comparison
+        # must not allow, or a band's spend is no longer its own.
+        campaign_fields["is_adset_budget_sharing_enabled"] = "false"
+    else:
         campaign_fields.update(daily_budget=m.budget.daily_amount_cents,
                                bid_strategy="LOWEST_COST_WITHOUT_CAP")
     cid = graph.create_campaign(account, **campaign_fields)["id"]
