@@ -15,7 +15,7 @@ on:
         description: "path to the creatives spec JSON"
         type: string
         required: false
-        default: "scripts/mint_specs/aug_batch.json"
+        default: "scripts/mint_specs/kl_event.json"
   push:
     branches: ["claude/sweet-curie-b6vql4"]
     paths:
@@ -41,7 +41,7 @@ jobs:
         env:
           ADBOT_ROOT: ${{ github.workspace }}
           ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
-          ADBOT_AD_SPEC: ${{ inputs.spec_path || 'scripts/mint_specs/aug_batch.json' }}
+          ADBOT_AD_SPEC: ${{ inputs.spec_path || 'scripts/mint_specs/kl_event.json' }}
           META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
           META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
           GOOGLE_SERVICE_ACCOUNT_JSON_B64: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON_B64 }}

@@ -1,0 +1,13 @@
+{
+  "videos": [
+    {
+      "key": "kl_event_2026",
+      "drive_file_id": "1AzHSg6LFT_CFYQk4kSrskX4lQ1BOI3bl",
+      "video_name": "马丁 2026 吉隆坡线下课回顾",
+      "content_id": "kl_event_2026_recap",
+      "ad_name": "2026 吉隆坡線下見面會 · 圓滿結束",
+      "headline": "🔴 80+ 家庭到場、35 位小勇士領獎 —— 錯過線下課？免費線上分享會等你",
+      "body_file": "scripts/mint_specs/kl_event.body.txt"
+    }
+  ]
+}
