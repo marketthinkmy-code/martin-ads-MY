@@ -1,22 +1,24 @@
 {
   "videos": [
     {
-      "key": "july_sgmy_h1",
+      "key": "july_bread_h1",
       "drive_file_id": "1MNqgJkqmoDqKaf-H1zY5sErGCnsUhEZo",
-      "video_name": "马丁 July SGMY H1",
-      "content_id": "july_sgmy_h1",
-      "ad_name": "July SGMY Hook 1",
+      "video_id": "2163882484530197",
+      "video_name": "马丁 July SGMY H1 早餐就错了",
+      "content_id": "july_bread_h1",
+      "ad_name": "Hook 1：早餐就錯了！",
       "headline": "🔴 想让孩子健康长高？我可以帮助你！",
-      "body_file": "scripts/mint_specs/aug_batch.body.txt"
+      "body_file": "scripts/mint_specs/july_bread.body.txt"
     },
     {
-      "key": "july_sgmy_h2",
+      "key": "july_bread_h2",
       "drive_file_id": "1SH7_jgusVmerSTB6G5GH9MTTDQEVU1JW",
-      "video_name": "马丁 July SGMY H2",
-      "content_id": "july_sgmy_h2",
-      "ad_name": "July SGMY Hook 2",
+      "video_id": "959881410523697",
+      "video_name": "马丁 July SGMY H2 你還在把麵包當早餐",
+      "content_id": "july_bread_h2",
+      "ad_name": "Hook 2：你還在把麵包當早餐？",
       "headline": "🔴 想让孩子健康长高？我可以帮助你！",
-      "body_file": "scripts/mint_specs/aug_batch.body.txt"
+      "body_file": "scripts/mint_specs/july_bread.body.txt"
     }
   ]
 }
