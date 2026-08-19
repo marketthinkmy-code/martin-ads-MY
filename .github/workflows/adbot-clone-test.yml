@@ -14,7 +14,7 @@ on:
         description: "path to the clone spec JSON"
         type: string
         required: false
-        default: "scripts/clone_specs/lal_paid_1_5.json"
+        default: "scripts/clone_specs/lal_paid_top3.json"
   push:
     branches: ["claude/sweet-curie-b6vql4"]
     paths:
@@ -34,14 +34,14 @@ jobs:
         with:
           python-version: "3.11"
       - run: pip install .
-      # Top 5 Winners against the freshly rebuilt paid-buyer lookalike, all five bands unioned
-      # into one ad set (= 1-5%). Only the spec being run right now is wired up: leaving finished
-      # ones here would rebuild them as duplicates on the next push.
-      - name: Build 1-1-5 — LAL Paid List 1-5%
+      # The three creatives with the most lifetime conversions, against the paid-list lookalike
+      # (all five bands unioned = 1-5%), scheduled for 20 Aug. Only the spec being run right now
+      # is wired up: leaving finished ones here would rebuild them as duplicates on the next push.
+      - name: Build 1-1-3 — LAL Paid List 1-5% · Top 3 lifetime
         env:
           ADBOT_ROOT: ${{ github.workspace }}
           ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
-          ADBOT_AD_SPEC: ${{ inputs.spec_path || 'scripts/clone_specs/lal_paid_1_5.json' }}
+          ADBOT_AD_SPEC: ${{ inputs.spec_path || 'scripts/clone_specs/lal_paid_top3.json' }}
           META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
           META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
         run: python scripts/clone_test.py
