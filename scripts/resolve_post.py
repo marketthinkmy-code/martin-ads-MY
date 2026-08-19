@@ -60,19 +60,38 @@ def main() -> None:
             print("WARNING: Meta says this post is NOT eligible for promotion.")
         return
 
-    # The page-post id did not resolve, so walk the page's own reels and match on the video id.
-    print("\n[fallback] listing the page's reels to find the matching post id")
+    # The page-post read is gated behind pages_read_engagement, which an ads token does not carry.
+    # /promotable_posts is the ads-side equivalent — same objects, ads permissions — so it answers
+    # the only question that matters here: which posts can this account actually put money behind.
+    print("\n[fallback] /promotable_posts (ads permission, not pages_read_engagement)")
     try:
-        reels = graph._get_all(f"{page}/video_reels",
-                               {"fields": "id,title,description,created_time,permalink_url",
-                                "limit": 50})
+        posts = graph._get_all(f"{page}/promotable_posts", {
+            "fields": "id,message,created_time,permalink_url,is_eligible_for_promotion,"
+                      "promotable_id,status_type",
+            "is_published": "true", "limit": 50})
     except Exception as exc:  # noqa: BLE001
-        raise SystemExit(f"cannot list page reels: {exc}")
-    print(f"  {len(reels)} reel(s) on the page")
-    for r in reels:
-        mark = " <-- MATCH" if str(r.get("id")) == vid else ""
-        print(f"  {r.get('id')}  {str(r.get('created_time'))[:10]}  "
-              f"{str(r.get('title') or r.get('description') or '')[:60]}{mark}")
+        raise SystemExit(f"cannot list promotable posts: {exc}")
+
+    print(f"  {len(posts)} promotable post(s)")
+    hit = None
+    for r in posts:
+        pid, promotable = str(r.get("id", "")), str(r.get("promotable_id", ""))
+        match = vid in (pid.split("_")[-1], promotable) or vid in str(r.get("permalink_url", ""))
+        if match:
+            hit = r
+        print(f"  {pid:<40} {str(r.get('created_time'))[:10]} "
+              f"elig={r.get('is_eligible_for_promotion')} "
+              f"{str(r.get('message') or '')[:44].replace(chr(10), ' ')}"
+              f"{'   <-- MATCH' if match else ''}")
+
+    if hit:
+        print(f"\nobject_story_id = {hit['id']}")
+        if hit.get("is_eligible_for_promotion") is False:
+            print("WARNING: Meta says this post is NOT eligible for promotion.")
+    else:
+        print(f"\nNo promotable post carries video id {vid}. A reel can be missing from this list "
+              f"when it has not finished processing, or when it was posted in a way Meta will not "
+              f"promote; check the page's Reels tab for a 'Boost' option.")
 
 
 if __name__ == "__main__":
