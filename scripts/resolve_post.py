@@ -74,8 +74,9 @@ def main() -> None:
             "fields": "id,message,created_time,permalink_url,is_eligible_for_promotion,"
                       "promotable_id,status_type",
             "is_published": "true", "limit": 50})
-    except Exception as exc:  # noqa: BLE001
-        raise SystemExit(f"cannot list promotable posts: {exc}")
+    except Exception as exc:  # noqa: BLE001 - not fatal: the creative attempt below can still
+        print(f"  unavailable: {str(exc)[:180]}")   # answer the question this read could not
+        posts = []
 
     print(f"  {len(posts)} promotable post(s)")
     hit = None
