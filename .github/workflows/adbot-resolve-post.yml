@@ -40,4 +40,7 @@ jobs:
           META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
           META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
           ADBOT_POST_REF: ${{ inputs.post_ref || 'https://www.facebook.com/reel/1811537966511148' }}
+          # Reading the page post is blocked for an ads token; minting a creative is not,
+          # so let the write settle whether this reel can back an existing-post ad.
+          ADBOT_TRY_CREATIVE: "1"
         run: python scripts/resolve_post.py

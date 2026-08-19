@@ -6,7 +6,12 @@ that either fails to create or points at nothing, so this asks Meta directly and
 finds — including whether the post is eligible to be promoted at all.
 
 Env:
-  ADBOT_POST_REF   a facebook.com URL or a bare numeric id
+  ADBOT_POST_REF      a facebook.com URL or a bare numeric id
+  ADBOT_TRY_CREATIVE  "1" to settle it by actually minting a creative against the guessed
+                      object_story_id. Reading a page post needs pages_read_engagement, which an
+                      ads token does not carry — but CREATING a creative only needs ads
+                      permissions, so the write succeeds or fails where the read cannot even ask.
+                      A creative on its own has no ad set and cannot spend.
 """
 from __future__ import annotations
 
@@ -83,6 +88,24 @@ def main() -> None:
               f"elig={r.get('is_eligible_for_promotion')} "
               f"{str(r.get('message') or '')[:44].replace(chr(10), ' ')}"
               f"{'   <-- MATCH' if match else ''}")
+
+    if not hit and os.environ.get("ADBOT_TRY_CREATIVE") == "1":
+        story = f"{page}_{vid}"
+        print(f"\n[try] minting a creative against {story} — a creative alone cannot spend")
+        try:
+            fields = {"object_story_id": story}
+            if s.meta.url_tags:
+                fields["url_tags"] = s.meta.url_tags
+            cre = graph.create_adcreative(s.meta.account_path, **fields)
+            back = graph.get_object(cre["id"], "id,effective_object_story_id,title,body")
+            print(f"[OK] creative {cre['id']}")
+            print(f"     effective_object_story_id: {back.get('effective_object_story_id')}")
+            print(f"\nUSABLE object_story_id = {story}")
+            return
+        except Exception as exc:  # noqa: BLE001
+            print(f"[FAILED] {str(exc)[:400]}")
+            print("\nThis post cannot be used as an existing-post ad from the API.")
+            return
 
     if hit:
         print(f"\nobject_story_id = {hit['id']}")
