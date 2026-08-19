@@ -36,7 +36,10 @@ def probe(graph, label: str, obj: str, fields: str) -> dict | None:
         for k, v in data.items():
             if k == "id":
                 continue
-            print(f"         {k}: {str(v)[:160]}")
+            # The caption is the reason to run this at all when re-posting an organic video —
+            # print it whole, not clipped to a preview.
+            limit = 4000 if k in ("description", "message", "title") else 160
+            print(f"         {k}: {str(v)[:limit]}")
         return data
     except Exception as exc:  # noqa: BLE001 - probing; a miss is information, not a failure
         print(f"[miss] {label}  {obj}: {str(exc)[:170]}")
