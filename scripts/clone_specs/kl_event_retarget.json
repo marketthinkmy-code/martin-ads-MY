@@ -1,0 +1,11 @@
+{
+  "budget_myr": 50,
+  "campaign_name": "[MY] 儿童长高方程式 | 再营销 · 看过影片50% | 吉隆坡线下课回顾 | 1-1-1",
+  "adset_name": "再营销 · 30天内看过影片 50%",
+  "custom_audience_ids": ["120245379412380575"],
+  "also_exclude": ["120248429743500575"],
+  "ads": [
+    { "name": "2026 吉隆坡線下見面會 · 圓滿結束", "post_id": "341825319024143_122194721462485585" }
+  ],
+  "_note": "Social proof, not a pain hook — aimed at people who already know Dr Martin. Advantage+ expansion stays ON here: unlike the band test there is nothing to hold constant, and a 8-9k pool needs all the reach it can get."
+}
