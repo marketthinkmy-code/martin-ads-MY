@@ -1,0 +1,22 @@
+{
+  "videos": [
+    {
+      "key": "july_sgmy_h1",
+      "drive_file_id": "1MNqgJkqmoDqKaf-H1zY5sErGCnsUhEZo",
+      "video_name": "马丁 July SGMY H1",
+      "content_id": "july_sgmy_h1",
+      "ad_name": "July SGMY Hook 1",
+      "headline": "🔴 想让孩子健康长高？我可以帮助你！",
+      "body_file": "scripts/mint_specs/aug_batch.body.txt"
+    },
+    {
+      "key": "july_sgmy_h2",
+      "drive_file_id": "1SH7_jgusVmerSTB6G5GH9MTTDQEVU1JW",
+      "video_name": "马丁 July SGMY H2",
+      "content_id": "july_sgmy_h2",
+      "ad_name": "July SGMY Hook 2",
+      "headline": "🔴 想让孩子健康长高？我可以帮助你！",
+      "body_file": "scripts/mint_specs/aug_batch.body.txt"
+    }
+  ]
+}
