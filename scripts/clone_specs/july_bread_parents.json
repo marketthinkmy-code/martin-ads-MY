@@ -1,0 +1,13 @@
+{
+  "budget_myr": 100,
+  "campaign_name": "[MY] 儿童长高方程式 | Parents 3-17 + Engaged | 早餐面包牛奶 Hook 1+2 | 1-1-2 (20 Aug)",
+  "adset_name": "Parents 3-17 + Engaged · 早餐面包牛奶 · 8/20 00:00 开跑",
+  "source_adset_id": "120247591888380575",
+  "start_time": "2026-08-20T00:00:00+08:00",
+  "also_exclude": ["120248429743500575"],
+  "ads": [
+    { "name": "Hook 1：早餐就錯了！",          "post_id": "341825319024143_122194731710485585" },
+    { "name": "Hook 2：你還在把麵包當早餐？",   "post_id": "341825319024143_122194731752485585" }
+  ],
+  "_note": "Same body in both — the hook is the variable under test. Targeting cloned from the live Parents 3-17 + Engaged ad set so the audience matches what already converted there."
+}

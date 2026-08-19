@@ -14,7 +14,7 @@ on:
         description: "path to the clone spec JSON"
         type: string
         required: false
-        default: "scripts/clone_specs/kl_event_retarget.json"
+        default: "scripts/clone_specs/july_bread_parents.json"
   push:
     branches: ["claude/sweet-curie-b6vql4"]
     paths:
@@ -34,14 +34,14 @@ jobs:
         with:
           python-version: "3.11"
       - run: pip install .
-      # The KL event recap, re-posted because the original reel is not promotable, aimed at the
-      # 30-day video-viewer audience: it is social proof, which only lands on people who already
-      # know the brand. Only the spec being run right now is wired up.
-      - name: Build 1-1-1 — KL event recap · retargeting
+      # The two July bread-and-milk hooks on Parents 3-17 + Engaged, scheduled for 20 Aug. One
+      # body across both ads so the hook is the only thing being compared. Only the spec being
+      # run right now is wired up; finished ones would rebuild as duplicates on the next push.
+      - name: Build 1-1-2 — 早餐面包牛奶 Hook 1+2 · Parents 3-17 + Engaged
         env:
           ADBOT_ROOT: ${{ github.workspace }}
           ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
-          ADBOT_AD_SPEC: ${{ inputs.spec_path || 'scripts/clone_specs/kl_event_retarget.json' }}
+          ADBOT_AD_SPEC: ${{ inputs.spec_path || 'scripts/clone_specs/july_bread_parents.json' }}
           META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
           META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
         run: python scripts/clone_test.py
