@@ -6,7 +6,7 @@ from adbot import cpa
 from adbot.monitor_cpl import (CPL_GRACE_NEW, GRACE_BRAKE, INSUFFICIENT_SPEND, MANUAL_HOLD,
                                NO_RESULTS_YET, OVER_THRESHOLD, WITHIN_THRESHOLD, ZERO_RESULTS,
                                cpl_window, decide, evaluate_account, extract_results, parse_metrics,
-                               result_action_type, webinars_since, _week_start_thursday)
+                               result_action_type, webinars_since, _week_start_thursday, LEAD_QUALITY, _mkey)
 from adbot.settings import CpaCfg, KpiCfg, MetaCfg, Settings
 
 KPI = KpiCfg(cpl_threshold_myr=40, cpl_min_spend_myr=80, pause_zero_lead_after_spend=True)
@@ -347,3 +347,84 @@ def test_calendar_age_and_webinar_clock_disagree():
                  webinar_weekday=2, cpl_grace_webinars=1, webinar_settle_days=1)
     assert (judged - born).days > kpi.cpl_grace_days          # day-clock says "judge it"
     assert webinars_since(born, judged, kpi) == 0             # webinar-clock says "not yet"
+
+
+# ── lead-quality gate: many registrations, zero buyers -> pause regardless of CPL ──────────
+# Registration-optimised delivery rewards exactly the hooks that attract non-buyers, because
+# their sign-ups are cheapest. CPL cannot see this; the gate can.
+
+def _lq_settings(**kpi_extra):
+    kpi = dict(cpl_threshold_myr=55, cpl_min_spend_myr=100, cpl_lookback="last_3d",
+               pause_zero_lead_after_spend=True, lead_quality_min_regs=30)
+    kpi.update(kpi_extra)
+    return Settings(meta=MetaCfg(conversion_event="COMPLETE_REGISTRATION"),
+                    kpi=KpiCfg(**kpi),
+                    cpa=CpaCfg(enabled=True, conversion_days=14, min_spend_myr=1000,
+                               healthy_max_myr=800, max_acceptable_myr=960, hard_stop_myr=1300))
+
+
+def _lq_graph(spend, results):
+    campaigns = [{"id": "c1", "name": "camp", "effective_status": "ACTIVE"}]
+    ads = {"c1": [_ad("burner", created_time="2026-01-01")]}
+    return _FakeGraph(campaigns, ads, {"burner": _reg_insight(spend, results)})
+
+
+def test_lead_quality_pauses_cheap_cpl_with_zero_sales():
+    """The 早餐卡长高 case: CPL well under threshold, dozens of sign-ups, not one buyer."""
+    g = _lq_graph(spend=480, results=10)                     # CPL 48 — passes the CPL check
+    d = evaluate_account(g, _lq_settings(),
+                         cpa_ctx=({}, {"burner": 3083.0}, {"burner": 64.0}))[0]
+    assert d.should_pause is True
+    assert d.reason == LEAD_QUALITY
+
+
+def test_lead_quality_spares_an_ad_below_the_reg_floor():
+    g = _lq_graph(spend=480, results=10)
+    d = evaluate_account(g, _lq_settings(),
+                         cpa_ctx=({}, {"burner": 900.0}, {"burner": 12.0}))[0]
+    assert d.should_pause is False                            # 12 regs — not enough evidence
+
+
+def test_lead_quality_never_touches_an_ad_with_a_sale():
+    g = _lq_graph(spend=480, results=10)
+    sold = {(_mkey("camp"), cpa.ad_key("burner")): 1}
+    d = evaluate_account(g, _lq_settings(),
+                         cpa_ctx=(sold, {"burner": 700.0}, {"burner": 64.0}))[0]
+    assert d.should_pause is False                            # a buyer exists — CPA's call now
+
+
+def test_lead_quality_waits_for_the_webinar():
+    """An ad that has not sat through a webinar is not judged — its regs never had the chance."""
+    campaigns = [{"id": "c1", "name": "camp", "effective_status": "ACTIVE"}]
+    ads = {"c1": [_ad("young", created_time="2026-08-14")]}   # born Fri after the Wed webinar
+    g = _FakeGraph(campaigns, ads, {"young": _reg_insight(480, 10)})
+    s = _lq_settings(webinar_weekday=2, cpl_grace_webinars=1, webinar_settle_days=1)
+    import adbot.monitor_cpl as m
+    real_dt = m.dt
+
+    class _FrozenDate(real_dt.datetime):
+        @classmethod
+        def utcnow(cls):
+            return real_dt.datetime(2026, 8, 18, 4, 0)        # judged Tue before its first webinar
+
+    m.dt.datetime = _FrozenDate
+    try:
+        d = evaluate_account(g, s, cpa_ctx=({}, {"young": 1000.0}, {"young": 40.0}))[0]
+    finally:
+        m.dt.datetime = real_dt.datetime
+    assert d.should_pause is False
+    assert d.reason != LEAD_QUALITY
+
+
+def test_lead_quality_disabled_by_default():
+    g = _lq_graph(spend=480, results=10)
+    d = evaluate_account(g, _lq_settings(lead_quality_min_regs=0),
+                         cpa_ctx=({}, {"burner": 3083.0}, {"burner": 64.0}))[0]
+    assert d.should_pause is False
+
+
+def test_two_tuple_cpa_ctx_still_works():
+    """Old callers pass (sold, spend60) — the gate simply has no reg data and stays quiet."""
+    g = _lq_graph(spend=480, results=10)
+    d = evaluate_account(g, _lq_settings(), cpa_ctx=({}, {"burner": 3083.0}))[0]
+    assert d.should_pause is False

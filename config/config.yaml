@@ -88,6 +88,12 @@ kpi:
   webinar_weekday: 2                     # Mon=0 .. Wed=2 — the weekly webinar
   cpl_grace_webinars: 1                  # an ad must sit through this many before CPL can pause it
   webinar_settle_days: 1                 # wait this long after a webinar before counting it
+  # Lead-quality gate: this many 60-day registrations with ZERO matched paid sales pauses the ad
+  # no matter how pretty its CPL is. Registration-optimised delivery rewards exactly the hooks
+  # that attract non-buyers (their sign-ups are cheapest) — 早餐卡长高 reached CPL RM48 on 64
+  # sign-ups and not one buyer. The webinar grace still applies first: an ad that has not sat
+  # through a webinar is not judged.
+  lead_quality_min_regs: 30
   # Brakes on that grace, so a young ad can't burn unchecked (Hook 4 reached CPL 93 / ~RM1,200 with
   # 0 sales while "protected"). Both only ever fire on an ad with ZERO matched paid sales — one with
   # real sales at an acceptable CPA is kept by CPA-rescue, which runs first and wins.

@@ -25,6 +25,7 @@ NO_RESULTS_YET = "no_results_yet"
 MANUAL_HOLD = "manual_hold"  # owner asked to keep this ad running despite CPL
 CPL_GRACE_NEW = "cpl_grace_new_ad"  # young ad over CPL — exempted so its leads can mature to sales
 GRACE_BRAKE = "cpl_grace_brake"     # young ad burning too hard with no sales — grace withdrawn
+LEAD_QUALITY = "lead_quality_regs_no_sales"  # plenty of sign-ups, zero buyers — the CPL is a lie
 
 
 def grace_braked(spend: float, cpl: Optional[float], cpa_sales: int, kpi: KpiCfg) -> bool:
@@ -159,11 +160,14 @@ def _mkey(name: str) -> str:
 def build_cpa_context(graph, settings: Settings, today: dt.date):
     """(60-day sales by (campaign,ad), 60-day spend by ad_id) for the CPA gate.
 
+    Also returns 60-day registrations by ad_id, read from the same insights call at no extra
+    API cost — the lead-quality gate needs sign-ups and sales side by side.
+
     Returns empty dicts when CPA is disabled or any source is unavailable, so a Sheets/Meta
     hiccup degrades the monitor to CPL-only rather than breaking it.
     """
     if not settings.cpa.enabled:
-        return {}, {}
+        return {}, {}, {}
     try:
         from .clients.sheets import SheetsClient
         values = SheetsClient(settings.secrets.google_sa_json).read_tab(
@@ -175,18 +179,21 @@ def build_cpa_context(graph, settings: Settings, today: dt.date):
             if s.date and s.date > cutoff:
                 key = (_mkey(s.campaign), cpa.ad_key(s.ad))
                 sold[key] = sold.get(key, 0) + 1
+        token = result_action_type(settings.meta.conversion_event)
         spend: Dict[str, float] = {}
+        regs: Dict[str, float] = {}
         for row in graph.account_insights(
-                settings.meta.account_path, level="ad", fields="ad_id,spend",
+                settings.meta.account_path, level="ad", fields="ad_id,spend,actions",
                 time_range={"since": cutoff.isoformat(), "until": today.isoformat()}):
             try:
                 spend[row.get("ad_id")] = float(row.get("spend") or 0)
             except (TypeError, ValueError):
                 continue
-        return sold, spend
+            regs[row.get("ad_id")] = extract_results(row.get("actions"), token)
+        return sold, spend, regs
     except Exception as exc:  # noqa: BLE001
         get_logger().warning("CPA context unavailable (%s) — CPL-only this run", exc)
-        return {}, {}
+        return {}, {}, {}
 
 
 def evaluate_account(graph, settings: Settings, *, cpa_ctx=None) -> List[AdDecision]:
@@ -203,7 +210,8 @@ def evaluate_account(graph, settings: Settings, *, cpa_ctx=None) -> List[AdDecis
     want_event = (settings.meta.conversion_event or "").upper()
     today = (dt.datetime.utcnow() + dt.timedelta(hours=8)).date()  # MYT
     cpl_preset, cpl_range = cpl_window(settings, today)
-    sold60, spend60 = cpa_ctx if cpa_ctx is not None else build_cpa_context(graph, settings, today)
+    ctx = cpa_ctx if cpa_ctx is not None else build_cpa_context(graph, settings, today)
+    sold60, spend60, regs60 = ctx if len(ctx) == 3 else (ctx[0], ctx[1], {})
     use_cpa = settings.cpa.enabled and (bool(sold60) or bool(spend60))
     tiers = cpa.CpaTiers(settings.cpa.healthy_max_myr, settings.cpa.max_acceptable_myr,
                          settings.cpa.hard_stop_myr)
@@ -274,6 +282,18 @@ def evaluate_account(graph, settings: Settings, *, cpa_ctx=None) -> List[AdDecis
                     reason = GRACE_BRAKE   # burning too hard to shelter — the pause stands
                 else:
                     should_pause, reason = False, CPL_GRACE_NEW
+
+            # Lead-quality gate: an ad can hold a beautiful CPL for months while producing
+            # registrants who never buy — 60+ sign-ups with zero sales is not bad luck, it is the
+            # hook selecting the wrong people, and registration-optimised delivery keeps feeding
+            # it BECAUSE its sign-ups are cheap. Enough 60-day registrations with zero matched
+            # sales pauses the ad regardless of CPL. A manual hold still wins; an ad that has not
+            # yet sat through a webinar is not judged (its registrants never had the chance to
+            # buy); and without the sheet (use_cpa) silence is not evidence of anything.
+            min_regs = settings.kpi.lead_quality_min_regs
+            if (not should_pause and not held and use_cpa and min_regs > 0 and not unproven
+                    and n_sales == 0 and regs60.get(ad["id"], 0) >= min_regs):
+                should_pause, reason = True, LEAD_QUALITY
 
             decisions.append(AdDecision(ad["id"], name, spend, results, cpl, should_pause, reason,
                                         cpa=cpa_val, cpa_sales=n_sales, age_days=age))

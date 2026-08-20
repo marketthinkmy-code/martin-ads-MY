@@ -19,8 +19,11 @@ Spec JSON (path via ADBOT_AD_SPEC, default scripts/clone_specs/fnr_v11_v15.json)
   start_time       ISO-8601 WITH offset — the ad set is created scheduled for that moment. Meta
                    refuses to edit start_time once an ad set "has started", and it counts as
                    started from creation even while PAUSED, so this can only be set here.
-  adsets[]         {name, budget_myr, custom_audience_ids[]} — build SEVERAL ad sets, each with
-                   its own budget (ABO) and its own audience, all running the SAME ads. Use this
+  adsets[]         {name, budget_myr, custom_audience_ids[], ads[]} — build SEVERAL ad sets, each
+                   with its own budget (ABO), its own audience, and (optionally) its OWN ads[];
+                   a plan without ads[] runs the spec-level ads. One ad per ad set is the
+                   guaranteed-spend structure: inside a shared ad set, delivery starves all but
+                   the early favourite — which is how proven winners end up untested. Use this
                    to compare audiences: the creatives are then the constant and the audience is
                    the only variable. Without it, one ad set is built on the campaign budget (CBO).
   advantage_audience  0 to switch Meta's audience expansion OFF for this build. Required when the
@@ -148,33 +151,32 @@ def main() -> None:
               + (f"  starts {spec['start_time']}" if spec.get("start_time") else ""))
         print(f"          {json.dumps(targeting, ensure_ascii=False)[:240]}")
 
-    # Mint each creative once, then place it in every ad set: reusing one creative_id keeps the
-    # ads twins of each other, so the only difference between ad sets stays the audience.
-    resolved = []
-    for item in spec["ads"]:
+    # Resolve each creative once (cached) even when several ad sets carry the same entry —
+    # existing-post ads keep pooling their social proof through one page post either way.
+    _cache: dict = {}
+
+    def resolve(item):
         if item.get("post_id"):
-            # Existing-post ad: mint a creative that points at the page post. url_tags still ride
-            # along so UTMs keep resolving per ad name.
-            fields = {"object_story_id": str(item["post_id"])}
-            if m.url_tags:
-                fields["url_tags"] = m.url_tags
-            creative_id = graph.create_adcreative(account, **fields)["id"]
-            src = f"post {item['post_id']} -> creative {creative_id}"
-        else:
-            creative_id = str(item["creative_id"])
-            src = f"creative {creative_id}"
-        resolved.append((item["name"], creative_id, src))
+            key = ("post", str(item["post_id"]))
+            if key not in _cache:
+                fields = {"object_story_id": str(item["post_id"])}
+                if m.url_tags:
+                    fields["url_tags"] = m.url_tags
+                _cache[key] = graph.create_adcreative(account, **fields)["id"]
+            return _cache[key], f"post {item['post_id']} -> creative {_cache[key]}"
+        return str(item["creative_id"]), f"creative {item['creative_id']}"
 
     ad_ids = []
-    for aid in adset_ids:
-        for name, creative_id, src in resolved:
+    for aid, plan in zip(adset_ids, plans):
+        for item in plan.get("ads") or spec["ads"]:
+            creative_id, src = resolve(item)
             ad = graph.create_ad(
-                account, name=name, adset_id=aid,
+                account, name=item["name"], adset_id=aid,
                 creative={"creative_id": creative_id}, status="PAUSED",
                 conversion_domain=m.conversion_domain_bare or None,
             )
             ad_ids.append(ad["id"])
-            print(f"  ad {ad['id']} in {aid} <- {src} ({name}) - PAUSED")
+            print(f"  ad {ad['id']} in {aid} <- {src} ({item['name']}) - PAUSED")
 
     print("DONE " + json.dumps(
         {"campaign_id": cid, "adset_ids": adset_ids, "ad_ids": ad_ids}, ensure_ascii=False))

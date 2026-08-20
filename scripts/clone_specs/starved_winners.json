@@ -1,0 +1,24 @@
+{
+  "campaign_name": "[MY] 儿童长高方程式 | 被饿死的赢家 · 每条保底 RM100 | 1-3-1 (ABO)",
+  "source_adset_id": "120247702962070575",
+  "also_exclude": ["120248429743500575"],
+  "adsets": [
+    {
+      "name": "保底 · Extra Video 1 鼻子敏感 (历史CPA RM100)",
+      "budget_myr": 100,
+      "ads": [{ "name": "Extra Video 1- 鼻子敏感", "creative_id": "120212417161640575" }]
+    },
+    {
+      "name": "保底 · Hook 18 13岁141cm (历史CPA RM122)",
+      "budget_myr": 100,
+      "ads": [{ "name": "Hook 18：13 141cm", "creative_id": "26679269841677222" }]
+    },
+    {
+      "name": "保底 · MAR Hook 3 准备早餐面包 (历史CPA RM348)",
+      "budget_myr": 100,
+      "ads": [{ "name": "MAR Video Hook 3: 准备早餐面包", "creative_id": "1414164819807443" }]
+    }
+  ],
+  "ads": [],
+  "_note": "The three cheapest proven buyers that currently receive no budget at all. One ad per ad set at a fixed RM100/day: inside a shared ad set delivery would starve two of them, which is exactly how they went untested. F&R clone targeting; each uses its highest-spend historical creative so the social proof rides along."
+}
