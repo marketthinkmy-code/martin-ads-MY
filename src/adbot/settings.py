@@ -158,6 +158,9 @@ class KpiCfg(BaseModel):
     webinar_weekday: Optional[int] = None
     cpl_grace_webinars: int = 1
     webinar_settle_days: int = 1
+    # Pause an ad whose 60-day registrations reach this count with ZERO matched paid sales — a
+    # cheap CPL made of people who never buy is the most expensive traffic there is. 0 disables.
+    lead_quality_min_regs: int = 0
     cpl_hold: List[str] = Field(default_factory=list)  # ad-name substrings temporarily exempt from auto-pause
 
 

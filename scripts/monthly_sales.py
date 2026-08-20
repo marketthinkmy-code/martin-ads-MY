@@ -179,6 +179,28 @@ def main() -> None:
         table(rs, lambda r: r.adset, "广告组 (ad set)")
         table(rs, lambda r: r.campaign, "campaign")
 
+    # ── lifetime ranking per creative ────────────────────────────────────────────────────────
+    # Ranked on every sale the ad ever made, MY and SG together: the creatives are uploaded to
+    # both accounts, so a hook that converts in one market is evidence about the hook itself. The
+    # MY column is broken out beside it because a MY campaign still wants MY proof.
+    cutoff60 = today - dt.timedelta(days=60)
+    by_ad: dict[str, list] = defaultdict(list)
+    for r in rows:                      # rows, not `dated` — an undated sale still happened
+        by_ad[(r.ad or "").strip() or "(空白)"].append(r)
+
+    def tally(rs):
+        my = [x for x in rs if x.market == "MY"]
+        d60 = [x for x in rs if x.date and x.date > cutoff60]
+        my60 = [x for x in my if x.date and x.date > cutoff60]
+        return len(rs), len(my), len(d60), len(my60)
+
+    ranked = sorted(by_ad.items(), key=lambda kv: -len(kv[1]))
+    print("\n\n########## TOP ADS BY LIFETIME CONVERSIONS ##########")
+    print(f"  {'#':>3} {'life':>5} {'MY':>5} {'60d':>5} {'MY60':>5}   ad")
+    for i, (name, rs) in enumerate(ranked[:15], 1):
+        life, my, d60, my60 = tally(rs)
+        print(f"  {i:>3} {life:>5} {my:>5} {d60:>5} {my60:>5}   {name[:60]}")
+
     print("\n\n########## 同期其他市场 (已排除) ##########")
     for mkt in ("SG", "US", "OTHER", "UNKNOWN"):
         rs = [r for r in dated if r.market == mkt and (r.date.year, r.date.month) in MONTHS]

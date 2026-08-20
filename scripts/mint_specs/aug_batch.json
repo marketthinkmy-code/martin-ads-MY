@@ -1,0 +1,104 @@
+{
+  "videos": [
+    {
+      "key": "a1_slow_eater_h1",
+      "drive_file_id": "1R8_3nxHWyJw6NKXHgt81a2c-KSPOUzX6",
+      "video_name": "马丁 AUG 吃饭很慢 hook 1",
+      "content_id": "aug_slow_eater_h1",
+      "ad_name": "吃饭很慢 Hook 1",
+      "headline": "🔴 想让孩子健康长高？我可以帮助你！",
+      "body_file": "scripts/mint_specs/aug_batch.body.txt",
+      "video_id": "886427584316229"
+    },
+    {
+      "key": "a2_slow_eater_h2",
+      "drive_file_id": "1vLjCZT4U-p6Zy1Q6GxGSvJQKonX76MeR",
+      "video_name": "马丁 AUG 吃饭很慢 hook 2",
+      "content_id": "aug_slow_eater_h2",
+      "ad_name": "吃饭很慢 Hook 2",
+      "headline": "🔴 想让孩子健康长高？我可以帮助你！",
+      "body_file": "scripts/mint_specs/aug_batch.body.txt",
+      "video_id": "28398497873171884"
+    },
+    {
+      "key": "a3_milk_acne",
+      "drive_file_id": "1dzTlkur8bkzgt4lAoDX5cxnJYaEwJrFV",
+      "video_name": "马丁 AUG 还在喝牛奶长痘痘",
+      "content_id": "aug_milk_acne",
+      "ad_name": "还在喝牛奶、长痘痘？",
+      "headline": "🔴 想让孩子健康长高？我可以帮助你！",
+      "body_file": "scripts/mint_specs/aug_batch.body.txt",
+      "video_id": "1380532420721822"
+    },
+    {
+      "key": "a4_no_milk",
+      "drive_file_id": "1OXGC59aMkjefu36e11RO6fdYBYaqaCQY",
+      "video_name": "马丁 AUG 我不会买牛奶给我孩子喝",
+      "content_id": "aug_no_milk",
+      "ad_name": "我不会买牛奶给我孩子喝",
+      "headline": "🔴 想让孩子健康长高？我可以帮助你！",
+      "body_file": "scripts/mint_specs/aug_batch.body.txt",
+      "video_id": "1404816381528642"
+    },
+    {
+      "key": "b1_growth_hormone",
+      "drive_file_id": "1imskPZlvx-7Ubf40jpc_3m9zn7pnXyaP",
+      "video_name": "马丁 AUG 生长激素",
+      "content_id": "aug_growth_hormone",
+      "ad_name": "生长激素",
+      "headline": "🔴 想让孩子健康长高？我可以帮助你！",
+      "body_file": "scripts/mint_specs/aug_batch.body.txt",
+      "video_id": "1042338908503515"
+    },
+    {
+      "key": "b2_sleep",
+      "drive_file_id": "10qvimR_-JCZ6y03NudfwcstB7DUjjiAA",
+      "video_name": "马丁 AUG 睡眠品质差",
+      "content_id": "aug_sleep_quality",
+      "ad_name": "睡眠品质差",
+      "headline": "🔴 想让孩子健康长高？我可以帮助你！",
+      "body_file": "scripts/mint_specs/aug_batch.body.txt",
+      "video_id": "28042703458724757"
+    },
+    {
+      "key": "b3_sinus",
+      "drive_file_id": "1EV_7mNqFhUptFCrkRiPkX2Uh_pkSs7wv",
+      "video_name": "马丁 AUG Sinus hook",
+      "content_id": "aug_sinus",
+      "ad_name": "Sinus：孩子鼻子敏感",
+      "headline": "🔴 想让孩子健康长高？我可以帮助你！",
+      "body_file": "scripts/mint_specs/aug_batch.body.txt",
+      "video_id": "1046707624952666"
+    },
+    {
+      "key": "c1_sports_no",
+      "drive_file_id": "1uQ1rjia4dLvoPaLas9tbbPwHE5LXMGTp",
+      "video_name": "马丁 AUG 運動就能長高No",
+      "content_id": "aug_sports_no",
+      "ad_name": "運動就能長高？！No！",
+      "headline": "🔴 想让孩子健康长高？我可以帮助你！",
+      "body_file": "scripts/mint_specs/aug_batch.body.txt",
+      "video_id": "2026950974603748"
+    },
+    {
+      "key": "c2_hate_hearing",
+      "drive_file_id": "14zhgVDAF4KFamdjieooGVT97-FDnBG-l",
+      "video_name": "马丁 AUG 我最討厭聽到",
+      "content_id": "aug_hate_hearing",
+      "ad_name": "我最討厭聽到的一句话",
+      "headline": "🔴 想让孩子健康长高？我可以帮助你！",
+      "body_file": "scripts/mint_specs/aug_batch.body.txt",
+      "video_id": "1104497981900069"
+    },
+    {
+      "key": "c3_kids_5_15",
+      "drive_file_id": "1kAkmBNfLnol2ocXVJXddV8vxNL5riCWC",
+      "video_name": "马丁 AUG 如果你有孩子是5-15岁 hook",
+      "content_id": "aug_kids_5_15",
+      "ad_name": "如果你的孩子是 5–15 岁",
+      "headline": "🔴 想让孩子健康长高？我可以帮助你！",
+      "body_file": "scripts/mint_specs/aug_batch.body.txt",
+      "video_id": "1382694610651537"
+    }
+  ]
+}

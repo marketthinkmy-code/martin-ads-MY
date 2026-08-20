@@ -1,0 +1,45 @@
+name: adbot · spend vs MY sales (manual)
+
+# Read-only: joins what each creative COST (this ad account) to what it SOLD (Paid Student List,
+# market resolved by the buyer's dial code) and asks whether the budget is following the buyers.
+# Reports CPL, CPA and regs-per-sale side by side — the last one is the lead-quality number that
+# registration cost alone cannot show. No writes.
+
+on:
+  workflow_dispatch:
+    inputs:
+      window_days:
+        description: "lookback in days for both spend and sales"
+        type: string
+        required: false
+        default: "90"
+  push:
+    branches: ["claude/sweet-curie-b6vql4"]
+    paths:
+      - ".github/workflows/adbot-spend-vs-sales.yml"
+      - "scripts/spend_vs_sales.py"
+
+concurrency:
+  group: adbot-spend-vs-sales
+  cancel-in-progress: false
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install .
+      - name: Spend vs MY sales
+        env:
+          ADBOT_ROOT: ${{ github.workspace }}
+          ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
+          GOOGLE_SERVICE_ACCOUNT_JSON_B64: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON_B64 }}
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
+          META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
+          ADBOT_WINDOW_DAYS: ${{ inputs.window_days || '90' }}
+        run: python scripts/spend_vs_sales.py
