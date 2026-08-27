@@ -1,0 +1,45 @@
+{
+  "campaign_name": "MARTIN-MY | Winners Hook-Matched | 1-5-1 均匀保底 RM50 (ABO)",
+  "source_adset_id": "120247433845320575",
+  "also_exclude": [
+    "120248429743500575"
+  ],
+  "adsets": [
+    {
+      "name": "什麼樣的孩子 · Hook · RM50保底",
+      "budget_myr": 50,
+      "ads": [
+        { "name": "Video: 什麼樣的孩子基本上不會再長高 · Hook", "creative_id": "4774412119504704" }
+      ]
+    },
+    {
+      "name": "H2 面包牛奶 · Hook · RM50保底",
+      "budget_myr": 50,
+      "ads": [
+        { "name": "Video：H2 面包牛奶一点都不健康 · Hook", "creative_id": "2904644519883869" }
+      ]
+    },
+    {
+      "name": "孩子15岁以上 · RM50保底",
+      "budget_myr": 50,
+      "ads": [
+        { "name": "Video: 孩子15岁以上还有机会长高吗？", "creative_id": "2054735945280092" }
+      ]
+    },
+    {
+      "name": "H2 早餐卡长高 · RM50保底",
+      "budget_myr": 50,
+      "ads": [
+        { "name": "Video：H2 早餐卡长高", "creative_id": "891802150634695" }
+      ]
+    },
+    {
+      "name": "排队站最前 · RM50保底",
+      "budget_myr": 50,
+      "ads": [
+        { "name": "Video：排队站最前", "creative_id": "1335648018708135" }
+      ]
+    }
+  ],
+  "_note": "2026-08-27 operator order: Scale CBO's 1-1-5 keeps starving four ads while CBO feeds one (RM126 to 什麼樣的孩子·Hook today alone). Meta cannot convert a CBO campaign to ABO in place, so this is the rebuilt ABO twin: same broad A+A FB-only targeting (cloned from 120247433845320575), same five creatives reused by creative_id, one per ad set at a fixed RM50/day with budget sharing off — every ad is guaranteed its money. Built PAUSED; the old CBO campaign should be paused when this one is switched on."
+}
