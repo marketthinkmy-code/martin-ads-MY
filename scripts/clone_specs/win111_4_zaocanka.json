@@ -1,0 +1,17 @@
+{
+  "campaign_name": "MARTIN-MY | 1-1-1 | H2 早餐卡长高 | RM50",
+  "source_adset_id": "120247433845320575",
+  "also_exclude": [
+    "120248429743500575"
+  ],
+  "adsets": [
+    {
+      "name": "H2 早餐卡长高 · Winners Broad",
+      "budget_myr": 50,
+      "ads": [
+        { "name": "Video：H2 早餐卡长高", "creative_id": "891802150634695" }
+      ]
+    }
+  ],
+  "_note": "4 of 5. Historically the cheapest-regs / zero-buyer profile — the monitor's lead-quality gate and grace brakes watch it like every other ad."
+}
