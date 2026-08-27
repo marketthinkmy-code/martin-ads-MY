@@ -116,20 +116,29 @@ def main() -> None:
                                     "custom_audience_ids": spec.get("custom_audience_ids")}]
     abo = len(plans) > 1
 
-    campaign_fields = dict(
-        name=spec["campaign_name"], objective=m.objective, buying_type="AUCTION",
-        status="PAUSED", special_ad_categories=m.special_ad_categories,
-    )
-    if abo:
-        # Meta demands this be stated outright once the budget lives on the ad sets. "true" would
-        # let them lend each other 20% of their budget — which is precisely what a band comparison
-        # must not allow, or a band's spend is no longer its own.
-        campaign_fields["is_adset_budget_sharing_enabled"] = "false"
+    existing = spec.get("existing_campaign_id")
+    if existing:
+        # Attach the new ad sets to a campaign that ALREADY exists instead of creating one.
+        # No ad-set budget is sent: the parent runs campaign budgeting (CBO) and Meta refuses
+        # ad-set budgets under it — the operator toggles ABO in Ads Manager and assigns the
+        # per-ad-set budgets there. The campaign itself is never edited here.
+        cid = str(existing)
+        print(f"[campaign] {cid}  (existing — attaching ad sets; budgets left to the operator)")
     else:
-        campaign_fields.update(daily_budget=m.budget.daily_amount_cents,
-                               bid_strategy="LOWEST_COST_WITHOUT_CAP")
-    cid = graph.create_campaign(account, **campaign_fields)["id"]
-    print(f"[campaign] {cid}  ({'ABO - budget per ad set' if abo else 'CBO'})")
+        campaign_fields = dict(
+            name=spec["campaign_name"], objective=m.objective, buying_type="AUCTION",
+            status="PAUSED", special_ad_categories=m.special_ad_categories,
+        )
+        if abo:
+            # Meta demands this be stated outright once the budget lives on the ad sets. "true"
+            # would let them lend each other 20% of their budget — which is precisely what a band
+            # comparison must not allow, or a band's spend is no longer its own.
+            campaign_fields["is_adset_budget_sharing_enabled"] = "false"
+        else:
+            campaign_fields.update(daily_budget=m.budget.daily_amount_cents,
+                                   bid_strategy="LOWEST_COST_WITHOUT_CAP")
+        cid = graph.create_campaign(account, **campaign_fields)["id"]
+        print(f"[campaign] {cid}  ({'ABO - budget per ad set' if abo else 'CBO'})")
 
     adset_ids = []
     for plan in plans:
@@ -139,7 +148,7 @@ def main() -> None:
             optimization_goal=m.optimization_goal, billing_event="IMPRESSIONS",
             promoted_object=m.promoted_object, targeting=targeting, status="PAUSED",
         )
-        if abo:
+        if abo and not existing:
             fields["daily_budget"] = int(round(float(plan.get("budget_myr", 100)) * 100))
             fields["bid_strategy"] = "LOWEST_COST_WITHOUT_CAP"
         if spec.get("start_time"):
@@ -147,7 +156,7 @@ def main() -> None:
         aid = graph.create_adset(account, **fields)["id"]
         adset_ids.append(aid)
         print(f"  [adset] {aid}  {plan['name']}"
-              + (f"  RM{float(plan.get('budget_myr', 100)):,.0f}/day" if abo else "")
+              + (f"  RM{float(plan.get('budget_myr', 100)):,.0f}/day" if abo and not existing else "")
               + (f"  starts {spec['start_time']}" if spec.get("start_time") else ""))
         print(f"          {json.dumps(targeting, ensure_ascii=False)[:240]}")
 

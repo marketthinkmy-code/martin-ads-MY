@@ -1,0 +1,40 @@
+{
+  "existing_campaign_id": "120247433765670575",
+  "source_adset_id": "120247433845320575",
+  "also_exclude": [
+    "120248429743500575"
+  ],
+  "adsets": [
+    {
+      "name": "什麼樣的孩子 · Hook",
+      "ads": [
+        { "name": "Video: 什麼樣的孩子基本上不會再長高 · Hook", "creative_id": "4774412119504704" }
+      ]
+    },
+    {
+      "name": "H2 面包牛奶 · Hook",
+      "ads": [
+        { "name": "Video：H2 面包牛奶一点都不健康 · Hook", "creative_id": "2904644519883869" }
+      ]
+    },
+    {
+      "name": "孩子15岁以上",
+      "ads": [
+        { "name": "Video: 孩子15岁以上还有机会长高吗？", "creative_id": "2054735945280092" }
+      ]
+    },
+    {
+      "name": "H2 早餐卡长高",
+      "ads": [
+        { "name": "Video：H2 早餐卡长高", "creative_id": "891802150634695" }
+      ]
+    },
+    {
+      "name": "排队站最前",
+      "ads": [
+        { "name": "Video：排队站最前", "creative_id": "1335648018708135" }
+      ]
+    }
+  ],
+  "_note": "2026-08-27 operator: duplicate the ad set INSIDE the existing Scale CBO campaign (120247433765670575) — five single-ad ad sets cloning the original Winners Broad targeting, one per creative, so each ad gets its own budget slot. No campaign is created and no budgets are sent: the operator toggles ABO/CBO and assigns per-ad-set budgets in Ads Manager. Everything created PAUSED; the original 1-1-5 ad set is not touched."
+}
