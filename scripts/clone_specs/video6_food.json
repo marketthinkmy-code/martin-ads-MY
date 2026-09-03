@@ -1,0 +1,21 @@
+{
+  "existing_campaign_id": "120248670464950575",
+  "source_adset_id": "120248670465450575",
+  "start_time": "2026-09-04T00:00:00+0800",
+  "also_exclude": [
+    "120248429743500575"
+  ],
+  "adsets": [
+    {
+      "name": "Food & Drink + Milk + Bread",
+      "budget_myr": 50,
+      "ads": [
+        {
+          "name": "Video 6：我也是爸爸",
+          "post_id": "POST_ID_TBD"
+        }
+      ]
+    }
+  ],
+  "_note": "2026-09-03 operator: Video 6 我也是爸爸 added to the existing Top10 RM50 campaign as ONE more ad set (targeting cloned from a sibling ad set, so identical audience), RM50/day under the ABO parent, ad on the post minted by video6_father.json so all three audiences pool one post. Scheduled 4 Sep 2026 00:00 MYT, PAUSED — operator activates."
+}
