@@ -20,16 +20,16 @@ Spec JSON (path via ADBOT_AD_SPEC, default scripts/clone_specs/fnr_v11_v15.json)
                    refuses to edit start_time once an ad set "has started", and it counts as
                    started from creation even while PAUSED, so this can only be set here.
   adsets[]         {name, budget_myr, custom_audience_ids[], ads[]} — build SEVERAL ad sets, each
-                   NAMING RULE (operator, 2026-09-03): an ad set is named after its TARGETING
-                   ("Parents 3-17 + Engaged", "Family and Relationships", "Food & Drink +
-                   Milk + Bread"), never after the ad inside it — five identical names in a
-                   1-5-1 campaign are intended; the ad name is what tells them apart.
                    with its own budget (ABO), its own audience, and (optionally) its OWN ads[];
                    a plan without ads[] runs the spec-level ads. One ad per ad set is the
                    guaranteed-spend structure: inside a shared ad set, delivery starves all but
                    the early favourite — which is how proven winners end up untested. Use this
                    to compare audiences: the creatives are then the constant and the audience is
                    the only variable. Without it, one ad set is built on the campaign budget (CBO).
+                   NAMING RULE (operator, 2026-09-03): an ad set is named after its TARGETING
+                   ("Parents 3-17 + Engaged", "Family and Relationships", "Food & Drink +
+                   Milk + Bread"), never after the ad inside it — five identical names in a
+                   1-5-1 campaign are intended; the ad name is what tells them apart.
   advantage_audience  0 to switch Meta's audience expansion OFF for this build. Required when the
                    ad sets differ only by audience: with it ON, Meta may deliver outside each
                    lookalike band, the bands blur into each other, and the comparison measures
