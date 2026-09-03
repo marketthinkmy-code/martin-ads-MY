@@ -84,13 +84,18 @@ def main() -> None:
             # only narrows what Meta chose — the audience IS the targeting.
             tgt = m.targeting.to_spec()
             tgt["custom_audiences"] = [{"id": str(a)} for a in ids]
-        elif spec.get("interests"):
+        elif spec.get("interests") or spec.get("behaviors"):
             # Brand-new audience: the account's standard targeting (MY / age / Chinese locale /
             # excluded customer lists) plus the interest ids, so the ONLY variable versus a proven
-            # ad set is the interest itself. Ids must come from find_interests.py — never invented.
+            # ad set is the interest itself. Ids must come from find_interests.py or a read of a
+            # live ad set — never invented. behaviors[] (e.g. Engaged Shoppers) join the same
+            # flexible_spec group, i.e. they widen it (OR), exactly as the source ad sets do.
             tgt = m.targeting.to_spec()
-            tgt["flexible_spec"] = [{"interests": [
-                {"id": str(i["id"]), "name": i.get("name", "")} for i in spec["interests"]]}]
+            group = {}
+            for key in ("interests", "behaviors"):
+                if spec.get(key):
+                    group[key] = [{"id": str(i["id"]), "name": i.get("name", "")} for i in spec[key]]
+            tgt["flexible_spec"] = [group]
         else:
             tgt = _clone_targeting(graph, spec["source_adset_id"])
 
