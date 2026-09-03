@@ -1,0 +1,48 @@
+name: adbot · rename entities (manual)
+
+# Rename campaigns / ad sets / ads WITHOUT touching status, budget or delivery. The interactive
+# connector's ads_update_entity force-pauses whatever it edits, so renames go through the
+# system-user token and POST only the name field. Names live in a JSON spec because they carry
+# CJK / emoji / pipes that an env-var pair format would mangle.
+#
+# Push trigger fires on THIS file and its script only — isolated from every other workflow.
+# Spec commits use [skip ci]; runs are dispatched explicitly with spec_path.
+
+on:
+  workflow_dispatch:
+    inputs:
+      spec_path:
+        description: "rename spec JSON, repo-relative"
+        type: string
+        required: false
+        default: "scripts/rename_specs/star_winners.json"
+  push:
+    branches: ["claude/sweet-curie-b6vql4"]
+    paths:
+      - ".github/workflows/adbot-rename.yml"
+      - "scripts/rename_entities.py"
+
+concurrency:
+  group: adbot-rename
+  cancel-in-progress: false
+
+jobs:
+  rename:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install .
+      - name: Rename entities
+        env:
+          ADBOT_ROOT: ${{ github.workspace }}
+          ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
+          META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
+          META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
+          # 2026-09-03: 🌟-prefix the three reopened winner chains (campaigns + ads) so the
+          # operator can see at a glance which entities sold and must not be hand-paused.
+          ADBOT_RENAME_SPEC: ${{ inputs.spec_path || 'scripts/rename_specs/star_winners.json' }}
+        run: python scripts/rename_entities.py
