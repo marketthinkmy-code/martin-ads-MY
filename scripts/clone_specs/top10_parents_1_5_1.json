@@ -7,40 +7,55 @@
   ],
   "adsets": [
     {
-      "name": "鼻窦炎 V1 · RM50",
+      "name": "Parents 3-17 + Engaged",
       "budget_myr": 50,
       "ads": [
-        { "name": "Video 1：孩子如果有鼻窦炎", "post_id": "341825319024143_122175862454485585" }
+        {
+          "name": "Video 1：孩子如果有鼻窦炎",
+          "post_id": "341825319024143_122175862454485585"
+        }
       ]
     },
     {
-      "name": "V13 三年前長10公分 · RM50",
+      "name": "Parents 3-17 + Engaged",
       "budget_myr": 50,
       "ads": [
-        { "name": "Video 13：三年前他長了10公分", "post_id": "341825319024143_122192841926485585" }
+        {
+          "name": "Video 13：三年前他長了10公分",
+          "post_id": "341825319024143_122192841926485585"
+        }
       ]
     },
     {
-      "name": "15岁以上 · RM50",
+      "name": "Parents 3-17 + Engaged",
       "budget_myr": 50,
       "ads": [
-        { "name": "Video: 孩子15岁以上还有机会长高吗？", "post_id": "341825319024143_122166897782485585" }
+        {
+          "name": "Video: 孩子15岁以上还有机会长高吗？",
+          "post_id": "341825319024143_122166897782485585"
+        }
       ]
     },
     {
-      "name": "V2 一个3～15岁 · RM50",
+      "name": "Parents 3-17 + Engaged",
       "budget_myr": 50,
       "ads": [
-        { "name": "Video 2 - 一个3～15岁正常健康的孩子", "post_id": "341825319024143_122103687746485585" }
+        {
+          "name": "Video 2 - 一个3～15岁正常健康的孩子",
+          "post_id": "341825319024143_122103687746485585"
+        }
       ]
     },
     {
-      "name": "dec hook 13 supplement · RM50",
+      "name": "Parents 3-17 + Engaged",
       "budget_myr": 50,
       "ads": [
-        { "name": "dec hook 13：花了几千块买增高 supplement 给孩子吃？", "post_id": "341825319024143_122126012312485585" }
+        {
+          "name": "dec hook 13：花了几千块买增高 supplement 给孩子吃？",
+          "post_id": "341825319024143_122126012312485585"
+        }
       ]
     }
   ],
-  "_note": "2026-09-03 operator's new method: Top 10 rebuilt as 1 ad set = 1 ad = RM50/day (ABO, budget sharing off), every ad on its EXISTING page post so engagement keeps pooling. Ads #1 #2 #3 #9 #11. Targeting cloned from the Parents 3-17 + Engaged ad set. Scheduled 4 Sep 2026 00:00 MYT, built PAUSED — operator activates. dec hook 13 had 5 historical posts; the most-used one (14 copies) is used."
+  "_note": "2026-09-03 operator's new method: Top 10 rebuilt as 1 ad set = 1 ad = RM50/day (ABO, budget sharing off), every ad on its EXISTING page post so engagement keeps pooling. Ads #1 #2 #3 #9 #11. Targeting cloned from the Parents 3-17 + Engaged ad set. Scheduled 4 Sep 2026 00:00 MYT, built PAUSED — operator activates. dec hook 13 had 5 historical posts; the most-used one (14 copies) is used. Ad set names = targeting label (operator rule 2026-09-03)."
 }

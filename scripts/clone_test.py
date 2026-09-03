@@ -20,6 +20,10 @@ Spec JSON (path via ADBOT_AD_SPEC, default scripts/clone_specs/fnr_v11_v15.json)
                    refuses to edit start_time once an ad set "has started", and it counts as
                    started from creation even while PAUSED, so this can only be set here.
   adsets[]         {name, budget_myr, custom_audience_ids[], ads[]} — build SEVERAL ad sets, each
+                   NAMING RULE (operator, 2026-09-03): an ad set is named after its TARGETING
+                   ("Parents 3-17 + Engaged", "Family and Relationships", "Food & Drink +
+                   Milk + Bread"), never after the ad inside it — five identical names in a
+                   1-5-1 campaign are intended; the ad name is what tells them apart.
                    with its own budget (ABO), its own audience, and (optionally) its OWN ads[];
                    a plan without ads[] runs the spec-level ads. One ad per ad set is the
                    guaranteed-spend structure: inside a shared ad set, delivery starves all but

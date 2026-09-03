@@ -7,33 +7,45 @@
   ],
   "adsets": [
     {
-      "name": "什麼樣的孩子 原版 · RM50",
+      "name": "Family and Relationships",
       "budget_myr": 50,
       "ads": [
-        { "name": "Video: 什麼樣的孩子基本上不會再長高", "post_id": "341825319024143_122192839358485585" }
+        {
+          "name": "Video: 什麼樣的孩子基本上不會再長高",
+          "post_id": "341825319024143_122192839358485585"
+        }
       ]
     },
     {
-      "name": "JAN V10 马六甲 · RM50",
+      "name": "Family and Relationships",
       "budget_myr": 50,
       "ads": [
-        { "name": "JAN Video 10: 马六甲", "post_id": "341825319024143_122129511296485585" }
+        {
+          "name": "JAN Video 10: 马六甲",
+          "post_id": "341825319024143_122129511296485585"
+        }
       ]
     },
     {
-      "name": "JAN V6 如果你的孩子 · RM50",
+      "name": "Family and Relationships",
       "budget_myr": 50,
       "ads": [
-        { "name": "JAN Video 6：如果你的孩子", "post_id": "341825319024143_122138889740485585" }
+        {
+          "name": "JAN Video 6：如果你的孩子",
+          "post_id": "341825319024143_122138889740485585"
+        }
       ]
     },
     {
-      "name": "Extra V1 鼻子敏感 · RM50",
+      "name": "Family and Relationships",
       "budget_myr": 50,
       "ads": [
-        { "name": "Extra Video 1 - 鼻子敏感", "post_id": "341825319024143_122120353700485585" }
+        {
+          "name": "Extra Video 1 - 鼻子敏感",
+          "post_id": "341825319024143_122120353700485585"
+        }
       ]
     }
   ],
-  "_note": "2026-09-03 operator's new method: Top 10 rebuilt as 1 ad set = 1 ad = RM50/day (ABO, budget sharing off), every ad on its EXISTING page post so engagement keeps pooling. Ads #4 #5 #6 #12. Targeting cloned from the F&R Top5 ad set. Scheduled 4 Sep 2026 00:00 MYT, built PAUSED — operator activates. Scale ladder RM50 -> 80 -> 100 -> 150 per ad, only on leads + healthy CPA."
+  "_note": "2026-09-03 operator's new method: Top 10 rebuilt as 1 ad set = 1 ad = RM50/day (ABO, budget sharing off), every ad on its EXISTING page post so engagement keeps pooling. Ads #4 #5 #6 #12. Targeting cloned from the F&R Top5 ad set. Scheduled 4 Sep 2026 00:00 MYT, built PAUSED — operator activates. Scale ladder RM50 -> 80 -> 100 -> 150 per ad, only on leads + healthy CPA. Ad set names = targeting label (operator rule 2026-09-03)."
 }

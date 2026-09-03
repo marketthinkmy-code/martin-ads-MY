@@ -5,88 +5,250 @@
     "120248429743500575"
   ],
   "interests": [
-    { "id": "6002868910910", "name": "Organic food (food and drink)" },
-    { "id": "6002936693259", "name": "soft drinks (soft drinks)" },
-    { "id": "6002964239317", "name": "Mexican cuisine (food and drink)" },
-    { "id": "6002998123892", "name": "Japanese cuisine (food and drink)" },
-    { "id": "6003011899481", "name": "Milk (dairy product)" },
-    { "id": "6003012461997", "name": "Beer (alcoholic drinks)" },
-    { "id": "6003012654197", "name": "dairy product (dairy products)" },
-    { "id": "6003030029655", "name": "Chinese cuisine (food and drink)" },
-    { "id": "6003102729234", "name": "Italian cuisine (food and drink)" },
-    { "id": "6003102988840", "name": "Latin American cuisine (food and drink)" },
-    { "id": "6003107444301", "name": "Dairy" },
-    { "id": "6003108649035", "name": "spanish cuisine (cuisines)" },
-    { "id": "6003115078416", "name": "Milk substitute" },
-    { "id": "6003120620858", "name": "Coffeehouses (coffee)" },
-    { "id": "6003125948045", "name": "Desserts (food and drink)" },
-    { "id": "6003133978408", "name": "Chocolate (food and drink)" },
-    { "id": "6003134986700", "name": "Baking (cooking)" },
-    { "id": "6003146729229", "name": "Distilled beverage (spirit)" },
-    { "id": "6003148544265", "name": "Wine (alcoholic drinks)" },
-    { "id": "6003155333705", "name": "Vegetarianism (diets)" },
-    { "id": "6003185579408", "name": "Cheese (dairy product)" },
-    { "id": "6003200340482", "name": "Middle Eastern cuisine (food and drink)" },
-    { "id": "6003207844630", "name": "Powdered milk (dairy product)" },
-    { "id": "6003240742699", "name": "Seafood (food and drink)" },
-    { "id": "6003243058188", "name": "Diners (restaurant)" },
-    { "id": "6003283346254", "name": "Almond milk" },
-    { "id": "6003283801502", "name": "thai cuisine (cuisines)" },
-    { "id": "6003306415421", "name": "Greek cuisine (food and drink)" },
-    { "id": "6003343485089", "name": "Korean cuisine (food and drink)" },
-    { "id": "6003346311730", "name": "Vietnamese cuisine (food and drink)" },
-    { "id": "6003372667195", "name": "Fast-food restaurants (dining)" },
-    { "id": "6003385609165", "name": "Recipes (food and drink)" },
-    { "id": "6003392512725", "name": "Energy drinks (non-alcoholic beverage)" },
-    { "id": "6003398056603", "name": "fast casual restaurants (Restaurants)" },
-    { "id": "6003420024431", "name": "French cuisine (food and drink)" },
-    { "id": "6003435096731", "name": "Barbecue (cooking)" },
-    { "id": "6003455412083", "name": "Silk (soy milk)" },
-    { "id": "6003491283786", "name": "Tea (non-alcoholic beverage)" },
-    { "id": "6003494675627", "name": "Indian cuisine (food and drink)" },
-    { "id": "6003626773307", "name": "Coffee (food and drink)" },
-    { "id": "6003641846820", "name": "Veganism (diets)" },
-    { "id": "6003668857118", "name": "Pizza (food and drink)" },
-    { "id": "6003703931713", "name": "Juice (non-alcoholic beverage)" },
-    { "id": "6004037400009", "name": "Fast food (food and drink)" },
-    { "id": "6004094205989", "name": "German cuisine (food and drink)" },
-    { "id": "6005173031630", "name": "Yogurt (dairy product)" },
-    { "id": "6003265203542", "name": "Breakfast (food and drink)" },
-    { "id": "6003266061909", "name": "Food (food and drink)" },
-    { "id": "6003531191998", "name": "Brunch (food and drink)" }
+    {
+      "id": "6002868910910",
+      "name": "Organic food (food and drink)"
+    },
+    {
+      "id": "6002936693259",
+      "name": "soft drinks (soft drinks)"
+    },
+    {
+      "id": "6002964239317",
+      "name": "Mexican cuisine (food and drink)"
+    },
+    {
+      "id": "6002998123892",
+      "name": "Japanese cuisine (food and drink)"
+    },
+    {
+      "id": "6003011899481",
+      "name": "Milk (dairy product)"
+    },
+    {
+      "id": "6003012461997",
+      "name": "Beer (alcoholic drinks)"
+    },
+    {
+      "id": "6003012654197",
+      "name": "dairy product (dairy products)"
+    },
+    {
+      "id": "6003030029655",
+      "name": "Chinese cuisine (food and drink)"
+    },
+    {
+      "id": "6003102729234",
+      "name": "Italian cuisine (food and drink)"
+    },
+    {
+      "id": "6003102988840",
+      "name": "Latin American cuisine (food and drink)"
+    },
+    {
+      "id": "6003107444301",
+      "name": "Dairy"
+    },
+    {
+      "id": "6003108649035",
+      "name": "spanish cuisine (cuisines)"
+    },
+    {
+      "id": "6003115078416",
+      "name": "Milk substitute"
+    },
+    {
+      "id": "6003120620858",
+      "name": "Coffeehouses (coffee)"
+    },
+    {
+      "id": "6003125948045",
+      "name": "Desserts (food and drink)"
+    },
+    {
+      "id": "6003133978408",
+      "name": "Chocolate (food and drink)"
+    },
+    {
+      "id": "6003134986700",
+      "name": "Baking (cooking)"
+    },
+    {
+      "id": "6003146729229",
+      "name": "Distilled beverage (spirit)"
+    },
+    {
+      "id": "6003148544265",
+      "name": "Wine (alcoholic drinks)"
+    },
+    {
+      "id": "6003155333705",
+      "name": "Vegetarianism (diets)"
+    },
+    {
+      "id": "6003185579408",
+      "name": "Cheese (dairy product)"
+    },
+    {
+      "id": "6003200340482",
+      "name": "Middle Eastern cuisine (food and drink)"
+    },
+    {
+      "id": "6003207844630",
+      "name": "Powdered milk (dairy product)"
+    },
+    {
+      "id": "6003240742699",
+      "name": "Seafood (food and drink)"
+    },
+    {
+      "id": "6003243058188",
+      "name": "Diners (restaurant)"
+    },
+    {
+      "id": "6003283346254",
+      "name": "Almond milk"
+    },
+    {
+      "id": "6003283801502",
+      "name": "thai cuisine (cuisines)"
+    },
+    {
+      "id": "6003306415421",
+      "name": "Greek cuisine (food and drink)"
+    },
+    {
+      "id": "6003343485089",
+      "name": "Korean cuisine (food and drink)"
+    },
+    {
+      "id": "6003346311730",
+      "name": "Vietnamese cuisine (food and drink)"
+    },
+    {
+      "id": "6003372667195",
+      "name": "Fast-food restaurants (dining)"
+    },
+    {
+      "id": "6003385609165",
+      "name": "Recipes (food and drink)"
+    },
+    {
+      "id": "6003392512725",
+      "name": "Energy drinks (non-alcoholic beverage)"
+    },
+    {
+      "id": "6003398056603",
+      "name": "fast casual restaurants (Restaurants)"
+    },
+    {
+      "id": "6003420024431",
+      "name": "French cuisine (food and drink)"
+    },
+    {
+      "id": "6003435096731",
+      "name": "Barbecue (cooking)"
+    },
+    {
+      "id": "6003455412083",
+      "name": "Silk (soy milk)"
+    },
+    {
+      "id": "6003491283786",
+      "name": "Tea (non-alcoholic beverage)"
+    },
+    {
+      "id": "6003494675627",
+      "name": "Indian cuisine (food and drink)"
+    },
+    {
+      "id": "6003626773307",
+      "name": "Coffee (food and drink)"
+    },
+    {
+      "id": "6003641846820",
+      "name": "Veganism (diets)"
+    },
+    {
+      "id": "6003668857118",
+      "name": "Pizza (food and drink)"
+    },
+    {
+      "id": "6003703931713",
+      "name": "Juice (non-alcoholic beverage)"
+    },
+    {
+      "id": "6004037400009",
+      "name": "Fast food (food and drink)"
+    },
+    {
+      "id": "6004094205989",
+      "name": "German cuisine (food and drink)"
+    },
+    {
+      "id": "6005173031630",
+      "name": "Yogurt (dairy product)"
+    },
+    {
+      "id": "6003265203542",
+      "name": "Breakfast (food and drink)"
+    },
+    {
+      "id": "6003266061909",
+      "name": "Food (food and drink)"
+    },
+    {
+      "id": "6003531191998",
+      "name": "Brunch (food and drink)"
+    }
   ],
   "behaviors": [
-    { "id": "6071631541183", "name": "Engaged Shoppers" }
+    {
+      "id": "6071631541183",
+      "name": "Engaged Shoppers"
+    }
   ],
   "adsets": [
     {
-      "name": "Hook Edit 04 不买牛奶 · RM50",
+      "name": "Food & Drink + Milk + Bread",
       "budget_myr": 50,
       "ads": [
-        { "name": "Hook Edit 04：不买牛奶给孩子喝", "post_id": "341825319024143_122194360646485585" }
+        {
+          "name": "Hook Edit 04：不买牛奶给孩子喝",
+          "post_id": "341825319024143_122194360646485585"
+        }
       ]
     },
     {
-      "name": "MAR V1 我不会买牛奶 · RM50",
+      "name": "Food & Drink + Milk + Bread",
       "budget_myr": 50,
       "ads": [
-        { "name": "MAR Video 1: 我不会买牛奶", "post_id": "341825319024143_122140405604485585" }
+        {
+          "name": "MAR Video 1: 我不会买牛奶",
+          "post_id": "341825319024143_122140405604485585"
+        }
       ]
     },
     {
-      "name": "H2 面包牛奶 · RM50",
+      "name": "Food & Drink + Milk + Bread",
       "budget_myr": 50,
       "ads": [
-        { "name": "Video：H2 面包牛奶一点都不健康", "post_id": "341825319024143_122192839352485585" }
+        {
+          "name": "Video：H2 面包牛奶一点都不健康",
+          "post_id": "341825319024143_122192839352485585"
+        }
       ]
     },
     {
-      "name": "MAR Hook 3 准备早餐面包 · RM50",
+      "name": "Food & Drink + Milk + Bread",
       "budget_myr": 50,
       "ads": [
-        { "name": "MAR Video Hook 3: 准备早餐面包", "post_id": "341825319024143_122140406480485585" }
+        {
+          "name": "MAR Video Hook 3: 准备早餐面包",
+          "post_id": "341825319024143_122140406480485585"
+        }
       ]
     }
   ],
-  "_note": "2026-09-03 operator's new method: Top 10 rebuilt as 1 ad set = 1 ad = RM50/day (ABO, budget sharing off), every ad on its EXISTING page post. Ads #7 #8 #10 #13. Audience = the union of the live 'Food & Drink + Milk' ad set (120247592464520575: 46 interests + Engaged Shoppers) and the 'Food & Bread' ad set (120248464196810575), which adds Breakfast / Food / Brunch — all ids read live on 2026-09-03, none invented. Scheduled 4 Sep 2026 00:00 MYT, built PAUSED — operator activates."
+  "_note": "2026-09-03 operator's new method: Top 10 rebuilt as 1 ad set = 1 ad = RM50/day (ABO, budget sharing off), every ad on its EXISTING page post. Ads #7 #8 #10 #13. Audience = the union of the live 'Food & Drink + Milk' ad set (120247592464520575: 46 interests + Engaged Shoppers) and the 'Food & Bread' ad set (120248464196810575), which adds Breakfast / Food / Brunch — all ids read live on 2026-09-03, none invented. Scheduled 4 Sep 2026 00:00 MYT, built PAUSED — operator activates. Ad set names = targeting label (operator rule 2026-09-03)."
 }
