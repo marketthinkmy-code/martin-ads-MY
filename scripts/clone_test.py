@@ -126,13 +126,17 @@ def main() -> None:
     abo = len(plans) > 1
 
     existing = spec.get("existing_campaign_id")
+    parent_abo = False
     if existing:
-        # Attach the new ad sets to a campaign that ALREADY exists instead of creating one.
-        # No ad-set budget is sent: the parent runs campaign budgeting (CBO) and Meta refuses
-        # ad-set budgets under it — the operator toggles ABO in Ads Manager and assigns the
-        # per-ad-set budgets there. The campaign itself is never edited here.
+        # Attach the new ad sets to a campaign that ALREADY exists instead of creating one. The
+        # campaign itself is never edited. What the ad sets need depends on the parent: a CBO
+        # parent REFUSES ad-set budgets (the operator toggles ABO in Ads Manager and assigns them
+        # there), while an ABO parent — no campaign-level budget — REQUIRES one on every ad set.
         cid = str(existing)
-        print(f"[campaign] {cid}  (existing — attaching ad sets; budgets left to the operator)")
+        parent = graph.get_object(cid, "daily_budget,lifetime_budget")
+        parent_abo = not parent.get("daily_budget") and not parent.get("lifetime_budget")
+        print(f"[campaign] {cid}  (existing — attaching ad sets; parent is "
+              f"{'ABO, ad-set budgets sent' if parent_abo else 'CBO, budgets left to the operator'})")
     else:
         campaign_fields = dict(
             name=spec["campaign_name"], objective=m.objective, buying_type="AUCTION",
@@ -157,7 +161,8 @@ def main() -> None:
             optimization_goal=m.optimization_goal, billing_event="IMPRESSIONS",
             promoted_object=m.promoted_object, targeting=targeting, status="PAUSED",
         )
-        if abo and not existing:
+        send_budget = (abo and not existing) or parent_abo
+        if send_budget:
             fields["daily_budget"] = int(round(float(plan.get("budget_myr", 100)) * 100))
             fields["bid_strategy"] = "LOWEST_COST_WITHOUT_CAP"
         if spec.get("start_time"):
@@ -165,7 +170,7 @@ def main() -> None:
         aid = graph.create_adset(account, **fields)["id"]
         adset_ids.append(aid)
         print(f"  [adset] {aid}  {plan['name']}"
-              + (f"  RM{float(plan.get('budget_myr', 100)):,.0f}/day" if abo and not existing else "")
+              + (f"  RM{float(plan.get('budget_myr', 100)):,.0f}/day" if send_budget else "")
               + (f"  starts {spec['start_time']}" if spec.get("start_time") else ""))
         print(f"          {json.dumps(targeting, ensure_ascii=False)[:240]}")
 
