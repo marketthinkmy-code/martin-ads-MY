@@ -238,15 +238,23 @@ CPA_IMMATURE = "cpa_immature"         # inside the conversion window -> no CPA j
 
 def combined_decision(*, cpl_pause: bool, cpl_reason: str, cpa_value, cpa_sales: int,
                       cpa_spend: float, age_days, tiers: CpaTiers,
-                      conversion_days: int = 14, min_spend: float = 0.0):
-    """Fold real-sales CPA into the CPL pause decision — the operator's policy.
+                      conversion_days: int = 14, min_spend: float = 0.0,
+                      unhealthy_cycle_done: bool = False):
+    """Fold real-sales CPA into the CPL pause decision — the operator's band policy.
 
-    1. Auto-pause on CPA only for a *proven* hard stop: real matched sales, finite CPA above
-       the hard-stop line, past the conversion window, with enough spend. Zero matched sales
-       never auto-pauses on CPA (it may be an attribution gap, not true waste).
+    The bands (config, RM2,591 price): <= healthy_max keep; <= max_acceptable keep but never
+    scale; <= hard_stop is the UNHEALTHY band — a pause candidate, but only after a complete
+    webinar + follow-up cycle has passed since its last sale without producing a new one
+    (`unhealthy_cycle_done`, computed by the caller from the webinar calendar) — an ad still
+    inside that redemption cycle keeps running; above hard_stop pauses outright.
+
+    1. Auto-pause on CPA only with *proven* sales history: real matched sales, finite CPA,
+       past the conversion window, with enough spend. Zero matched sales never auto-pauses
+       on CPA (it may be an attribution gap, not true waste).
     2. CPA *rescues* an ad the CPL guardrail would pause when it has real sales at CPA at or
-       below the hard stop (still profitable against the ~RM2.4k price) — so registration
-       cost alone never kills a money-making ad. Rescue ignores age: real sales are real.
+       below the hard stop — so registration cost alone never kills a money-making ad.
+       Rescue ignores age: real sales are real. The unhealthy band keeps its rescue only
+       until its redemption cycle runs out.
 
     Returns (should_pause, reason).
     """
@@ -255,6 +263,9 @@ def combined_decision(*, cpl_pause: bool, cpl_reason: str, cpa_value, cpa_sales:
 
     if cpa_sales > 0 and finite_cpa and cpa_value > tiers.hard_stop and matured:
         return True, HARD_STOP                       # proven too expensive
+    if (cpa_sales > 0 and finite_cpa and matured and unhealthy_cycle_done
+            and tiers.max_acceptable < cpa_value <= tiers.hard_stop):
+        return True, PAUSE_CANDIDATE                 # unhealthy band, redemption cycle spent
     if cpl_pause and cpa_sales > 0 and finite_cpa and cpa_value <= tiers.hard_stop:
         return False, CPL_RESCUED                    # real profitable sales protect it
     return cpl_pause, cpl_reason                      # otherwise the CPL decision stands

@@ -158,16 +158,19 @@ def _mkey(name: str) -> str:
 
 
 def build_cpa_context(graph, settings: Settings, today: dt.date):
-    """(60-day sales by (campaign,ad), 60-day spend by ad_id) for the CPA gate.
+    """(60-day sales by (campaign,ad), 60-day spend by ad_id, 60-day regs by ad_id,
+    most-recent sale date by (campaign,ad)) for the CPA gate.
 
-    Also returns 60-day registrations by ad_id, read from the same insights call at no extra
-    API cost — the lead-quality gate needs sign-ups and sales side by side.
+    Registrations ride the same insights call at no extra API cost — the lead-quality gate
+    needs sign-ups and sales side by side. The last-sale date feeds the unhealthy-band rule:
+    a pause candidate only counts as such once a full webinar cycle has passed since it last
+    sold anything.
 
     Returns empty dicts when CPA is disabled or any source is unavailable, so a Sheets/Meta
     hiccup degrades the monitor to CPL-only rather than breaking it.
     """
     if not settings.cpa.enabled:
-        return {}, {}, {}
+        return {}, {}, {}, {}
     try:
         from .clients.sheets import SheetsClient
         values = SheetsClient(settings.secrets.google_sa_json).read_tab(
@@ -175,10 +178,13 @@ def build_cpa_context(graph, settings: Settings, today: dt.date):
         sales, _cols, _hdr = cpa.parse_sales(values, settings.cpa.price_myr)
         cutoff = today - dt.timedelta(days=60)
         sold: Dict[Tuple[str, str], int] = {}
+        last_sale: Dict[Tuple[str, str], dt.date] = {}
         for s in sales:
             if s.date and s.date > cutoff:
                 key = (_mkey(s.campaign), cpa.ad_key(s.ad))
                 sold[key] = sold.get(key, 0) + 1
+                if key not in last_sale or s.date > last_sale[key]:
+                    last_sale[key] = s.date
         token = result_action_type(settings.meta.conversion_event)
         spend: Dict[str, float] = {}
         regs: Dict[str, float] = {}
@@ -190,10 +196,10 @@ def build_cpa_context(graph, settings: Settings, today: dt.date):
             except (TypeError, ValueError):
                 continue
             regs[row.get("ad_id")] = extract_results(row.get("actions"), token)
-        return sold, spend, regs
+        return sold, spend, regs, last_sale
     except Exception as exc:  # noqa: BLE001
         get_logger().warning("CPA context unavailable (%s) — CPL-only this run", exc)
-        return {}, {}, {}
+        return {}, {}, {}, {}
 
 
 def evaluate_account(graph, settings: Settings, *, cpa_ctx=None) -> List[AdDecision]:
@@ -211,7 +217,9 @@ def evaluate_account(graph, settings: Settings, *, cpa_ctx=None) -> List[AdDecis
     today = (dt.datetime.utcnow() + dt.timedelta(hours=8)).date()  # MYT
     cpl_preset, cpl_range = cpl_window(settings, today)
     ctx = cpa_ctx if cpa_ctx is not None else build_cpa_context(graph, settings, today)
-    sold60, spend60, regs60 = ctx if len(ctx) == 3 else (ctx[0], ctx[1], {})
+    sold60, spend60 = ctx[0], ctx[1]
+    regs60 = ctx[2] if len(ctx) > 2 else {}
+    last60 = ctx[3] if len(ctx) > 3 else {}
     use_cpa = settings.cpa.enabled and (bool(sold60) or bool(spend60))
     tiers = cpa.CpaTiers(settings.cpa.healthy_max_myr, settings.cpa.max_acceptable_myr,
                          settings.cpa.hard_stop_myr)
@@ -256,13 +264,21 @@ def evaluate_account(graph, settings: Settings, *, cpa_ctx=None) -> List[AdDecis
             n_sales = 0
             should_pause, reason = cpl_pause, cpl_reason
             if use_cpa:
-                n_sales = sold60.get((camp_key, cpa.ad_key(name)), 0)
+                key60 = (camp_key, cpa.ad_key(name))
+                n_sales = sold60.get(key60, 0)
                 sp60 = spend60.get(ad["id"], 0.0)
                 cpa_val = cpa.cpa(sp60, n_sales)
+                # Unhealthy band (max_acceptable < CPA <= hard_stop): a pause candidate only
+                # once a full webinar + settle cycle has passed since its LAST sale with no new
+                # one — that cycle is its chance to redeem the CPA before the pause lands.
+                last_sale = last60.get(key60)
+                cycle_done = (last_sale is not None
+                              and (webinars_since(last_sale, today, settings.kpi) or 0) >= 1)
                 should_pause, reason = cpa.combined_decision(
                     cpl_pause=cpl_pause, cpl_reason=cpl_reason, cpa_value=cpa_val,
                     cpa_sales=n_sales, cpa_spend=sp60, age_days=age, tiers=tiers,
-                    conversion_days=settings.cpa.conversion_days, min_spend=settings.cpa.min_spend_myr)
+                    conversion_days=settings.cpa.conversion_days, min_spend=settings.cpa.min_spend_myr,
+                    unhealthy_cycle_done=cycle_done)
 
             # CPL grace for brand-new ads: a young ad over CPL but still pulling registrations hasn't
             # had time for those webinar sign-ups to mature into paid sales, so a CPL-only pause kills

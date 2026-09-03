@@ -1,8 +1,10 @@
 name: adbot · CPL+CPA monitor (hourly)
 
 # Pauses any ACTIVE ad whose cost-per-Complete-Registration exceeds the KPI ceiling
-# (kpi.cpl_threshold_myr), folded with the real-sales CPA gate (cpa.*): a healthy 60-day
-# CPA rescues an over-CPL ad, and a proven CPA hard stop (>RM1,200, matured) is paused.
+# (kpi.cpl_threshold_myr), folded with the real-sales CPA bands (cpa.*, config cpa.*_myr):
+# CPA <= max_acceptable rescues an over-CPL ad; the unhealthy band (max_acceptable..hard_stop)
+# keeps its rescue only until a full webinar cycle passes since its last sale, then pauses;
+# a proven hard stop (>hard_stop, matured) pauses outright.
 # Whole-account scope (MTC + STOCKBLOOM), judged one ad at a time; registration-optimized only.
 
 on:
