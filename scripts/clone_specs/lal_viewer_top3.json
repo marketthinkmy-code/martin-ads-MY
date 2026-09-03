@@ -1,0 +1,28 @@
+{
+  "campaign_name": "[MY] 儿童长高方程式 | LAL 看片50% 1% | Top 3 | 1-1-3 (27 Aug)",
+  "adset_name": "LAL MY 1% · 看片50%种子 · 8/27 开跑",
+  "budget_myr": 80,
+  "start_time": "2026-08-27T00:00:00+08:00",
+  "advantage_audience": 0,
+  "custom_audience_ids": [
+    "120248451686370575"
+  ],
+  "also_exclude": [
+    "120248429743500575"
+  ],
+  "ads": [
+    {
+      "name": "MAR Video 1: 我不会买牛奶",
+      "creative_id": "1699536594708878"
+    },
+    {
+      "name": "Video 2 - 一个3～15岁正常健康的孩子",
+      "creative_id": "1539045641019136"
+    },
+    {
+      "name": "Video: 孩子15岁以上还有机会长高吗？",
+      "creative_id": "2054735945280092"
+    }
+  ],
+  "_note": "2026-08-24 approved test: seed = 30d viewed>=50% engagement CA (7.7-9.1k people) -> its MY 1% lookalike (built 8/19, never used). Same Top-3 creatives as the paid-list bands so seed-vs-seed reads clean. advantage_audience 0 + also_exclude 16AUG paid list mirror the bands campaign. CBO RM80/day, scheduled Thu 8/27 00:00 MYT, built PAUSED."
+}

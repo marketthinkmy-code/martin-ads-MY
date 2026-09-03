@@ -113,10 +113,17 @@ cpa:                                     # cost per real PAID acquisition (joins
   spreadsheet_id: "1DsKtcDpsWp3Njfah6Fw3PBizhGiy017ULw5qKeV-RSA"   # "Paid Student List" sheet (share with the SA email)
   sales_tab: "Paid Student List (RM1997)"   # NOTE: tab label says RM1997 but price_myr below is 2591 — confirm
   price_myr: 2591.00                     # default pax price (sheet's Amount column overrides per row)
-  target_myr: 740.00                     # primary target CPA
-  healthy_max_myr: 860.00                # end of healthy range (NOT an auto-pause line)
-  max_acceptable_myr: 1040.00            # above here -> pause candidate after diagnosis
-  hard_stop_myr: 1300.00                 # above here (with real sales) -> auto-pause
+  # Operator's CPA bands (2026-09-03, judged against the RM2,399 benchmark — the sheet's
+  # RM2,591 collected amount stays as revenue for ROAS): <=target Strong (the only band that
+  # may climb the RM50->80->100->150 scale ladder — scaling itself stays manual);
+  # target..healthy_max Healthy (keep running, no scale); healthy_max..max_acceptable Warning
+  # (no scale, watch); max_acceptable..hard_stop Unhealthy (auto-paused once a full webinar +
+  # settle cycle passes since its last sale with no new one); >hard_stop pauses outright once
+  # matured.
+  target_myr: 720.00                     # primary target CPA (RM2,399 / 3.33x)
+  healthy_max_myr: 800.00                # end of healthy range (NOT an auto-pause line)
+  max_acceptable_myr: 960.00             # above here -> unhealthy: paused after a saleless full webinar cycle
+  hard_stop_myr: 1200.00                 # above here (with real sales, matured) -> auto-pause
   conversion_days: 14                    # don't judge CPA / 'no sales' until this old
   min_spend_myr: 1000.00                 # need >= this spend before a CPA verdict is fair
 

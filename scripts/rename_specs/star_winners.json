@@ -1,0 +1,12 @@
+{
+  "renames": [
+    { "id": "120247917148460575", "name": "🌟 [MY] 儿童长高方程式 | Family and Relationships | Top 5 Winners | 1-1-5" },
+    { "id": "120247917149920575", "name": "🌟 Video 1：孩子如果有鼻窦炎" },
+    { "id": "120247917149020575", "name": "🌟 Video: 孩子15岁以上还有机会长高吗？" },
+    { "id": "120247918279130575", "name": "🌟 [MY] 儿童长高方程式 | Parents 3-17 + Engaged | Video 11+13 | 1-1-2" },
+    { "id": "120247918282890575", "name": "🌟 Video 13：三年前他長了10公分" },
+    { "id": "120248380457270575", "name": "🌟 [MY] 儿童长高方程式 | Family and Relationships | 饮食吸收 | 1-1-4" },
+    { "id": "120248380460440575", "name": "🌟 Hook Edit 04：不买牛奶给孩子喝" }
+  ],
+  "_note": "2026-09-03 operator: 🌟-prefix the three reopened winner chains — 3 campaigns + the 4 reopened ads (鼻窦炎 / 15岁以上 / V13 / Hook Edit 04) — as a do-not-hand-pause marker. Names are the live names verbatim with the prefix added; ad sets deliberately untouched (the ask was campaign 和 ad). Attribution-safe: cpa.ad_key strips non-word chars, so the emoji never enters the sheet-join key."
+}

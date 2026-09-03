@@ -1,0 +1,17 @@
+{
+  "campaign_name": "MARTIN-MY | 1-1-1 | 排队站最前 | RM50",
+  "source_adset_id": "120247433845320575",
+  "also_exclude": [
+    "120248429743500575"
+  ],
+  "adsets": [
+    {
+      "name": "排队站最前 · Winners Broad",
+      "budget_myr": 50,
+      "ads": [
+        { "name": "Video：排队站最前", "creative_id": "1335648018708135" }
+      ]
+    }
+  ],
+  "_note": "5 of 5. Number-hook angle; barely ever got delivery under the CBO."
+}

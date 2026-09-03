@@ -1,0 +1,17 @@
+{
+  "campaign_name": "MARTIN-MY | 1-1-1 | 什麼樣的孩子 · Hook | RM50",
+  "source_adset_id": "120247433845320575",
+  "also_exclude": [
+    "120248429743500575"
+  ],
+  "adsets": [
+    {
+      "name": "什麼樣的孩子 · Hook · Winners Broad",
+      "budget_myr": 50,
+      "ads": [
+        { "name": "Video: 什麼樣的孩子基本上不會再長高 · Hook", "creative_id": "4774412119504704" }
+      ]
+    }
+  ],
+  "_note": "2026-08-27 operator: back to the original method — one campaign per ad, ABO, so every ad is guaranteed its own money. 1 of 5 replacing Scale CBO's starving 1-1-5."
+}

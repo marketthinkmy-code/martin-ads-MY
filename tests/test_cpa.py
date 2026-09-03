@@ -113,6 +113,25 @@ def test_combined_decision_policy():
     # rescue still applies when CPA is marginal but profitable (<= hard stop)
     assert cd(cpl_pause=True, cpl_reason="cpl_over_threshold", cpa_value=1100, cpa_sales=3,
               cpa_spend=3300, age_days=30, tiers=t, min_spend=1000) == (False, cpa.CPL_RESCUED)
+    # the unhealthy band (961–1200 here) keeps that rescue only while its redemption cycle is
+    # open; once a full webinar cycle passes since the last sale, it pauses — CPL or no CPL
+    assert cd(cpl_pause=True, cpl_reason="cpl_over_threshold", cpa_value=1100, cpa_sales=3,
+              cpa_spend=3300, age_days=30, tiers=t, min_spend=1000,
+              unhealthy_cycle_done=True) == (True, cpa.PAUSE_CANDIDATE)
+    assert cd(cpl_pause=False, cpl_reason="within_threshold", cpa_value=1100, cpa_sales=3,
+              cpa_spend=3300, age_days=30, tiers=t, min_spend=1000,
+              unhealthy_cycle_done=True) == (True, cpa.PAUSE_CANDIDATE)
+    # the warning band (<= max_acceptable) never pauses on the cycle — and keeps its rescue
+    assert cd(cpl_pause=False, cpl_reason="within_threshold", cpa_value=900, cpa_sales=4,
+              cpa_spend=3600, age_days=30, tiers=t, min_spend=1000,
+              unhealthy_cycle_done=True) == (False, "within_threshold")
+    assert cd(cpl_pause=True, cpl_reason="cpl_over_threshold", cpa_value=900, cpa_sales=4,
+              cpa_spend=3600, age_days=30, tiers=t, min_spend=1000,
+              unhealthy_cycle_done=True) == (False, cpa.CPL_RESCUED)
+    # an immature unhealthy-band ad is still not judged, cycle or no cycle
+    assert cd(cpl_pause=False, cpl_reason="within_threshold", cpa_value=1100, cpa_sales=1,
+              cpa_spend=1100, age_days=10, tiers=t, conversion_days=14, min_spend=1000,
+              unhealthy_cycle_done=True) == (False, "within_threshold")
     # proven hard stop auto-pauses even when CPL is fine
     assert cd(cpl_pause=False, cpl_reason="within_threshold", cpa_value=1737, cpa_sales=8,
               cpa_spend=15000, age_days=60, tiers=t, min_spend=1000) == (True, cpa.HARD_STOP)
