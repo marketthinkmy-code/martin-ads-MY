@@ -8,7 +8,8 @@ name: adbot · rename entities (manual)
 # Push trigger fires on THIS file and its script only — isolated from every other workflow.
 # Spec commits use [skip ci]; runs are dispatched explicitly with spec_path. NOTE: a brand-new
 # workflow file pushed with [skip ci] never gets registered (dispatch 404s) — its first commit
-# must go up without the marker.
+# must go up without the marker, and the marker counts ANYWHERE in the commit message, so do
+# not even mention it there.
 
 on:
   workflow_dispatch:
