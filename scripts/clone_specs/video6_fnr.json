@@ -12,10 +12,10 @@
       "ads": [
         {
           "name": "Video 6：我也是爸爸",
-          "post_id": "POST_ID_TBD"
+          "creative_id": "3828422640643666"
         }
       ]
     }
   ],
-  "_note": "2026-09-03 operator: Video 6 我也是爸爸 added to the existing Top10 RM50 campaign as ONE more ad set (targeting cloned from a sibling ad set, so identical audience), RM50/day under the ABO parent, ad on the post minted by video6_father.json so all three audiences pool one post. Scheduled 4 Sep 2026 00:00 MYT, PAUSED — operator activates."
+  "_note": "2026-09-03 operator: Video 6 我也是爸爸 added to the existing Top10 RM50 campaign as ONE more ad set (targeting cloned from a sibling ad set, so identical audience), RM50/day under the ABO parent, ad references creative 3828422640643666 (minted from video6_father.json, copy approved by the operator 2026-09-03) so all three audiences share one post. Scheduled 4 Sep 2026 00:00 MYT, PAUSED — operator activates."
 }
