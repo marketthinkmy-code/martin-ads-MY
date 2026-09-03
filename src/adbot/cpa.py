@@ -242,7 +242,7 @@ def combined_decision(*, cpl_pause: bool, cpl_reason: str, cpa_value, cpa_sales:
                       unhealthy_cycle_done: bool = False):
     """Fold real-sales CPA into the CPL pause decision — the operator's band policy.
 
-    The bands (config, RM2,591 price): <= healthy_max keep; <= max_acceptable keep but never
+    The bands (config, RM2,399 benchmark): <= healthy_max keep; <= max_acceptable keep but never
     scale; <= hard_stop is the UNHEALTHY band — a pause candidate, but only after a complete
     webinar + follow-up cycle has passed since its last sale without producing a new one
     (`unhealthy_cycle_done`, computed by the caller from the webinar calendar) — an ad still
