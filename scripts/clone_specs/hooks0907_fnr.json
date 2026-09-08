@@ -1,0 +1,60 @@
+{
+  "campaign_name": "[MY] 儿童长高方程式 | F&R 興趣 | Hooks 0907 | 1-5-5",
+  "source_adset_id": "120248670442480575",
+  "also_exclude": [
+    "120248429743500575"
+  ],
+  "adsets": [
+    {
+      "name": "Family and Relationships",
+      "budget_myr": 50,
+      "ads": [
+        {
+          "name": "Hook 1：今晚回家检查三件事",
+          "creative_id": "1597432345209840"
+        }
+      ]
+    },
+    {
+      "name": "Family and Relationships",
+      "budget_myr": 50,
+      "ads": [
+        {
+          "name": "Hook 2：旧鞋当尺",
+          "creative_id": "1419029943510844"
+        }
+      ]
+    },
+    {
+      "name": "Family and Relationships",
+      "budget_myr": 50,
+      "ads": [
+        {
+          "name": "Hook 6：只剩两到三年",
+          "creative_id": "1395071262768189"
+        }
+      ]
+    },
+    {
+      "name": "Family and Relationships",
+      "budget_myr": 50,
+      "ads": [
+        {
+          "name": "Video 7：我13岁身高173",
+          "creative_id": "1703230954236188"
+        }
+      ]
+    },
+    {
+      "name": "Family and Relationships",
+      "budget_myr": 50,
+      "ads": [
+        {
+          "name": "Video 6：我也是爸爸",
+          "creative_id": "28178541791816250"
+        }
+      ]
+    }
+  ],
+  "_note": "2026-09-08 operator batch, mirroring SG's 'Hooks 0907' structure: a NEW campaign per audience, 1 ad set = 1 ad = RM50/day (ABO, budget sharing off), ad set named after its targeting, targeting cloned from the matching Top10 RM50 ad set (buyer list excluded). Five MY creatives minted from Drive with the operator's copy (10,000+ kids, MY landing link + MY url_tags). No start_time; built PAUSED for the operator's review."
+}

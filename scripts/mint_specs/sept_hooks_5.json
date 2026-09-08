@@ -7,7 +7,8 @@
       "content_id": "hook1_three_checks_tonight",
       "ad_name": "Hook 1：今晚回家检查三件事",
       "headline": "🔴 今晚回家，检查这三件事",
-      "body_file": "scripts/mint_specs/sept_hooks_5.body_hook1.txt"
+      "body_file": "scripts/mint_specs/sept_hooks_5.body_hook1.txt",
+      "video_id": "1052528697565401"
     },
     {
       "key": "hook2",
@@ -16,7 +17,8 @@
       "content_id": "hook2_old_shoes_ruler",
       "ad_name": "Hook 2：旧鞋当尺",
       "headline": "🔴 孩子的鞋，一年没换大？",
-      "body_file": "scripts/mint_specs/sept_hooks_5.body_hook2.txt"
+      "body_file": "scripts/mint_specs/sept_hooks_5.body_hook2.txt",
+      "video_id": "1398283575826508"
     },
     {
       "key": "hook6",
@@ -25,7 +27,8 @@
       "content_id": "hook6_two_to_three_years",
       "ad_name": "Hook 6：只剩两到三年",
       "headline": "🔴 平均只剩两到三年，你知道吗",
-      "body_file": "scripts/mint_specs/sept_hooks_5.body_hook6.txt"
+      "body_file": "scripts/mint_specs/sept_hooks_5.body_hook6.txt",
+      "video_id": "28243236788661855"
     },
     {
       "key": "video7",
@@ -34,7 +37,8 @@
       "content_id": "video7_173_at_13",
       "ad_name": "Video 7：我13岁身高173",
       "headline": "🔴 我 13 岁 173，然后再也没长过",
-      "body_file": "scripts/mint_specs/sept_hooks_5.body_video7.txt"
+      "body_file": "scripts/mint_specs/sept_hooks_5.body_video7.txt",
+      "video_id": "1637727024807210"
     },
     {
       "key": "video6",
@@ -47,5 +51,5 @@
       "body_file": "scripts/mint_specs/sept_hooks_5.body_video6.txt"
     }
   ],
-  "_note": "2026-09-08 operator batch: five MY creatives from Drive with the operator's own copy (10,000+ kids, MY landing link + MY url_tags from config, CTA LEARN_MORE). Video 6 reuses the video uploaded 2026-09-03 (2087125188552451) with NEW copy; the old creative 3828422640643666 stays on the three existing Video 6 ads until the operator swaps them."
+  "_note": "2026-09-08 operator batch: five MY creatives from Drive with the operator's own copy (10,000+ kids, MY landing link + MY url_tags from config, CTA LEARN_MORE). Video 6 reuses the video uploaded 2026-09-03 (2087125188552451) with NEW copy; the old creative 3828422640643666 stays on the three existing Video 6 ads until the operator swaps them. Minted 2026-09-08 (run 34196929947): creatives hook1 1597432345209840 / hook2 1419029943510844 / hook6 1395071262768189 / video7 1703230954236188 / video6 28178541791816250; video_ids baked in for reuse."
 }
