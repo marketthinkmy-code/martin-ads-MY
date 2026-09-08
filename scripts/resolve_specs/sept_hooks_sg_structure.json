@@ -1,0 +1,12 @@
+{
+  "accounts": ["act_1024930575770087"],
+  "ad_ids": [],
+  "names": [
+    { "label": "SG · Hook 1 今晚回家检查三件事", "needle": "今晚回家" },
+    { "label": "SG · Hook 2 旧鞋当尺", "needle": "旧鞋" },
+    { "label": "SG · Hook 6 只剩两到三年", "needle": "只剩两到三年" },
+    { "label": "SG · Video 7 我13岁身高173", "needle": "13岁身高173" },
+    { "label": "SG · Video 6 我也是爸爸", "needle": "我也是爸爸" }
+  ],
+  "_note": "2026-09-08: read how SG structured this same batch (which campaigns / ad sets hold each ad) so the MY build mirrors it — operator: 参考 SG 那边 3 个 campaign 按受众分，一个 ad set 一支广告."
+}
