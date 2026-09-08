@@ -57,5 +57,51 @@
       ]
     }
   ],
-  "_note": "2026-09-08 operator batch, mirroring SG's 'Hooks 0907' structure: a NEW campaign per audience, 1 ad set = 1 ad = RM50/day (ABO, budget sharing off), ad set named after its targeting, targeting cloned from the matching Top10 RM50 ad set (buyer list excluded). Five MY creatives minted from Drive with the operator's copy (10,000+ kids, MY landing link + MY url_tags). No start_time; built PAUSED for the operator's review. 2026-09-08 rebuild: the first run created this campaign (120248747245090575, PAUSED, zero spend) and then failed at the first ad set with Meta's new 'Provide a verified advertiser' rule, so the ad sets now attach to that shell via existing_campaign_id (parent is ABO -> RM50 sent per ad set) and carry the MALAYSIA_UNIVERSAL beneficiary/payer declaration copied from source_adset_id (validated with execution_options=validate_only first, run 34198707626)."
+  "_note": "2026-09-08 operator batch, mirroring SG's 'Hooks 0907' structure: a NEW campaign per audience, 1 ad set = 1 ad = RM50/day (ABO, budget sharing off), ad set named after its targeting, targeting cloned from the matching Top10 RM50 ad set (buyer list excluded). Five MY creatives minted from Drive with the operator's copy (10,000+ kids, MY landing link + MY url_tags). No start_time; built PAUSED for the operator's review. 2026-09-08 rebuild: the first run created this campaign (120248747245090575, PAUSED, zero spend) and then failed at the first ad set with Meta's new 'Provide a verified advertiser' rule, so the ad sets now attach to that shell via existing_campaign_id (parent is ABO -> RM50 sent per ad set) and carry the MALAYSIA_UNIVERSAL beneficiary/payer declaration copied from source_adset_id (validated with execution_options=validate_only first, run 34198707626).",
+  "_built": {
+    "run": "34198803729",
+    "campaign_id": "120248747245090575",
+    "adset_ids": [
+      "120248747517080575",
+      "120248747518140575",
+      "120248747518940575",
+      "120248747519570575",
+      "120248747520210575"
+    ],
+    "ad_ids": [
+      "120248747520880575",
+      "120248747521370575",
+      "120248747521750575",
+      "120248747522030575",
+      "120248747522440575"
+    ],
+    "built_at": "2026-09-08 (all PAUSED, RM50/day per ad set)",
+    "ads": [
+      {
+        "name": "Hook 1：今晚回家检查三件事",
+        "adset_id": "120248747517080575",
+        "ad_id": "120248747520880575"
+      },
+      {
+        "name": "Hook 2：旧鞋当尺",
+        "adset_id": "120248747518140575",
+        "ad_id": "120248747521370575"
+      },
+      {
+        "name": "Hook 6：只剩两到三年",
+        "adset_id": "120248747518940575",
+        "ad_id": "120248747521750575"
+      },
+      {
+        "name": "Video 7：我13岁身高173",
+        "adset_id": "120248747519570575",
+        "ad_id": "120248747522030575"
+      },
+      {
+        "name": "Video 6：我也是爸爸",
+        "adset_id": "120248747520210575",
+        "ad_id": "120248747522440575"
+      }
+    ]
+  }
 }
