@@ -1,5 +1,6 @@
 {
   "campaign_name": "[MY] 儿童长高方程式 | F&R 興趣 | Hooks 0907 | 1-5-5",
+  "existing_campaign_id": "120248747269080575",
   "source_adset_id": "120248670442480575",
   "also_exclude": [
     "120248429743500575"
@@ -56,5 +57,5 @@
       ]
     }
   ],
-  "_note": "2026-09-08 operator batch, mirroring SG's 'Hooks 0907' structure: a NEW campaign per audience, 1 ad set = 1 ad = RM50/day (ABO, budget sharing off), ad set named after its targeting, targeting cloned from the matching Top10 RM50 ad set (buyer list excluded). Five MY creatives minted from Drive with the operator's copy (10,000+ kids, MY landing link + MY url_tags). No start_time; built PAUSED for the operator's review."
+  "_note": "2026-09-08 operator batch, mirroring SG's 'Hooks 0907' structure: a NEW campaign per audience, 1 ad set = 1 ad = RM50/day (ABO, budget sharing off), ad set named after its targeting, targeting cloned from the matching Top10 RM50 ad set (buyer list excluded). Five MY creatives minted from Drive with the operator's copy (10,000+ kids, MY landing link + MY url_tags). No start_time; built PAUSED for the operator's review. 2026-09-08 rebuild: the first run created this campaign (120248747269080575, PAUSED, zero spend) and then failed at the first ad set with Meta's new 'Provide a verified advertiser' rule, so the ad sets now attach to that shell via existing_campaign_id (parent is ABO -> RM50 sent per ad set) and carry the MALAYSIA_UNIVERSAL beneficiary/payer declaration copied from source_adset_id (validated with execution_options=validate_only first, run 34198707626)."
 }

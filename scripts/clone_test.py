@@ -36,6 +36,17 @@ Spec JSON (path via ADBOT_AD_SPEC, default scripts/clone_specs/fnr_v11_v15.json)
                    nothing.
   also_exclude[]   extra audience ids to exclude on top of the ones in config (e.g. a freshly
                    rebuilt buyer list, so prospecting does not pay to reach existing customers)
+  regional_regulated_categories[] / regional_regulation_identities{}
+                   the beneficiary / payer declaration Meta demands on every NEW ad set delivering
+                   to Malaysia since 2026-09-08 ("Provide a verified advertiser so that ads in this
+                   ad set can be delivered to audiences in the selected locations"). Ad sets built
+                   before that date carry MALAYSIA_UNIVERSAL + the verified business identity as
+                   universal_beneficiary / universal_payer. When the spec does not state them, they
+                   are COPIED from regulation_source_adset_id, else from source_adset_id — a clone
+                   then declares exactly what its live twin declares. Never invent an identity id:
+                   Meta accepts only identities verified for the business.
+  regulation_source_adset_id  ad set to copy that declaration from when the targeting is NOT
+                   cloned (interests / custom-audience routes) — any live ad set of the account.
   ads[]            {name, creative_id} or {name, post_id} — one PAUSED ad per entry.
                    post_id ("<page>_<post>") is the EXISTING-POST route: a fresh creative is
                    minted against that page post, so every ad pointing at it accumulates the same
@@ -53,6 +64,17 @@ from adbot.settings import REPO_ROOT, load_settings
 # Fields safe to copy from a live ad set's targeting onto a new one (drops read-only/derived keys).
 _KEEP = ("geo_locations", "age_min", "age_max", "genders", "locales",
          "excluded_custom_audiences", "flexible_spec")
+
+
+# Beneficiary / payer declaration. Meta refuses any new MY ad set without it since 2026-09-08,
+# while every ad set built before carries MALAYSIA_UNIVERSAL + the verified business identity —
+# so a clone copies its twin's declaration verbatim instead of guessing at enum names.
+_REGULATION = ("regional_regulated_categories", "regional_regulation_identities")
+
+
+def _clone_regulation(graph, source_adset_id: str) -> dict:
+    obj = graph.get_object(source_adset_id, ",".join(_REGULATION)) or {}
+    return {k: obj[k] for k in _REGULATION if obj.get(k)}
 
 
 def _clone_targeting(graph, source_adset_id: str) -> dict:
@@ -153,6 +175,13 @@ def main() -> None:
         cid = graph.create_campaign(account, **campaign_fields)["id"]
         print(f"[campaign] {cid}  ({'ABO - budget per ad set' if abo else 'CBO'})")
 
+    regulation = {k: spec[k] for k in _REGULATION if spec.get(k)}
+    reg_source = spec.get("regulation_source_adset_id") or spec.get("source_adset_id")
+    if not regulation and reg_source:
+        regulation = _clone_regulation(graph, str(reg_source))
+    print(f"[regulation] {json.dumps(regulation, ensure_ascii=False) if regulation else 'none declared'}"
+          + (f"  (copied from ad set {reg_source})" if regulation and not any(spec.get(k) for k in _REGULATION) else ""))
+
     adset_ids = []
     for plan in plans:
         targeting = build_targeting(plan.get("custom_audience_ids"))
@@ -160,6 +189,7 @@ def main() -> None:
             campaign_id=cid, name=plan["name"],
             optimization_goal=m.optimization_goal, billing_event="IMPRESSIONS",
             promoted_object=m.promoted_object, targeting=targeting, status="PAUSED",
+            **regulation,
         )
         send_budget = (abo and not existing) or parent_abo
         if send_budget:
