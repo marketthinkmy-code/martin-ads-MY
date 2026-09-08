@@ -23,7 +23,8 @@ from pathlib import Path
 from adbot.commands import graph_client
 from adbot.settings import REPO_ROOT, load_settings
 
-FIELDS = ("name,effective_status,created_time,campaign{name},adset{name},"
+FIELDS = ("name,effective_status,created_time,campaign{id,name},"
+          "adset{id,name,regional_regulated_categories,regional_regulation_identities},"
           "creative{id,effective_object_story_id,object_story_id}")
 ALL_STATUSES = ["ACTIVE", "PAUSED", "ARCHIVED", "CAMPAIGN_PAUSED", "ADSET_PAUSED",
                 "DISAPPROVED", "PENDING_REVIEW", "WITH_ISSUES", "IN_PROCESS"]
@@ -37,7 +38,9 @@ def _row(label: str, ad: dict, account: str = "") -> str:
             f"created {(ad.get('created_time') or '')[:10]}\n"
             f"    name     {ad.get('name')!r}\n"
             f"    campaign {((ad.get('campaign') or {}).get('name') or '')!r}\n"
-            f"    adset    {((ad.get('adset') or {}).get('name') or '')!r}\n"
+            f"    adset    {((ad.get('adset') or {}).get('name') or '')!r}  id {(ad.get('adset') or {}).get('id')}\n"
+            f"    regulated {(ad.get('adset') or {}).get('regional_regulated_categories')}  "
+            f"identities {(ad.get('adset') or {}).get('regional_regulation_identities')}\n"
             f"    creative {cr.get('id')}  POST {post}")
 
 
