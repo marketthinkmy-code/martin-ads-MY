@@ -1,0 +1,33 @@
+{
+  "campaign_id": "120248747245090575",
+  "source_adset_id": "120248670491000575",
+  "also_exclude": ["120248429743500575"],
+  "read_objects": [
+    {"label": "SG identity object (beneficiary = payer on every SG ad set)",
+     "id": "1480351249808277", "fields": "id,name"},
+    {"label": "SG identity object — as a business",
+     "id": "1480351249808277", "fields": "id,name,verification_status"},
+    {"label": "MY ad account + owning business",
+     "id": "act_1011719073600566", "fields": "id,name,business{id,name,verification_status}"},
+    {"label": "MY live ad set (built 09-03, still delivering) — its declarations",
+     "id": "120248670491000575", "fields": "id,name,regional_regulated_categories,regional_regulation_identities,dsa_beneficiary,dsa_payor"},
+    {"label": "SG ad set (Hooks 0907, Parents) — its declarations",
+     "id": "120258189793260093", "fields": "id,name,regional_regulated_categories,regional_regulation_identities,dsa_beneficiary,dsa_payor"}
+  ],
+  "candidates": [
+    {"label": "A baseline — no declaration (expect the verified-advertiser error)",
+     "fields": {}},
+    {"label": "B bogus category — Meta should list the accepted enum values",
+     "fields": {"regional_regulated_categories": ["ZZZ_PROBE_NOT_A_CATEGORY"]}},
+    {"label": "C MALAYSIA_UNIVERSAL + malaysia_universal_* identities = SG's identity object",
+     "fields": {"regional_regulated_categories": ["MALAYSIA_UNIVERSAL"],
+                "regional_regulation_identities": {"malaysia_universal_beneficiary": "1480351249808277",
+                                                   "malaysia_universal_payer": "1480351249808277"}}},
+    {"label": "D identities only, no category",
+     "fields": {"regional_regulation_identities": {"malaysia_universal_beneficiary": "1480351249808277",
+                                                   "malaysia_universal_payer": "1480351249808277"}}},
+    {"label": "E bogus identity key — Meta should list the accepted keys",
+     "fields": {"regional_regulation_identities": {"zzz_probe_beneficiary": "1480351249808277"}}}
+  ],
+  "_note": "2026-09-08: read-only. Every POST is execution_options=[validate_only]; the campaign is the empty PAUSED Hooks 0907 Parents shell. Purpose: learn the exact Malaysia declaration Meta wants before touching the real build specs."
+}
