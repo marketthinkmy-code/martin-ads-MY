@@ -1,33 +1,75 @@
 {
   "campaign_id": "120248747245090575",
   "source_adset_id": "120248670491000575",
-  "also_exclude": ["120248429743500575"],
+  "also_exclude": [
+    "120248429743500575"
+  ],
   "read_objects": [
-    {"label": "SG identity object (beneficiary = payer on every SG ad set)",
-     "id": "1480351249808277", "fields": "id,name"},
-    {"label": "SG identity object — as a business",
-     "id": "1480351249808277", "fields": "id,name,verification_status"},
-    {"label": "MY ad account + owning business",
-     "id": "act_1011719073600566", "fields": "id,name,business{id,name,verification_status}"},
-    {"label": "MY live ad set (built 09-03, still delivering) — its declarations",
-     "id": "120248670491000575", "fields": "id,name,regional_regulated_categories,regional_regulation_identities,dsa_beneficiary,dsa_payor"},
-    {"label": "SG ad set (Hooks 0907, Parents) — its declarations",
-     "id": "120258189793260093", "fields": "id,name,regional_regulated_categories,regional_regulation_identities,dsa_beneficiary,dsa_payor"}
+    {
+      "label": "SG identity object (beneficiary = payer on every SG ad set)",
+      "id": "1480351249808277",
+      "fields": "id,name"
+    },
+    {
+      "label": "SG identity object — as a business",
+      "id": "1480351249808277",
+      "fields": "id,name,verification_status"
+    },
+    {
+      "label": "MY ad account + owning business",
+      "id": "act_1011719073600566",
+      "fields": "id,name,business{id,name,verification_status}"
+    },
+    {
+      "label": "MY live ad set (built 09-03, still delivering) — its declarations",
+      "id": "120248670491000575",
+      "fields": "id,name,regional_regulated_categories,regional_regulation_identities,dsa_beneficiary,dsa_payor"
+    },
+    {
+      "label": "SG ad set (Hooks 0907, Parents) — its declarations",
+      "id": "120258189793260093",
+      "fields": "id,name,regional_regulated_categories,regional_regulation_identities,dsa_beneficiary,dsa_payor"
+    }
   ],
   "candidates": [
-    {"label": "A baseline — no declaration (expect the verified-advertiser error)",
-     "fields": {}},
-    {"label": "B bogus category — Meta should list the accepted enum values",
-     "fields": {"regional_regulated_categories": ["ZZZ_PROBE_NOT_A_CATEGORY"]}},
-    {"label": "C MALAYSIA_UNIVERSAL + malaysia_universal_* identities = SG's identity object",
-     "fields": {"regional_regulated_categories": ["MALAYSIA_UNIVERSAL"],
-                "regional_regulation_identities": {"malaysia_universal_beneficiary": "1480351249808277",
-                                                   "malaysia_universal_payer": "1480351249808277"}}},
-    {"label": "D identities only, no category",
-     "fields": {"regional_regulation_identities": {"malaysia_universal_beneficiary": "1480351249808277",
-                                                   "malaysia_universal_payer": "1480351249808277"}}},
-    {"label": "E bogus identity key — Meta should list the accepted keys",
-     "fields": {"regional_regulation_identities": {"zzz_probe_beneficiary": "1480351249808277"}}}
+    {
+      "label": "F exact copy of the live MY ad set's declaration (MALAYSIA_UNIVERSAL + VOLUNTARY_VERIFICATION, universal_* = 1374224841083904)",
+      "fields": {
+        "regional_regulated_categories": [
+          "MALAYSIA_UNIVERSAL",
+          "VOLUNTARY_VERIFICATION"
+        ],
+        "regional_regulation_identities": {
+          "universal_beneficiary": "1374224841083904",
+          "universal_payer": "1374224841083904"
+        }
+      }
+    },
+    {
+      "label": "G MALAYSIA_UNIVERSAL only, same identities",
+      "fields": {
+        "regional_regulated_categories": [
+          "MALAYSIA_UNIVERSAL"
+        ],
+        "regional_regulation_identities": {
+          "universal_beneficiary": "1374224841083904",
+          "universal_payer": "1374224841083904"
+        }
+      }
+    },
+    {
+      "label": "H identities only (universal_*), no category",
+      "fields": {
+        "regional_regulation_identities": {
+          "universal_beneficiary": "1374224841083904",
+          "universal_payer": "1374224841083904"
+        }
+      }
+    },
+    {
+      "label": "A baseline — no declaration (control: must still fail)",
+      "fields": {}
+    }
   ],
-  "_note": "2026-09-08: read-only. Every POST is execution_options=[validate_only]; the campaign is the empty PAUSED Hooks 0907 Parents shell. Purpose: learn the exact Malaysia declaration Meta wants before touching the real build specs."
+  "_note": "2026-09-08 run 2: run 1 showed the live MY ad sets carry MALAYSIA_UNIVERSAL + VOLUNTARY_VERIFICATION with universal_beneficiary/universal_payer = 1374224841083904 (the verified business identity), and that Meta's accepted identity keys are universal_* (no malaysia_* keys exist). This run validates copying that declaration. Read-only: every POST is execution_options=[validate_only] against the empty PAUSED Hooks 0907 Parents shell."
 }
