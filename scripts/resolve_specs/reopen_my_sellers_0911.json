@@ -1,0 +1,11 @@
+{
+  "accounts": ["act_1011719073600566"],
+  "names": [
+    {"label": "Video 13 三年前他長了10公分", "needle": "三年前他長了10公分"},
+    {"label": "JAN Video 10 马六甲", "needle": "马六甲"},
+    {"label": "H2 面包牛奶一点都不健康", "needle": "面包牛奶一点都不健康"},
+    {"label": "Video 1 孩子如果有鼻窦炎", "needle": "孩子如果有鼻窦炎"},
+    {"label": "什麼樣的孩子 (Boys Sports campaign id)", "needle": "什麼樣的孩子基本上不會再長高"}
+  ],
+  "_note": "2026-09-11: find the paused MY copies of the four MY sellers to reopen (ad + ad set + campaign ids and statuses), and the Boys Sports campaign id."
+}
