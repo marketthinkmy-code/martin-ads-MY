@@ -428,3 +428,92 @@ def test_two_tuple_cpa_ctx_still_works():
     g = _lq_graph(spend=480, results=10)
     d = evaluate_account(g, _lq_settings(), cpa_ctx=({}, {"burner": 3083.0}))[0]
     assert d.should_pause is False
+
+
+# ── daily rules (operator, 2026-09-11): CPL over target -> cut 30%; 1.5x target with 0 regs -> pause ──
+from adbot.monitor_cpl import (CUT_RESCUED, OVER_THRESHOLD_CUT, AdDecision, _mkey, apply_cut, plan_cut,  # noqa: E402
+                               zero_reg_spend_line)
+
+DAILY = KpiCfg(cpl_threshold_myr=60, cpl_min_spend_myr=100, cpl_over_action="cut",
+               cpl_zero_reg_spend_multiple=1.5, pause_zero_lead_after_spend=True,
+               cpl_lookback="last_3d")
+
+
+def test_zero_reg_line_is_one_and_a_half_times_target():
+    assert zero_reg_spend_line(DAILY) == 90
+    assert zero_reg_spend_line(KPI) == KPI.cpl_min_spend_myr     # multiple 0 -> old line
+
+
+def test_zero_registrations_pause_at_90_not_before():
+    should, reason, cpl = decide(89.99, 0, DAILY)
+    assert not should and reason == INSUFFICIENT_SPEND
+    should, reason, cpl = decide(90, 0, DAILY)
+    assert should and reason == ZERO_RESULTS and cpl == math.inf
+
+
+def test_over_target_cpl_is_a_cut_not_a_pause():
+    should, reason, cpl = decide(140, 2, DAILY)          # CPL 70 > 60
+    assert not should and reason == OVER_THRESHOLD_CUT and cpl == 70
+    should, reason, _ = decide(120, 2, DAILY)            # CPL 60 -> not over
+    assert not should and reason == WITHIN_THRESHOLD
+
+
+def test_plan_cut_takes_30pct_and_respects_floor():
+    assert plan_cut(10000, 30, 50) == 7000
+    assert plan_cut(6000, 30, 50) == 5000      # 4200 would breach the floor
+    assert plan_cut(5000, 30, 50) == 5000      # already at floor -> unchanged
+
+
+def test_evaluate_account_marks_cut_and_rescues_healthy_cpa():
+    settings = Settings(meta=MetaCfg(conversion_event="COMPLETE_REGISTRATION"), kpi=DAILY,
+                        cpa=CpaCfg(enabled=True, healthy_max_myr=800, max_acceptable_myr=960,
+                                   hard_stop_myr=1200))
+    campaigns = [{"id": "A", "name": "[MY] x", "effective_status": "ACTIVE"}]
+    ads = {"A": [dict(_ad("expensive"), adset_id="as1"), dict(_ad("seller"), adset_id="as2")]}
+    insights = {"expensive": _reg_insight(140, 2), "seller": _reg_insight(140, 2)}
+    sold60 = {(_mkey("[MY] x"), cpa.ad_key("seller")): 2}
+    spend60 = {"expensive": 140.0, "seller": 1400.0}     # seller: CPA 700 <= healthy_max
+    decisions = evaluate_account(_FakeGraph(campaigns, ads, insights), settings,
+                                 cpa_ctx=(sold60, spend60, {}, {}))
+    by = {d.name: d for d in decisions}
+    assert by["expensive"].should_cut and not by["expensive"].should_pause
+    assert by["expensive"].reason == OVER_THRESHOLD_CUT and by["expensive"].adset_id == "as1"
+    assert not by["seller"].should_cut and by["seller"].reason == CUT_RESCUED
+
+
+class _CutGraph:
+    """Ad set with RM100/day, no labels; records writes."""
+    def __init__(self, budget=10000, labels=None):
+        self.budget, self.labels, self.writes = budget, list(labels or []), []
+
+    def get_object(self, entity_id, fields):
+        return {"name": "as", "daily_budget": str(self.budget), "campaign_id": "C",
+                "adlabels": {"data": list(self.labels)}}
+
+    def set_daily_budget(self, entity_id, cents):
+        self.writes.append(("budget", entity_id, cents)); self.budget = cents
+
+    def get_or_create_label(self, account_path, name):
+        return "L-" + name
+
+    def set_entity_labels(self, entity_id, label_ids):
+        self.writes.append(("labels", entity_id, list(label_ids)))
+        self.labels = [{"id": l, "name": l[2:]} for l in label_ids]
+
+
+def test_apply_cut_once_per_day_and_floor():
+    settings = Settings(kpi=DAILY)
+    d = AdDecision("ad", "ad", 140, 2, 70, False, OVER_THRESHOLD_CUT, should_cut=True, adset_id="as1")
+    g = _CutGraph(budget=10000)
+    today = dt.date(2026, 9, 11)
+    status, detail = apply_cut(g, settings, d, today, {})
+    assert status == "cut" and g.budget == 7000
+    assert ("labels", "as1", ["L-ADBOT_CPL_CUT_2026-09-11"]) in g.writes
+    # second run the same day: the dated label blocks a compounding cut
+    status, detail = apply_cut(g, settings, d, today, {})
+    assert status == "skip" and "already cut today" in detail and g.budget == 7000
+    # next day: cut again, but never below the floor
+    status, _ = apply_cut(g, settings, d, dt.date(2026, 9, 12), {})
+    assert status == "cut" and g.budget == 5000
+    status, detail = apply_cut(g, settings, d, dt.date(2026, 9, 13), {})
+    assert status == "skip" and "at floor" in detail and g.budget == 5000

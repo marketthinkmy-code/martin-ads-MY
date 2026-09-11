@@ -75,10 +75,19 @@ notion:                                  # Notion content DB = single source of 
   require_status: ""                      # use the Notion row regardless of Status (operator: no Approved gate — use directly)
 
 kpi:
-  cpl_threshold_myr: 55.00               # pause an ad above this CPL (MYR)
-  cpl_min_spend_myr: 100.00              # only judge an ad once it has spent >= this (MYR)
+  # Daily rules (operator, 2026-09-11):
+  #   1. MY CPL over RM60           -> cut the ad set's daily budget 30% (once a day, floor RM50)
+  #   2. spent 1.5x target CPL (RM90) with 0 registrations -> pause
+  # CPL is week-to-date from Thursday (cpl_lookback) and only judged after cpl_min_spend_myr.
+  cpl_threshold_myr: 60.00               # target CPL (MYR): above it rule 1 fires
+  cpl_over_action: "cut"                 # "cut" (rule 1) | "pause" (old behaviour)
+  cpl_cut_pct: 30                        # rule 1: cut this % of the daily budget
+  cpl_cut_floor_myr: 50.00               # rule 1: never cut below this (the account's ad-set minimum)
+  cpl_cut_respect_cpa: true              # an ad with 60d MY sales at CPA <= healthy_max is never cut
+  cpl_zero_reg_spend_multiple: 1.5       # rule 2: 1.5 x target CPL = RM90 spent with 0 registrations -> pause
+  cpl_min_spend_myr: 100.00              # a CPL is only judged once the ad has spent >= this (MYR)
   cpl_lookback: "week_thu"               # week-to-date from Thursday (the weekly ON/reset)
-  pause_zero_lead_after_spend: true      # spent >= cpl_min_spend with 0 results -> infinite CPL -> pause
+  pause_zero_lead_after_spend: true      # rule 2 on/off
   cpl_grace_days: 7                      # a new ad younger than this is exempt from CPL-only pauses — its webinar registrants haven't had time to convert to a paid sale yet (zero-lead + CPA hard-stop still pause)
   # Sales only ever close on a webinar night, so "has this ad had its chance?" is counted in
   # webinars, not days — an ad born the day after one waits six days for its first shot, an ad born
@@ -97,7 +106,7 @@ kpi:
   # Brakes on that grace, so a young ad can't burn unchecked (Hook 4 reached CPL 93 / ~RM1,200 with
   # 0 sales while "protected"). Both only ever fire on an ad with ZERO matched paid sales — one with
   # real sales at an acceptable CPA is kept by CPA-rescue, which runs first and wins.
-  cpl_grace_max_cpl_multiple: 1.5        # CPL above 1.5x the threshold (= RM82.50) -> grace off, pause now
+  cpl_grace_max_cpl_multiple: 1.5        # CPL above 1.5x the threshold (= RM90) -> grace off, pause now
   cpl_grace_max_spend_myr: 500.00        # spent this much with 0 sales -> grace off, pause now
   # Reviewed 2026-08-13, after the runway these three were given (08-05 and 08-12 webinars):
   #   面包牛奶一点都不健康  2 MY sales, CPA RM702  -> graduated; CPA-rescue now protects it and the
