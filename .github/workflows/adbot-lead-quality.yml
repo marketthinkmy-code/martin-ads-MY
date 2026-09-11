@@ -1,0 +1,69 @@
+name: adbot · lead quality — who registers vs who buys (manual, read-only)
+
+# Compares the registration list with the Paid Student List by child age / gender / biggest
+# worry / source / hook, per market. Aggregates only: no names, emails or phone numbers are
+# ever read into the log. Answers "the room is full but nobody buys — who are we bringing?"
+#
+# Push trigger fires on THIS file and its script only. (A new workflow's FIRST push must not
+# carry a skip-ci marker anywhere in the commit message, or it never registers.)
+
+on:
+  workflow_dispatch:
+    inputs:
+      register_sheet_id:
+        description: "workbook id holding the registration list (blank = CPA sheet)"
+        type: string
+        required: false
+        default: ""
+      register_gid:
+        description: "tab gid (#gid=…) of the registration list"
+        type: string
+        required: false
+        default: "1500782859"
+      register_tab:
+        description: "tab title of the registration list (used when gid not found)"
+        type: string
+        required: false
+        default: "Register"
+      window_days:
+        description: "lookback days for both registrants and buyers"
+        type: string
+        required: false
+        default: "90"
+      extra_sheet_id:
+        description: "another workbook to test access to (lists its tabs)"
+        type: string
+        required: false
+        default: "1NMtGKVHRYFSsUw3-dacNPYDZABcYKi6VZgMR0u_oZRE"
+  push:
+    branches: ["claude/sweet-curie-b6vql4"]
+    paths:
+      - ".github/workflows/adbot-lead-quality.yml"
+      - "scripts/lead_quality_report.py"
+
+concurrency:
+  group: adbot-lead-quality
+  cancel-in-progress: false
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install .
+      - name: Lead quality report (aggregates only)
+        env:
+          ADBOT_ROOT: ${{ github.workspace }}
+          ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
+          GOOGLE_SERVICE_ACCOUNT_JSON_B64: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON_B64 }}
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          ADBOT_LQ_REGISTER_SHEET_ID: ${{ inputs.register_sheet_id }}
+          ADBOT_LQ_REGISTER_GID: ${{ inputs.register_gid || '1500782859' }}
+          ADBOT_LQ_REGISTER_TAB: ${{ inputs.register_tab || 'Register' }}
+          ADBOT_LQ_WINDOW_DAYS: ${{ inputs.window_days || '90' }}
+          ADBOT_LQ_EXTRA_SHEET_ID: ${{ inputs.extra_sheet_id || '1NMtGKVHRYFSsUw3-dacNPYDZABcYKi6VZgMR0u_oZRE' }}
+        run: python scripts/lead_quality_report.py
