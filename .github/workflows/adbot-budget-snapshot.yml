@@ -1,0 +1,36 @@
+name: adbot · daily budget snapshot (manual, read-only)
+
+# Sum of every ACTIVE ad set's / CBO campaign's daily budget (what the account is set to spend
+# per day) plus actual spend per day for the last week. No writes.
+# Push trigger fires on THIS file and its script only. (A new workflow's FIRST push must not
+# carry a skip-ci marker anywhere in the commit message, or it never registers.)
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches: ["claude/sweet-curie-b6vql4"]
+    paths:
+      - ".github/workflows/adbot-budget-snapshot.yml"
+      - "scripts/budget_snapshot.py"
+
+concurrency:
+  group: adbot-budget-snapshot
+  cancel-in-progress: false
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install .
+      - name: Budget snapshot
+        env:
+          ADBOT_ROOT: ${{ github.workspace }}
+          ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
+          META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
+          META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
+        run: python scripts/budget_snapshot.py
