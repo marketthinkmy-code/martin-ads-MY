@@ -26,12 +26,27 @@ Spec JSON (path via ADBOT_AD_SPEC, default scripts/clone_specs/fnr_v11_v15.json)
                    the early favourite — which is how proven winners end up untested. Use this
                    to compare audiences: the creatives are then the constant and the audience is
                    the only variable. Without it, one ad set is built on the campaign budget (CBO).
+                   NAMING RULE (operator, 2026-09-03): an ad set is named after its TARGETING
+                   ("Parents 3-17 + Engaged", "Family and Relationships", "Food & Drink +
+                   Milk + Bread"), never after the ad inside it — five identical names in a
+                   1-5-1 campaign are intended; the ad name is what tells them apart.
   advantage_audience  0 to switch Meta's audience expansion OFF for this build. Required when the
                    ad sets differ only by audience: with it ON, Meta may deliver outside each
                    lookalike band, the bands blur into each other, and the comparison measures
                    nothing.
   also_exclude[]   extra audience ids to exclude on top of the ones in config (e.g. a freshly
                    rebuilt buyer list, so prospecting does not pay to reach existing customers)
+  regional_regulated_categories[] / regional_regulation_identities{}
+                   the beneficiary / payer declaration Meta demands on every NEW ad set delivering
+                   to Malaysia since 2026-09-08 ("Provide a verified advertiser so that ads in this
+                   ad set can be delivered to audiences in the selected locations"). Ad sets built
+                   before that date carry MALAYSIA_UNIVERSAL + the verified business identity as
+                   universal_beneficiary / universal_payer. When the spec does not state them, they
+                   are COPIED from regulation_source_adset_id, else from source_adset_id — a clone
+                   then declares exactly what its live twin declares. Never invent an identity id:
+                   Meta accepts only identities verified for the business.
+  regulation_source_adset_id  ad set to copy that declaration from when the targeting is NOT
+                   cloned (interests / custom-audience routes) — any live ad set of the account.
   ads[]            {name, creative_id} or {name, post_id} — one PAUSED ad per entry.
                    post_id ("<page>_<post>") is the EXISTING-POST route: a fresh creative is
                    minted against that page post, so every ad pointing at it accumulates the same
@@ -49,6 +64,17 @@ from adbot.settings import REPO_ROOT, load_settings
 # Fields safe to copy from a live ad set's targeting onto a new one (drops read-only/derived keys).
 _KEEP = ("geo_locations", "age_min", "age_max", "genders", "locales",
          "excluded_custom_audiences", "flexible_spec")
+
+
+# Beneficiary / payer declaration. Meta refuses any new MY ad set without it since 2026-09-08,
+# while every ad set built before carries MALAYSIA_UNIVERSAL + the verified business identity —
+# so a clone copies its twin's declaration verbatim instead of guessing at enum names.
+_REGULATION = ("regional_regulated_categories", "regional_regulation_identities")
+
+
+def _clone_regulation(graph, source_adset_id: str) -> dict:
+    obj = graph.get_object(source_adset_id, ",".join(_REGULATION)) or {}
+    return {k: obj[k] for k in _REGULATION if obj.get(k)}
 
 
 def _clone_targeting(graph, source_adset_id: str) -> dict:
@@ -84,13 +110,18 @@ def main() -> None:
             # only narrows what Meta chose — the audience IS the targeting.
             tgt = m.targeting.to_spec()
             tgt["custom_audiences"] = [{"id": str(a)} for a in ids]
-        elif spec.get("interests"):
+        elif spec.get("interests") or spec.get("behaviors"):
             # Brand-new audience: the account's standard targeting (MY / age / Chinese locale /
             # excluded customer lists) plus the interest ids, so the ONLY variable versus a proven
-            # ad set is the interest itself. Ids must come from find_interests.py — never invented.
+            # ad set is the interest itself. Ids must come from find_interests.py or a read of a
+            # live ad set — never invented. behaviors[] (e.g. Engaged Shoppers) join the same
+            # flexible_spec group, i.e. they widen it (OR), exactly as the source ad sets do.
             tgt = m.targeting.to_spec()
-            tgt["flexible_spec"] = [{"interests": [
-                {"id": str(i["id"]), "name": i.get("name", "")} for i in spec["interests"]]}]
+            group = {}
+            for key in ("interests", "behaviors"):
+                if spec.get(key):
+                    group[key] = [{"id": str(i["id"]), "name": i.get("name", "")} for i in spec[key]]
+            tgt["flexible_spec"] = [group]
         else:
             tgt = _clone_targeting(graph, spec["source_adset_id"])
 
@@ -116,20 +147,40 @@ def main() -> None:
                                     "custom_audience_ids": spec.get("custom_audience_ids")}]
     abo = len(plans) > 1
 
-    campaign_fields = dict(
-        name=spec["campaign_name"], objective=m.objective, buying_type="AUCTION",
-        status="PAUSED", special_ad_categories=m.special_ad_categories,
-    )
-    if abo:
-        # Meta demands this be stated outright once the budget lives on the ad sets. "true" would
-        # let them lend each other 20% of their budget — which is precisely what a band comparison
-        # must not allow, or a band's spend is no longer its own.
-        campaign_fields["is_adset_budget_sharing_enabled"] = "false"
+    existing = spec.get("existing_campaign_id")
+    parent_abo = False
+    if existing:
+        # Attach the new ad sets to a campaign that ALREADY exists instead of creating one. The
+        # campaign itself is never edited. What the ad sets need depends on the parent: a CBO
+        # parent REFUSES ad-set budgets (the operator toggles ABO in Ads Manager and assigns them
+        # there), while an ABO parent — no campaign-level budget — REQUIRES one on every ad set.
+        cid = str(existing)
+        parent = graph.get_object(cid, "daily_budget,lifetime_budget")
+        parent_abo = not parent.get("daily_budget") and not parent.get("lifetime_budget")
+        print(f"[campaign] {cid}  (existing — attaching ad sets; parent is "
+              f"{'ABO, ad-set budgets sent' if parent_abo else 'CBO, budgets left to the operator'})")
     else:
-        campaign_fields.update(daily_budget=m.budget.daily_amount_cents,
-                               bid_strategy="LOWEST_COST_WITHOUT_CAP")
-    cid = graph.create_campaign(account, **campaign_fields)["id"]
-    print(f"[campaign] {cid}  ({'ABO - budget per ad set' if abo else 'CBO'})")
+        campaign_fields = dict(
+            name=spec["campaign_name"], objective=m.objective, buying_type="AUCTION",
+            status="PAUSED", special_ad_categories=m.special_ad_categories,
+        )
+        if abo:
+            # Meta demands this be stated outright once the budget lives on the ad sets. "true"
+            # would let them lend each other 20% of their budget — which is precisely what a band
+            # comparison must not allow, or a band's spend is no longer its own.
+            campaign_fields["is_adset_budget_sharing_enabled"] = "false"
+        else:
+            campaign_fields.update(daily_budget=m.budget.daily_amount_cents,
+                                   bid_strategy="LOWEST_COST_WITHOUT_CAP")
+        cid = graph.create_campaign(account, **campaign_fields)["id"]
+        print(f"[campaign] {cid}  ({'ABO - budget per ad set' if abo else 'CBO'})")
+
+    regulation = {k: spec[k] for k in _REGULATION if spec.get(k)}
+    reg_source = spec.get("regulation_source_adset_id") or spec.get("source_adset_id")
+    if not regulation and reg_source:
+        regulation = _clone_regulation(graph, str(reg_source))
+    print(f"[regulation] {json.dumps(regulation, ensure_ascii=False) if regulation else 'none declared'}"
+          + (f"  (copied from ad set {reg_source})" if regulation and not any(spec.get(k) for k in _REGULATION) else ""))
 
     adset_ids = []
     for plan in plans:
@@ -138,8 +189,10 @@ def main() -> None:
             campaign_id=cid, name=plan["name"],
             optimization_goal=m.optimization_goal, billing_event="IMPRESSIONS",
             promoted_object=m.promoted_object, targeting=targeting, status="PAUSED",
+            **regulation,
         )
-        if abo:
+        send_budget = (abo and not existing) or parent_abo
+        if send_budget:
             fields["daily_budget"] = int(round(float(plan.get("budget_myr", 100)) * 100))
             fields["bid_strategy"] = "LOWEST_COST_WITHOUT_CAP"
         if spec.get("start_time"):
@@ -147,7 +200,7 @@ def main() -> None:
         aid = graph.create_adset(account, **fields)["id"]
         adset_ids.append(aid)
         print(f"  [adset] {aid}  {plan['name']}"
-              + (f"  RM{float(plan.get('budget_myr', 100)):,.0f}/day" if abo else "")
+              + (f"  RM{float(plan.get('budget_myr', 100)):,.0f}/day" if send_budget else "")
               + (f"  starts {spec['start_time']}" if spec.get("start_time") else ""))
         print(f"          {json.dumps(targeting, ensure_ascii=False)[:240]}")
 

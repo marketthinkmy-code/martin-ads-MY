@@ -1,0 +1,28 @@
+{
+  "existing_campaign_id": "120247591849200575",
+  "source_adset_id": "120247591888380575",
+  "also_exclude": [
+    "120248429743500575"
+  ],
+  "adsets": [
+    {
+      "name": "MAR Video 1 我不会买牛奶",
+      "ads": [
+        { "name": "MAR Video 1: 我不会买牛奶", "creative_id": "1699536594708878" }
+      ]
+    },
+    {
+      "name": "Video 2 一个3～15岁",
+      "ads": [
+        { "name": "Video 2 - 一个3～15岁正常健康的孩子", "creative_id": "1539045641019136" }
+      ]
+    },
+    {
+      "name": "孩子15岁以上",
+      "ads": [
+        { "name": "Video: 孩子15岁以上还有机会长高吗？", "creative_id": "2054735945280092" }
+      ]
+    }
+  ],
+  "_note": "2026-08-27 operator: third in-place split (after Scale CBO and 基因决定论) — inside the existing Parents 3-17 + Engaged campaign (120247591849200575), one new ad set per ad, targeting cloned from the original Parents ad set. No campaign edit, no budgets sent (operator toggles ABO and assigns them). Created PAUSED; original ad set untouched."
+}

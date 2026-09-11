@@ -31,3 +31,11 @@ class SheetsClient:
                 .get(spreadsheetId=spreadsheet_id, fields="sheets.properties.title")
                 .execute())
         return [s["properties"]["title"] for s in meta.get("sheets", [])]
+
+    def tabs(self, spreadsheet_id: str) -> List[tuple]:
+        """Every tab as (title, gid) — gid is the sheetId in the browser URL (#gid=...)."""
+        meta = (self._svc.spreadsheets()
+                .get(spreadsheetId=spreadsheet_id, fields="sheets.properties(title,sheetId)")
+                .execute())
+        return [(sh["properties"]["title"], int(sh["properties"]["sheetId"]))
+                for sh in meta.get("sheets", [])]

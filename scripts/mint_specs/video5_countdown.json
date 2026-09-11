@@ -1,0 +1,13 @@
+{
+  "videos": [
+    {
+      "key": "v5cd",
+      "drive_file_id": "1hKjaZh-U-1vPOmoYSD6oXzZqrtLQ9vGw",
+      "video_name": "马丁 Video 5 倒数计时 生长板关窗",
+      "content_id": "video5_countdown_growth_plate",
+      "ad_name": "Video 5：長高倒數計時",
+      "headline": "🔴 你孩子的长高倒数，还剩几年？｜免费线上课",
+      "body_file": "scripts/mint_specs/video5_countdown.body.txt"
+    }
+  ]
+}

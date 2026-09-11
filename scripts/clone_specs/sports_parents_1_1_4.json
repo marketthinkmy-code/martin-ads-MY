@@ -1,0 +1,35 @@
+{
+  "campaign_name": "[MY] 儿童长高方程式 | Sports Parents 運動迷思 | 篮羽泳 | 1-1-4 (27 Aug)",
+  "adset_name": "篮球+羽毛球+游泳 (interest) · 8/27 开跑",
+  "budget_myr": 80,
+  "start_time": "2026-08-27T00:00:00+08:00",
+  "advantage_audience": 0,
+  "interests": [
+    { "id": "6003265014514", "name": "badminton (racquet sports)" },
+    { "id": "6003369240775", "name": "Basketball (sport)" },
+    { "id": "6003166397215", "name": "Swimming (water sport)" },
+    { "id": "6003521763770", "name": "Badminton Asia Championships" }
+  ],
+  "also_exclude": [
+    "120248429743500575"
+  ],
+  "ads": [
+    {
+      "name": "Hook Edit 01：運動就能長高？！No！",
+      "creative_id": "2179569125922008"
+    },
+    {
+      "name": "Video：林书豪",
+      "creative_id": "1345653461043907"
+    },
+    {
+      "name": "Single Image：这 5 种运动，越做越矮",
+      "creative_id": "1621063166289413"
+    },
+    {
+      "name": "Video：很爱运动还是不长",
+      "creative_id": "881514937712623"
+    }
+  ],
+  "_note": "2026-08-24 approved test: sports-parents pocket, one merged ad set per the operator (basketball+badminton+swimming together). Interest ids read live from the account's own 男孩运动圈 ad set (120247917672750575) — never invented; the martial-arts extras there were dropped to match the brief. Base targeting = account standard (MY / 25-65 / Chinese 1004 / standard exclusions), interests as the only variable, advantage_audience 0 so the pocket stays pure. All four creatives are existing sports-angle ads reused by creative_id (social proof carries). CBO RM80/day, scheduled Thu 8/27 00:00 MYT, built PAUSED."
+}

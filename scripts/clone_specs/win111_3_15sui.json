@@ -1,0 +1,17 @@
+{
+  "campaign_name": "MARTIN-MY | 1-1-1 | 孩子15岁以上 | RM50",
+  "source_adset_id": "120247433845320575",
+  "also_exclude": [
+    "120248429743500575"
+  ],
+  "adsets": [
+    {
+      "name": "孩子15岁以上 · Winners Broad",
+      "budget_myr": 50,
+      "ads": [
+        { "name": "Video: 孩子15岁以上还有机会长高吗？", "creative_id": "2054735945280092" }
+      ]
+    }
+  ],
+  "_note": "3 of 5. Lifetime #3 converter (48 sales, one on the 8/19 webinar)."
+}

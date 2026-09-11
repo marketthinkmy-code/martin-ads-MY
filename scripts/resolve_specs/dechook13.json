@@ -1,0 +1,10 @@
+{
+  "accounts": ["act_1024930575770087", "act_1011719073600566"],
+  "ad_ids": [],
+  "names": [
+    { "label": "dec hook 13 (needle: supplement)", "needle": "supplement" },
+    { "label": "dec hook 13 (needle: 几千块)", "needle": "几千块" },
+    { "label": "dec hook 13 (needle: HOOK 13)", "needle": "HOOK 13" }
+  ],
+  "_note": "2026-09-03: the MY copies of dec hook 13 sit on five different posts; find which post the SG copies (the ones that sold in the last 60 days) use before the Parents build."
+}

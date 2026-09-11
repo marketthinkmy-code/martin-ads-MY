@@ -1,0 +1,49 @@
+name: adbot · probe ad-set validation (manual, read-only)
+
+# Asks Meta what a NEW ad set must declare — every POST carries execution_options=[validate_only],
+# so the Graph API validates and answers with its errors instead of creating anything. Used on
+# 2026-09-08 to learn Malaysia's regional-regulation declaration (SG's ad sets carry
+# SINGAPORE_UNIVERSAL + beneficiary/payer identities; MY builds started failing with
+# "Provide a verified advertiser"). No writes.
+#
+# Push trigger fires on THIS file, its script and its spec dir only — isolated from everything
+# else. (A workflow's FIRST push must not carry a skip-ci marker anywhere in the commit message,
+# or GitHub never registers it and dispatch answers 404 — see adbot-rename.yml.)
+
+on:
+  workflow_dispatch:
+    inputs:
+      spec_path:
+        description: "probe spec JSON, repo-relative"
+        type: string
+        required: false
+        default: "scripts/probe_specs/my_regulation.json"
+  push:
+    branches: ["claude/sweet-curie-b6vql4"]
+    paths:
+      - ".github/workflows/adbot-probe-adset.yml"
+      - "scripts/probe_adset_regulation.py"
+      - "scripts/probe_specs/**"
+
+concurrency:
+  group: adbot-probe-adset
+  cancel-in-progress: false
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install .
+      - name: Probe (validate_only)
+        env:
+          ADBOT_ROOT: ${{ github.workspace }}
+          ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
+          META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
+          META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
+          ADBOT_PROBE_SPEC: ${{ inputs.spec_path || 'scripts/probe_specs/my_regulation.json' }}
+        run: python scripts/probe_adset_regulation.py

@@ -1,0 +1,57 @@
+{
+  "renames": [
+    {
+      "id": "120248670491000575",
+      "name": "Parents 3-17 + Engaged"
+    },
+    {
+      "id": "120248670491600575",
+      "name": "Parents 3-17 + Engaged"
+    },
+    {
+      "id": "120248670492060575",
+      "name": "Parents 3-17 + Engaged"
+    },
+    {
+      "id": "120248670492630575",
+      "name": "Parents 3-17 + Engaged"
+    },
+    {
+      "id": "120248670493520575",
+      "name": "Parents 3-17 + Engaged"
+    },
+    {
+      "id": "120248670442480575",
+      "name": "Family and Relationships"
+    },
+    {
+      "id": "120248670443210575",
+      "name": "Family and Relationships"
+    },
+    {
+      "id": "120248670443700575",
+      "name": "Family and Relationships"
+    },
+    {
+      "id": "120248670444660575",
+      "name": "Family and Relationships"
+    },
+    {
+      "id": "120248670465450575",
+      "name": "Food & Drink + Milk + Bread"
+    },
+    {
+      "id": "120248670466190575",
+      "name": "Food & Drink + Milk + Bread"
+    },
+    {
+      "id": "120248670466640575",
+      "name": "Food & Drink + Milk + Bread"
+    },
+    {
+      "id": "120248670467090575",
+      "name": "Food & Drink + Milk + Bread"
+    }
+  ],
+  "_note": "2026-09-03 operator rule: ad set name = its targeting label, never the ad — identical names across a 1-N-1 campaign are intended. Applied to the 13 Top10 RM50 ad sets (all PAUSED)."
+}

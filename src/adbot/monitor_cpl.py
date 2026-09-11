@@ -26,6 +26,9 @@ MANUAL_HOLD = "manual_hold"  # owner asked to keep this ad running despite CPL
 CPL_GRACE_NEW = "cpl_grace_new_ad"  # young ad over CPL — exempted so its leads can mature to sales
 GRACE_BRAKE = "cpl_grace_brake"     # young ad burning too hard with no sales — grace withdrawn
 LEAD_QUALITY = "lead_quality_regs_no_sales"  # plenty of sign-ups, zero buyers — the CPL is a lie
+OVER_THRESHOLD_CUT = "cpl_over_threshold_cut"  # over the ceiling under the daily rule: cut budget, keep running
+CUT_RESCUED = "cpa_rescued_no_cut"             # over CPL but selling at a healthy CPA — budget left alone
+CUT_LABEL_PREFIX = "ADBOT_CPL_CUT_"            # + YYYY-MM-DD (MYT): marks an ad set / campaign cut today
 
 
 def grace_braked(spend: float, cpl: Optional[float], cpa_sales: int, kpi: KpiCfg) -> bool:
@@ -121,16 +124,44 @@ def parse_metrics(insight: Optional[Dict[str, Any]], token: str) -> Tuple[float,
     return spend, extract_results(insight.get("actions"), token)
 
 
+def zero_reg_spend_line(kpi: KpiCfg) -> float:
+    """Spend at which an ad with ZERO registrations is paused.
+
+    Operator rule 2026-09-11: 1.5x the target CPL (1.5 x RM60 = RM90). When the multiple is 0
+    the older cpl_min_spend_myr line applies.
+    """
+    if kpi.cpl_zero_reg_spend_multiple > 0:
+        return kpi.cpl_threshold_myr * kpi.cpl_zero_reg_spend_multiple
+    return kpi.cpl_min_spend_myr
+
+
+def plan_cut(current_cents: int, pct: float, floor_myr: float) -> int:
+    """New daily budget after a pct cut, never below the floor (all in minor units)."""
+    floor = int(round(floor_myr * 100))
+    target = int(round(current_cents * (1.0 - pct / 100.0)))
+    return max(target, floor)
+
+
 def decide(spend: float, results: float, kpi: KpiCfg) -> Tuple[bool, str, Optional[float]]:
-    """(should_pause, reason, cpl). cpl is None when undefined, inf when results==0."""
+    """(should_pause, reason, cpl). cpl is None when undefined, inf when results==0.
+
+    Zero registrations: paused once spend reaches zero_reg_spend_line (rule 2). With
+    registrations: judged only after cpl_min_spend_myr; over the ceiling is a PAUSE under
+    cpl_over_action="pause", or a budget CUT (reason OVER_THRESHOLD_CUT, should_pause False)
+    under "cut" — the caller applies the cut.
+    """
+    if results <= 0:
+        if kpi.pause_zero_lead_after_spend and spend >= zero_reg_spend_line(kpi):
+            return True, ZERO_RESULTS, math.inf
+        if spend < kpi.cpl_min_spend_myr:
+            return False, INSUFFICIENT_SPEND, None
+        return False, NO_RESULTS_YET, math.inf
     if spend < kpi.cpl_min_spend_myr:
         return False, INSUFFICIENT_SPEND, None
-    if results <= 0:
-        if kpi.pause_zero_lead_after_spend:
-            return True, ZERO_RESULTS, math.inf
-        return False, NO_RESULTS_YET, math.inf
     cpl = spend / results
     if cpl > kpi.cpl_threshold_myr:
+        if (kpi.cpl_over_action or "pause").lower() == "cut":
+            return False, OVER_THRESHOLD_CUT, cpl
         return True, OVER_THRESHOLD, cpl
     return False, WITHIN_THRESHOLD, cpl
 
@@ -147,6 +178,9 @@ class AdDecision:
     cpa: Optional[float] = None     # 60-day real-sales CPA (None when not judged)
     cpa_sales: int = 0              # 60-day matched paid sales
     age_days: Optional[int] = None  # ad age, for the conversion-window guard
+    should_cut: bool = False        # daily rule: over CPL -> cut the ad set's budget instead of pausing
+    adset_id: Optional[str] = None
+    campaign_id: Optional[str] = None
 
 
 def _mkey(name: str) -> str:
@@ -158,16 +192,19 @@ def _mkey(name: str) -> str:
 
 
 def build_cpa_context(graph, settings: Settings, today: dt.date):
-    """(60-day sales by (campaign,ad), 60-day spend by ad_id) for the CPA gate.
+    """(60-day sales by (campaign,ad), 60-day spend by ad_id, 60-day regs by ad_id,
+    most-recent sale date by (campaign,ad)) for the CPA gate.
 
-    Also returns 60-day registrations by ad_id, read from the same insights call at no extra
-    API cost — the lead-quality gate needs sign-ups and sales side by side.
+    Registrations ride the same insights call at no extra API cost — the lead-quality gate
+    needs sign-ups and sales side by side. The last-sale date feeds the unhealthy-band rule:
+    a pause candidate only counts as such once a full webinar cycle has passed since it last
+    sold anything.
 
     Returns empty dicts when CPA is disabled or any source is unavailable, so a Sheets/Meta
     hiccup degrades the monitor to CPL-only rather than breaking it.
     """
     if not settings.cpa.enabled:
-        return {}, {}, {}
+        return {}, {}, {}, {}
     try:
         from .clients.sheets import SheetsClient
         values = SheetsClient(settings.secrets.google_sa_json).read_tab(
@@ -175,10 +212,13 @@ def build_cpa_context(graph, settings: Settings, today: dt.date):
         sales, _cols, _hdr = cpa.parse_sales(values, settings.cpa.price_myr)
         cutoff = today - dt.timedelta(days=60)
         sold: Dict[Tuple[str, str], int] = {}
+        last_sale: Dict[Tuple[str, str], dt.date] = {}
         for s in sales:
             if s.date and s.date > cutoff:
                 key = (_mkey(s.campaign), cpa.ad_key(s.ad))
                 sold[key] = sold.get(key, 0) + 1
+                if key not in last_sale or s.date > last_sale[key]:
+                    last_sale[key] = s.date
         token = result_action_type(settings.meta.conversion_event)
         spend: Dict[str, float] = {}
         regs: Dict[str, float] = {}
@@ -190,10 +230,10 @@ def build_cpa_context(graph, settings: Settings, today: dt.date):
             except (TypeError, ValueError):
                 continue
             regs[row.get("ad_id")] = extract_results(row.get("actions"), token)
-        return sold, spend, regs
+        return sold, spend, regs, last_sale
     except Exception as exc:  # noqa: BLE001
         get_logger().warning("CPA context unavailable (%s) — CPL-only this run", exc)
-        return {}, {}, {}
+        return {}, {}, {}, {}
 
 
 def evaluate_account(graph, settings: Settings, *, cpa_ctx=None) -> List[AdDecision]:
@@ -211,7 +251,9 @@ def evaluate_account(graph, settings: Settings, *, cpa_ctx=None) -> List[AdDecis
     today = (dt.datetime.utcnow() + dt.timedelta(hours=8)).date()  # MYT
     cpl_preset, cpl_range = cpl_window(settings, today)
     ctx = cpa_ctx if cpa_ctx is not None else build_cpa_context(graph, settings, today)
-    sold60, spend60, regs60 = ctx if len(ctx) == 3 else (ctx[0], ctx[1], {})
+    sold60, spend60 = ctx[0], ctx[1]
+    regs60 = ctx[2] if len(ctx) > 2 else {}
+    last60 = ctx[3] if len(ctx) > 3 else {}
     use_cpa = settings.cpa.enabled and (bool(sold60) or bool(spend60))
     tiers = cpa.CpaTiers(settings.cpa.healthy_max_myr, settings.cpa.max_acceptable_myr,
                          settings.cpa.hard_stop_myr)
@@ -256,13 +298,21 @@ def evaluate_account(graph, settings: Settings, *, cpa_ctx=None) -> List[AdDecis
             n_sales = 0
             should_pause, reason = cpl_pause, cpl_reason
             if use_cpa:
-                n_sales = sold60.get((camp_key, cpa.ad_key(name)), 0)
+                key60 = (camp_key, cpa.ad_key(name))
+                n_sales = sold60.get(key60, 0)
                 sp60 = spend60.get(ad["id"], 0.0)
                 cpa_val = cpa.cpa(sp60, n_sales)
+                # Unhealthy band (max_acceptable < CPA <= hard_stop): a pause candidate only
+                # once a full webinar + settle cycle has passed since its LAST sale with no new
+                # one — that cycle is its chance to redeem the CPA before the pause lands.
+                last_sale = last60.get(key60)
+                cycle_done = (last_sale is not None
+                              and (webinars_since(last_sale, today, settings.kpi) or 0) >= 1)
                 should_pause, reason = cpa.combined_decision(
                     cpl_pause=cpl_pause, cpl_reason=cpl_reason, cpa_value=cpa_val,
                     cpa_sales=n_sales, cpa_spend=sp60, age_days=age, tiers=tiers,
-                    conversion_days=settings.cpa.conversion_days, min_spend=settings.cpa.min_spend_myr)
+                    conversion_days=settings.cpa.conversion_days, min_spend=settings.cpa.min_spend_myr,
+                    unhealthy_cycle_done=cycle_done)
 
             # CPL grace for brand-new ads: a young ad over CPL but still pulling registrations hasn't
             # had time for those webinar sign-ups to mature into paid sales, so a CPL-only pause kills
@@ -295,9 +345,59 @@ def evaluate_account(graph, settings: Settings, *, cpa_ctx=None) -> List[AdDecis
                     and n_sales == 0 and regs60.get(ad["id"], 0) >= min_regs):
                 should_pause, reason = True, LEAD_QUALITY
 
+            # Daily rule 1 (2026-09-11): over the CPL ceiling -> cut the budget 30%, keep running.
+            # Only when nothing above already pauses the ad. An ad with real 60-day sales at a
+            # healthy CPA is left alone (cpl_cut_respect_cpa): registration cost is the wrong
+            # metric for an ad that is buying customers at the right price.
+            should_cut = False
+            if cpl_reason == OVER_THRESHOLD_CUT and not should_pause and not held:
+                rescued = (settings.kpi.cpl_cut_respect_cpa and use_cpa and n_sales > 0
+                           and cpa_val is not None and cpa_val <= settings.cpa.healthy_max_myr)
+                if rescued:
+                    reason = CUT_RESCUED
+                else:
+                    should_cut, reason = True, OVER_THRESHOLD_CUT
+
             decisions.append(AdDecision(ad["id"], name, spend, results, cpl, should_pause, reason,
-                                        cpa=cpa_val, cpa_sales=n_sales, age_days=age))
+                                        cpa=cpa_val, cpa_sales=n_sales, age_days=age,
+                                        should_cut=should_cut, adset_id=ad.get("adset_id"),
+                                        campaign_id=campaign["id"]))
     return decisions
+
+
+def apply_cut(graph, settings: Settings, d: AdDecision, today: dt.date, label_cache: Dict[str, str]):
+    """Cut the budget behind one over-CPL ad, once per day. Returns (status, detail).
+
+    The budget lives on the ad set (ABO) or, when the ad set carries none, on the campaign (CBO).
+    A dated label (ADBOT_CPL_CUT_<today>) on that entity is the once-a-day guard: the monitor
+    runs every 20 minutes and must not compound 30% cuts through the day. Never below the floor.
+    """
+    kpi = settings.kpi
+    entity_id, entity_kind = d.adset_id, "adset"
+    obj = graph.get_object(entity_id, "name,daily_budget,adlabels{id,name},campaign_id") if entity_id else {}
+    if not obj.get("daily_budget"):
+        entity_id, entity_kind = (obj.get("campaign_id") or d.campaign_id), "campaign"
+        if not entity_id:
+            return "skip", "no ad set / campaign id"
+        obj = graph.get_object(entity_id, "name,daily_budget,adlabels{id,name}")
+        if not obj.get("daily_budget"):
+            return "skip", "no daily budget on ad set or campaign (lifetime budget?)"
+    labels = (obj.get("adlabels") or {}).get("data", obj.get("adlabels") or []) or []
+    today_label = f"{CUT_LABEL_PREFIX}{today.isoformat()}"
+    if any(l.get("name") == today_label for l in labels):
+        return "skip", f"{entity_kind} {entity_id} already cut today"
+    current = int(obj["daily_budget"])
+    new = plan_cut(current, kpi.cpl_cut_pct, kpi.cpl_cut_floor_myr)
+    if new >= current:
+        return "skip", f"{entity_kind} {entity_id} at floor RM{current / 100:,.0f}"
+    graph.set_daily_budget(entity_id, new)
+    label_id = label_cache.get(today_label)
+    if not label_id:
+        label_id = graph.get_or_create_label(settings.meta.account_path, today_label)
+        label_cache[today_label] = label_id
+    keep = [l["id"] for l in labels if l.get("id")]
+    graph.set_entity_labels(entity_id, keep + [label_id])
+    return "cut", f"{entity_kind} {entity_id} RM{current / 100:,.0f} -> RM{new / 100:,.0f}/day"
 
 
 def run(graph, settings: Settings, *, dry_run: bool = False) -> Dict[str, Any]:
@@ -310,7 +410,12 @@ def run(graph, settings: Settings, *, dry_run: bool = False) -> Dict[str, Any]:
         cpl_str = "∞" if d.cpl == math.inf else (f"{d.cpl:.2f}" if d.cpl is not None else "n/a")
         cpa_str = ("" if d.cpa is None else
                    f" CPA={'∞' if d.cpa == math.inf else f'{d.cpa:.0f}'}(60d {d.cpa_sales} sale,{d.age_days}d)")
-        verb = "WOULD PAUSE" if (d.should_pause and dry_run) else ("PAUSE" if d.should_pause else "keep")
+        if d.should_pause:
+            verb = "WOULD PAUSE" if dry_run else "PAUSE"
+        elif d.should_cut:
+            verb = "WOULD CUT" if dry_run else "CUT"
+        else:
+            verb = "keep"
         log.info("  [%s] %s  spend=%.2f %s=%.0f CPL=%s%s (%s)",
                  verb, d.name, d.spend, event.lower(), d.results, cpl_str, cpa_str, d.reason)
 
@@ -332,12 +437,44 @@ def run(graph, settings: Settings, *, dry_run: bool = False) -> Dict[str, Any]:
                                     "cpa_sales": d.cpa_sales})
             paused += 1
 
+    # Daily rule 1: budget cuts for ads over the CPL ceiling (never for ads being paused).
+    to_cut = [d for d in decisions if d.should_cut and not d.should_pause]
+    cut, cut_skipped, cut_failed = 0, 0, 0
+    if to_cut and not dry_run:
+        today = (dt.datetime.utcnow() + dt.timedelta(hours=8)).date()
+        label_cache: Dict[str, str] = {}
+        for d in to_cut:
+            try:
+                status, detail = apply_cut(graph, settings, d, today, label_cache)
+            except Exception as exc:  # noqa: BLE001 - one failed cut must not fail the run
+                log.warning("  [skip] could not cut %s: %s", d.name, exc)
+                cut_failed += 1
+                continue
+            if status == "cut":
+                cut += 1
+                log.info("  [CUT] %s  %s (CPL %.2f > %.0f)", d.name, detail,
+                         d.cpl or 0.0, settings.kpi.cpl_threshold_myr)
+                state.append_pause_log(d.ad_id, "ad", "budget_cut",
+                                       {"spend": d.spend, "results": d.results, "detail": detail,
+                                        "cpl": None if d.cpl is None or d.cpl == math.inf else round(d.cpl, 2)})
+            else:
+                cut_skipped += 1
+                log.info("  [no cut] %s  %s", d.name, detail)
+    elif to_cut:
+        for d in to_cut:
+            log.info("  [WOULD CUT] %s  ad set %s by %.0f%% (floor RM%.0f)", d.name, d.adset_id,
+                     settings.kpi.cpl_cut_pct, settings.kpi.cpl_cut_floor_myr)
+
     active_left = len([d for d in decisions if not d.should_pause])
     summary = (f"CPL monitor ({event}): evaluated {len(decisions)} active ads, "
                f"{'would pause' if dry_run else 'paused'} {len(to_pause) if dry_run else paused}, "
+               f"{'would cut' if dry_run else 'cut'} {len(to_cut) if dry_run else cut}, "
                f"{active_left} remain under CPL {settings.kpi.cpl_threshold_myr:.0f} MYR")
     if not dry_run and failed:
         summary += f"; {failed} pause(s) failed, will retry next run (see [skip] warnings)"
+    if not dry_run and (cut_skipped or cut_failed):
+        summary += f"; cuts skipped {cut_skipped} (already today / at floor), failed {cut_failed}"
     final_summary(log, summary)
     return {"evaluated": len(decisions), "paused": (len(to_pause) if dry_run else paused),
-            "remaining": active_left, "failed": (0 if dry_run else failed), "dry_run": dry_run}
+            "cut": (len(to_cut) if dry_run else cut), "remaining": active_left,
+            "failed": (0 if dry_run else failed), "dry_run": dry_run}

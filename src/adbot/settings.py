@@ -162,6 +162,19 @@ class KpiCfg(BaseModel):
     # cheap CPL made of people who never buy is the most expensive traffic there is. 0 disables.
     lead_quality_min_regs: int = 0
     cpl_hold: List[str] = Field(default_factory=list)  # ad-name substrings temporarily exempt from auto-pause
+    # Daily rules (operator, 2026-09-11):
+    #  1. "MY CPL over RM60 -> cut 30%": with cpl_over_action="cut", an ad over the ceiling is NOT
+    #     paused; its ad set's daily budget (the campaign's, under CBO) is cut by cpl_cut_pct, at
+    #     most once per calendar day (MYT, tracked with a dated ad label), never below
+    #     cpl_cut_floor_myr. "pause" keeps the original behaviour.
+    #  2. "spent 1.5x the target CPL with 0 registrations -> pause": cpl_zero_reg_spend_multiple
+    #     x cpl_threshold_myr is the zero-registration spend line (1.5 x 60 = RM90). 0 falls back
+    #     to cpl_min_spend_myr.
+    cpl_over_action: str = "pause"
+    cpl_cut_pct: float = 30.0
+    cpl_cut_floor_myr: float = 50.0
+    cpl_cut_respect_cpa: bool = True    # an ad with 60d MY sales at CPA <= healthy_max is never cut
+    cpl_zero_reg_spend_multiple: float = 0.0
 
 
 class CpaCfg(BaseModel):

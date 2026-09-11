@@ -1,0 +1,21 @@
+{
+  "accounts": ["act_1011719073600566", "act_1024930575770087"],
+  "ad_ids": [
+    { "label": "#1 Video 1：孩子如果有鼻窦炎 (MY Top5)", "id": "120247917149920575" },
+    { "label": "#2 Video 13：三年前他長了10公分 (MY V11+13)", "id": "120247918282890575" },
+    { "label": "#3 Video: 孩子15岁以上还有机会长高吗？ (MY Top5)", "id": "120247917149020575" },
+    { "label": "#4 Video: 什麼樣的孩子基本上不會再長高 (MY Top5)", "id": "120247917152260575" },
+    { "label": "#6 JAN Video 6：如果你的孩子 (MY Top5)", "id": "120247917152600575" },
+    { "label": "#7 Hook Edit 04：不买牛奶给孩子喝 (MY 饮食吸收)", "id": "120248380460440575" },
+    { "label": "#10 Video：H2 面包牛奶一点都不健康 (MY Top5)", "id": "120247917150780575" }
+  ],
+  "names": [
+    { "label": "#5 JAN Video 10: 马六甲", "needle": "马六甲" },
+    { "label": "#8 MAR Video 1: 我不会买牛奶", "needle": "我不会买牛奶" },
+    { "label": "#9 Video 2 - 一个3～15岁正常健康的孩子", "needle": "正常健康的孩子" },
+    { "label": "#11 dec hook 13：花了几千块买增高 supplement", "needle": "supplement 给孩子吃" },
+    { "label": "#12 Extra Video 1 - 鼻子敏感", "needle": "鼻子敏感" },
+    { "label": "#13 MAR Video Hook 3: 准备早餐面包", "needle": "准备早餐面包" }
+  ],
+  "_note": "2026-09-03 operator: Top 10 (+3 backups) to be rebuilt in MY as 1 ad set = 1 ad = RM50/day, every ad pointing at its EXISTING page post. This spec only resolves the posts; the builds are clone_test specs."
+}

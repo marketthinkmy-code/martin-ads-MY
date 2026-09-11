@@ -1,0 +1,17 @@
+{
+  "campaign_name": "MARTIN-MY | 1-1-1 | H2 面包牛奶 · Hook | RM50",
+  "source_adset_id": "120247433845320575",
+  "also_exclude": [
+    "120248429743500575"
+  ],
+  "adsets": [
+    {
+      "name": "H2 面包牛奶 · Hook · Winners Broad",
+      "budget_myr": 50,
+      "ads": [
+        { "name": "Video：H2 面包牛奶一点都不健康 · Hook", "creative_id": "2904644519883869" }
+      ]
+    }
+  ],
+  "_note": "2 of 5. The hook-matched twin of the account's best recent converter (3 sales on 8/12)."
+}

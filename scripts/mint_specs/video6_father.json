@@ -1,0 +1,13 @@
+{
+  "videos": [
+    {
+      "key": "v6dad",
+      "drive_file_id": "1JZGlAHSuzlZJ6vFDSH535Fp1sBRatBI-",
+      "video_name": "马丁 Video 6 我也是爸爸",
+      "content_id": "video6_i_am_a_father_too",
+      "ad_name": "Video 6：我也是爸爸",
+      "headline": "🔴 我也是爸爸：孩子长不高，我第一件事不是买补品｜免费线上课",
+      "body_file": "scripts/mint_specs/video6_father.body.txt"
+    }
+  ]
+}

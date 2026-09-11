@@ -1,0 +1,107 @@
+{
+  "campaign_name": "[MY] 儿童长高方程式 | Food & Drink + Milk + Bread | Hooks 0907 | 1-5-5",
+  "existing_campaign_id": "120248747292630575",
+  "source_adset_id": "120248670465450575",
+  "also_exclude": [
+    "120248429743500575"
+  ],
+  "adsets": [
+    {
+      "name": "Food & Drink + Milk + Bread",
+      "budget_myr": 50,
+      "ads": [
+        {
+          "name": "Hook 1：今晚回家检查三件事",
+          "creative_id": "1597432345209840"
+        }
+      ]
+    },
+    {
+      "name": "Food & Drink + Milk + Bread",
+      "budget_myr": 50,
+      "ads": [
+        {
+          "name": "Hook 2：旧鞋当尺",
+          "creative_id": "1419029943510844"
+        }
+      ]
+    },
+    {
+      "name": "Food & Drink + Milk + Bread",
+      "budget_myr": 50,
+      "ads": [
+        {
+          "name": "Hook 6：只剩两到三年",
+          "creative_id": "1395071262768189"
+        }
+      ]
+    },
+    {
+      "name": "Food & Drink + Milk + Bread",
+      "budget_myr": 50,
+      "ads": [
+        {
+          "name": "Video 7：我13岁身高173",
+          "creative_id": "1703230954236188"
+        }
+      ]
+    },
+    {
+      "name": "Food & Drink + Milk + Bread",
+      "budget_myr": 50,
+      "ads": [
+        {
+          "name": "Video 6：我也是爸爸",
+          "creative_id": "28178541791816250"
+        }
+      ]
+    }
+  ],
+  "_note": "2026-09-08 operator batch, mirroring SG's 'Hooks 0907' structure: a NEW campaign per audience, 1 ad set = 1 ad = RM50/day (ABO, budget sharing off), ad set named after its targeting, targeting cloned from the matching Top10 RM50 ad set (buyer list excluded). Five MY creatives minted from Drive with the operator's copy (10,000+ kids, MY landing link + MY url_tags). No start_time; built PAUSED for the operator's review. 2026-09-08 rebuild: the first run created this campaign (120248747292630575, PAUSED, zero spend) and then failed at the first ad set with Meta's new 'Provide a verified advertiser' rule, so the ad sets now attach to that shell via existing_campaign_id (parent is ABO -> RM50 sent per ad set) and carry the MALAYSIA_UNIVERSAL beneficiary/payer declaration copied from source_adset_id (validated with execution_options=validate_only first, run 34198707626).",
+  "_built": {
+    "run": "34198984800",
+    "campaign_id": "120248747292630575",
+    "adset_ids": [
+      "120248747551890575",
+      "120248747552410575",
+      "120248747552910575",
+      "120248747553250575",
+      "120248747553780575"
+    ],
+    "ad_ids": [
+      "120248747554520575",
+      "120248747555490575",
+      "120248747556390575",
+      "120248747556650575",
+      "120248747557250575"
+    ],
+    "built_at": "2026-09-08 (all PAUSED, RM50/day per ad set)",
+    "ads": [
+      {
+        "name": "Hook 1：今晚回家检查三件事",
+        "adset_id": "120248747551890575",
+        "ad_id": "120248747554520575"
+      },
+      {
+        "name": "Hook 2：旧鞋当尺",
+        "adset_id": "120248747552410575",
+        "ad_id": "120248747555490575"
+      },
+      {
+        "name": "Hook 6：只剩两到三年",
+        "adset_id": "120248747552910575",
+        "ad_id": "120248747556390575"
+      },
+      {
+        "name": "Video 7：我13岁身高173",
+        "adset_id": "120248747553250575",
+        "ad_id": "120248747556650575"
+      },
+      {
+        "name": "Video 6：我也是爸爸",
+        "adset_id": "120248747553780575",
+        "ad_id": "120248747557250575"
+      }
+    ]
+  }
+}

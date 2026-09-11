@@ -1,0 +1,22 @@
+{
+  "existing_campaign_id": "120246581925510575",
+  "source_adset_id": "120246581926390575",
+  "also_exclude": [
+    "120248429743500575"
+  ],
+  "adsets": [
+    {
+      "name": "爸妈165突破175",
+      "ads": [
+        { "name": "Video：爸妈165突破175", "creative_id": "1040313868509368" }
+      ]
+    },
+    {
+      "name": "基因就是矮",
+      "ads": [
+        { "name": "Video：基因就是矮", "creative_id": "1324671283067721" }
+      ]
+    }
+  ],
+  "_note": "2026-08-27 operator: same in-place split as Scale CBO — inside the existing 基因决定论 campaign (120246581925510575), one new ad set per ad the operator wants running (爸妈165突破175 + 基因就是矮), targeting cloned from the original Broad MY 25+ ad set. No campaign edit, no budgets sent (operator toggles ABO and assigns them). Created PAUSED; original ad set untouched."
+}

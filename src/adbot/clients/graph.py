@@ -220,6 +220,15 @@ class GraphClient:
         """status is ACTIVE or PAUSED."""
         return self._request("POST", entity_id, data={"status": status})
 
+    def set_daily_budget(self, entity_id: str, cents: int) -> Dict[str, Any]:
+        """Set an ad set's (ABO) or campaign's (CBO) daily budget, in minor units."""
+        return self._request("POST", entity_id, data={"daily_budget": int(cents)})
+
+    def set_entity_labels(self, entity_id: str, label_ids: List[str]) -> Dict[str, Any]:
+        """Replace the ad labels on an ad set or campaign (the monitor's once-a-day cut marker)."""
+        return self._request("POST", entity_id,
+                             data={"adlabels": json.dumps([{"id": lid} for lid in label_ids])})
+
     # ── reads for monitoring / scoping ─────────────────────────────────────────
     def list_campaigns(self, account_path: str) -> List[Dict[str, Any]]:
         """Every campaign in the account — whole-account scope for the monitor + weekly OFF."""

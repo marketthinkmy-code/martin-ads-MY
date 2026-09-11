@@ -1,0 +1,21 @@
+{
+  "campaign_name": "[MY] 儿童长高方程式 | F&R | Video 5 倒數計時 vs 15岁 | 1-1-2 (27 Aug)",
+  "adset_name": "F&R 兴趣定向 · 倒數計時對打 (克隆自 Interest: Family and Relationships)",
+  "source_adset_id": "120247702962070575",
+  "budget_myr": 100,
+  "start_time": "2026-08-27T00:00:00+08:00",
+  "also_exclude": [
+    "120248429743500575"
+  ],
+  "ads": [
+    {
+      "name": "Video 5：長高倒數計時",
+      "creative_id": "1035267129499272"
+    },
+    {
+      "name": "Video: 孩子15岁以上还有机会长高吗？",
+      "creative_id": "2054735945280092"
+    }
+  ],
+  "_note": "2026-08-24: new countdown/growth-plate urgency film vs the lifetime-#3 converter (same angle family) as a live benchmark in one CBO ad set — the bread Hook1/Hook2 pattern. Fresh copy minted per the operator (video5_countdown.body.txt), not the evergreen. Targeting cloned from the proven F&R ad set like the Aug batch; 16 AUG buyer list added to exclusions. RM100/day, starts Thu 8/27 00:00 MYT, built PAUSED."
+}
