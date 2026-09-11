@@ -35,7 +35,8 @@ from adbot.settings import load_settings
 MIN_CAT = 5          # an answer category must occur this often before it is printed
 AGE_BUCKETS = [(0, 4, "0-4"), (5, 8, "5-8"), (9, 12, "9-12"), (13, 14, "13-14"),
                (15, 17, "15-17"), (18, 200, "18+")]
-PII_HINTS = ("name", "email", "phone", "whatsapp", "號碼", "号码", "電話", "电话", "姓名", "ic")
+PII_HINTS = ("email", "phone", "whatsapp", "號碼", "号码", "電話", "电话", "姓名", "手机", "手機")
+PII_EXACT = ("name", "fullname", "ic", "nric")
 
 
 def _hk(s: str) -> str:
@@ -56,13 +57,22 @@ def find_extra_columns(header: List[str]) -> Dict[str, int]:
                     return i
         return -1
 
+    age_cols = []
+    for n in ("几岁", "幾歲", "孩子年龄", "孩子年齡", "kidsage", "childage", "age"):
+        for i, k in enumerate(keys):
+            if n in k and i not in age_cols:
+                age_cols.append(i)
     return {
-        "age": first("kidsage", "几岁", "幾歲", "孩子年龄", "孩子年齡", "childage", "age"),
+        "age": age_cols[0] if age_cols else -1,
+        "age_cols": age_cols,
         "gender": first("男孩", "gender", "性别", "性別"),
         "worry": first("担心", "擔心", "worry", "concern"),
         "source": first("source", "ways", "来源", "來源"),
         "channel": first("付費管道", "付费管道", "paymentchannel", "channel"),
         "market": first("market", "country", "市场", "市場", "地区", "地區"),
+        "ad_fallback": first("utmcontent", "adname", "广告名", "廣告名"),
+        "adset_fallback": first("utmsource", "adsetname"),
+        "campaign_fallback": first("utmcampaign", "campaign"),
     }
 
 
@@ -105,11 +115,18 @@ def load_rows(sheets: SheetsClient, sheet_id: str, tab: str, today: dt.date, win
     hdr_i = next((i for i, r in enumerate(values[:10]) if sum(1 for c in r if c.strip()) >= 3), 0)
     header = values[hdr_i]
     cols = cpa.find_columns(header)
-    cols.update(find_extra_columns(header))
-    pii_cols = [i for i, h in enumerate(header) if any(p in _hk(h) for p in PII_HINTS)]
+    extra = find_extra_columns(header)
+    age_cols = extra.pop("age_cols", [])
+    cols.update(extra)
+    for k in ("ad", "adset", "campaign"):
+        if cols.get(k, -1) < 0 and cols.get(f"{k}_fallback", -1) >= 0:
+            cols[k] = cols[f"{k}_fallback"]
+    pii_cols = [i for i, h in enumerate(header)
+                if any(p in _hk(h) for p in PII_HINTS) or _hk(h) in PII_EXACT]
     print(f"[{label}] tab {tab!r}: {len(values) - hdr_i - 1} data rows")
     print(f"[{label}] header ({len(header)} cols): {header}")
-    print(f"[{label}] matched columns: { {k: v for k, v in cols.items() if v >= 0} }")
+    print(f"[{label}] matched columns: { {k: v for k, v in cols.items() if v >= 0 and not k.endswith('_fallback')} }"
+          f"  age candidates {age_cols}")
     print(f"[{label}] PII columns (never read): {[header[i] for i in pii_cols]}")
 
     def cell(r: List[str], key: str) -> str:
@@ -130,7 +147,9 @@ def load_rows(sheets: SheetsClient, sheet_id: str, tab: str, today: dt.date, win
         camp, adset, ad = cell(r, "campaign"), cell(r, "adset"), cell(r, "ad")
         rows.append({
             "date": d, "campaign": camp, "adset": adset, "ad": ad,
-            "ad_key": cpa.ad_key(ad), "age": parse_age(cell(r, "age")),
+            "ad_key": cpa.ad_key(ad),
+            "age": next((a for a in (parse_age(r[i] if i < len(r) else "") for i in age_cols)
+                         if a is not None), None),
             "gender": cell(r, "gender")[:20], "worry": " ".join(cell(r, "worry").split())[:60],
             "source": cell(r, "source")[:30], "channel": cell(r, "channel")[:30],
             "market": market_of(camp, cell(r, "source"), cell(r, "market")),
@@ -209,9 +228,9 @@ def main() -> None:
     print_compare("MARKET (from campaign / source)", regs, buyers, "market",
                   order=["MY", "SG", "?"])
 
-    for mk in ("MY", "SG"):
-        R = [r for r in regs if r["market"] == mk]
-        B = [b for b in buyers if b["market"] == mk]
+    for mk in ("MY", "SG", "ALL"):
+        R = [r for r in regs if mk == "ALL" or r["market"] == mk]
+        B = [b for b in buyers if mk == "ALL" or b["market"] == mk]
         if not R and not B:
             continue
         print(f"\n================ {mk} ================")

@@ -19,7 +19,7 @@ on:
         description: "tab gid (#gid=…) of the registration list"
         type: string
         required: false
-        default: "1500782859"
+        default: "1364330964"
       register_tab:
         description: "tab title of the registration list (used when gid not found)"
         type: string
@@ -62,7 +62,7 @@ jobs:
           GOOGLE_SERVICE_ACCOUNT_JSON_B64: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON_B64 }}
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
           ADBOT_LQ_REGISTER_SHEET_ID: ${{ inputs.register_sheet_id }}
-          ADBOT_LQ_REGISTER_GID: ${{ inputs.register_gid || '1500782859' }}
+          ADBOT_LQ_REGISTER_GID: ${{ inputs.register_gid || '1364330964' }}
           ADBOT_LQ_REGISTER_TAB: ${{ inputs.register_tab || 'Register' }}
           ADBOT_LQ_WINDOW_DAYS: ${{ inputs.window_days || '90' }}
           ADBOT_LQ_EXTRA_SHEET_ID: ${{ inputs.extra_sheet_id || '1NMtGKVHRYFSsUw3-dacNPYDZABcYKi6VZgMR0u_oZRE' }}
