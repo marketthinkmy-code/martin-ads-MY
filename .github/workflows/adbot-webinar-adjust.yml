@@ -1,0 +1,52 @@
+name: adbot · per-webinar budget adjust (doc plan, manual)
+
+# The operator's budget doc (2026-09-12): after each webinar, per creative, MY-only buyers —
+# SCALE +15% (fresh buyer, healthy CPA) / KEEP / REDUCE -25% (no buyer two cycles) / OFF (four
+# cycles without a buyer and >= RM600 spent). Default PROPOSE ONLY; apply=true writes budgets and
+# pauses. Run the morning after the paid list is filled in (webinar + 1-2 days).
+# Push trigger fires on THIS file and its script only. (A new workflow's FIRST push must not
+# carry a skip-ci marker anywhere in the commit message, or it never registers.)
+
+on:
+  workflow_dispatch:
+    inputs:
+      webinar_dates:
+        description: "webinar dates, newest first, comma-separated (YYYY-MM-DD)"
+        type: string
+        required: false
+        default: "2026-09-17,2026-09-10,2026-09-02,2026-08-26"
+      apply:
+        description: "apply the budgets / pauses (false = propose only)"
+        type: boolean
+        default: false
+  push:
+    branches: ["claude/sweet-curie-b6vql4"]
+    paths:
+      - ".github/workflows/adbot-webinar-adjust.yml"
+      - "scripts/webinar_adjust.py"
+
+concurrency:
+  group: adbot-webinar-adjust
+  cancel-in-progress: false
+
+jobs:
+  adjust:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install .
+      - name: Per-webinar adjust
+        env:
+          ADBOT_ROOT: ${{ github.workspace }}
+          ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
+          GOOGLE_SERVICE_ACCOUNT_JSON_B64: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON_B64 }}
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
+          META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
+          ADBOT_ADJ_WEBINAR_DATES: ${{ inputs.webinar_dates || '2026-09-10,2026-09-02,2026-08-26,2026-08-19' }}
+          ADBOT_ADJ_APPLY: ${{ inputs.apply && '1' || '0' }}
+        run: python scripts/webinar_adjust.py
