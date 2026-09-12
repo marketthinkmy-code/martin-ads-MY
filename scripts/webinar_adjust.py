@@ -122,12 +122,14 @@ def main() -> None:
             rc = [regs_cycle[i].get(k, 0.0) for i in range(len(cycles))]
             b60, life = buyers60.get(k, 0), buyers_life.get(k, 0)
             cpa60 = (spend60.get(k, 0.0) / b60) if b60 else math.inf
-            cycles_alive = sum(1 for (_l, a, _b, _bf, _bt) in cycles if created and created <= a) if created else len(cycles)
+            # "how many webinars has this CREATIVE sat through" — counted on pooled spend, not on
+            # this copy's creation date: a rebuilt copy of a two-month-old creative is not new.
+            cycles_alive = sum(1 for v in sc if v > 0)
 
             if cycles_alive < 2:
                 verdict, factor = "NEW", 1.0
-            elif len(cycles) >= OFF_CYCLES and all(v == 0 for v in bc[:OFF_CYCLES]) and sum(sc[:OFF_CYCLES]) >= OFF_MIN_SPEND \
-                    and cycles_alive >= OFF_CYCLES:
+            elif (len(cycles) >= OFF_CYCLES and all(v == 0 for v in bc[:OFF_CYCLES])
+                  and all(v > 0 for v in sc[:OFF_CYCLES]) and sum(sc[:OFF_CYCLES]) >= OFF_MIN_SPEND):
                 verdict, factor = "OFF", 0.0
             elif bc[0] >= 1 and cpa60 <= s.cpa.healthy_max_myr:
                 verdict, factor = "SCALE", 1 + SCALE_PCT / 100
