@@ -1,0 +1,13 @@
+{
+  "campaign_name": "[MY] 儿童长高方程式 | Family and Relationships | Top10 RM50 | 1-4-1",
+  "existing_campaign_id": "120248670442160575",
+  "source_adset_id": "120248670444660575",
+  "also_exclude": ["120248429743500575"],
+  "adsets": [
+    {"name": "Family and Relationships", "budget_myr": 57,
+     "ads": [{"name": "Video: 孩子15岁以上还有机会长高吗？", "post_id": "341825319024143_122166897782485585"}]},
+    {"name": "Family and Relationships", "budget_myr": 43,
+     "ads": [{"name": "Video：H2 面包牛奶一点都不健康", "post_id": "341825319024143_122192839352485585"}]}
+  ],
+  "_note": "2026-09-12 operator: follow the budget doc for MY. The doc gives 'F&R Top5 -> 15岁以上 RM400/wk' and 'F&R Top5 -> H2 RM300/wk' as separate lines, but in the 🌟 F&R Top 5 campaign both ads share ONE ad set with 鼻窦炎 (1-1-5, CBO). Operator wants ABO daily budgets and no CBO pooling, so each gets its own ad set here (F&R Top10 campaign, ABO, declaration copied from the 鼻子敏感 ad set), on the same page posts. RM400/7 = 57, RM300/7 = 43. Built PAUSED, activated right after."
+}
