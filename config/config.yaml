@@ -79,8 +79,13 @@ kpi:
   #   1. MY CPL over RM60           -> cut the ad set's daily budget 30% (once a day, floor RM50)
   #   2. spent 1.5x target CPL (RM90) with 0 registrations -> pause
   # CPL is week-to-date from Thursday (cpl_lookback) and only judged after cpl_min_spend_myr.
-  cpl_threshold_myr: 60.00               # target CPL (MYR): above it rule 1 fires
-  cpl_over_action: "cut"                 # "cut" (rule 1) | "pause" (old behaviour)
+  # TEMPORARY (operator, 2026-09-12, "最近业绩很差的紧急调整"): budgets follow the per-webinar
+  # budget doc, adjusted once per webinar by adbot-webinar-adjust (SCALE +15% / KEEP / REDUCE -25% /
+  # OFF after 4 webinars without a fresh MY buyer). So: no CPL cut, no lead-quality pause, no CPA
+  # auto-pause (cpa.auto_pause false). The ONLY automatic pause left is rule 2 below. Restore
+  # cpl_over_action "cut", lead_quality_min_regs 30 and cpa.auto_pause true when the operator ends it.
+  cpl_threshold_myr: 60.00               # target CPL (MYR)
+  cpl_over_action: "none"                # TEMPORARY: log only. "cut" = daily rule 1, "pause" = old behaviour
   cpl_cut_pct: 30                        # rule 1: cut this % of the daily budget
   cpl_cut_floor_myr: 50.00               # rule 1: never cut below this (the account's ad-set minimum)
   cpl_cut_respect_cpa: true              # an ad with 60d MY sales at CPA <= healthy_max is never cut
@@ -94,7 +99,7 @@ kpi:
   # the day before gets it immediately, and calendar age cannot tell those apart. This is what
   # 马六甲 cost: paused on 08-05 at noon for "RM1,281 / 0 sales", it took 2 sales that same evening.
   # settle_days covers the paid list being filled in by hand after the webinar runs.
-  webinar_weekday: 2                     # Mon=0 .. Wed=2 — the weekly webinar
+  webinar_weekday: 3                     # TEMPORARY: Thu=3 for the 2026-09-17 webinar; Wed=2 from 09-23 on
   cpl_grace_webinars: 1                  # an ad must sit through this many before CPL can pause it
   webinar_settle_days: 1                 # wait this long after a webinar before counting it
   # Lead-quality gate: this many 60-day registrations with ZERO matched paid sales pauses the ad
@@ -102,7 +107,7 @@ kpi:
   # that attract non-buyers (their sign-ups are cheapest) — 早餐卡长高 reached CPL RM48 on 64
   # sign-ups and not one buyer. The webinar grace still applies first: an ad that has not sat
   # through a webinar is not judged.
-  lead_quality_min_regs: 30
+  lead_quality_min_regs: 0               # TEMPORARY off (doc plan); was 30
   # Brakes on that grace, so a young ad can't burn unchecked (Hook 4 reached CPL 93 / ~RM1,200 with
   # 0 sales while "protected"). Both only ever fire on an ad with ZERO matched paid sales — one with
   # real sales at an acceptable CPA is kept by CPA-rescue, which runs first and wins.
@@ -119,6 +124,7 @@ kpi:
 
 cpa:                                     # cost per real PAID acquisition (joins the paid-list sheet)
   enabled: true
+  auto_pause: false                      # TEMPORARY (doc plan): CPA logged, never auto-pauses; was true
   spreadsheet_id: "1DsKtcDpsWp3Njfah6Fw3PBizhGiy017ULw5qKeV-RSA"   # "Paid Student List" sheet (share with the SA email)
   sales_tab: "Paid Student List (RM1997)"   # NOTE: tab label says RM1997 but price_myr below is 2591 — confirm
   price_myr: 2591.00                     # default pax price (sheet's Amount column overrides per row)

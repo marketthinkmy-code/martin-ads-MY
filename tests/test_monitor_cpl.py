@@ -517,3 +517,30 @@ def test_apply_cut_once_per_day_and_floor():
     assert status == "cut" and g.budget == 5000
     status, detail = apply_cut(g, settings, d, dt.date(2026, 9, 13), {})
     assert status == "skip" and "at floor" in detail and g.budget == 5000
+
+
+def test_cpl_over_action_none_only_notes():
+    from adbot.monitor_cpl import OVER_THRESHOLD_NOTED
+    kpi = KpiCfg(cpl_threshold_myr=60, cpl_min_spend_myr=100, cpl_over_action="none",
+                 cpl_zero_reg_spend_multiple=1.5, pause_zero_lead_after_spend=True)
+    should, reason, cpl = decide(140, 2, kpi)
+    assert not should and reason == OVER_THRESHOLD_NOTED and cpl == 70
+    should, reason, _ = decide(90, 0, kpi)                # rule 2 still pauses
+    assert should and reason == ZERO_RESULTS
+
+
+def test_cpa_auto_pause_off_never_pauses_on_cpa():
+    settings = Settings(meta=MetaCfg(conversion_event="COMPLETE_REGISTRATION"),
+                        kpi=KpiCfg(cpl_threshold_myr=60, cpl_min_spend_myr=100, cpl_over_action="none",
+                                   cpl_lookback="last_3d"),
+                        cpa=CpaCfg(enabled=True, auto_pause=False, hard_stop_myr=1200,
+                                   min_spend_myr=0, conversion_days=0))
+    campaigns = [{"id": "A", "name": "[MY] x", "effective_status": "ACTIVE"}]
+    ads = {"A": [_ad("expensive_seller", created_time="2026-01-01")]}
+    insights = {"expensive_seller": _reg_insight(140, 2)}
+    sold60 = {(_mkey("[MY] x"), cpa.ad_key("expensive_seller")): 1}
+    spend60 = {"expensive_seller": 6000.0}                 # CPA 6,000 -> would be a hard stop
+    decisions = evaluate_account(_FakeGraph(campaigns, ads, insights), settings,
+                                 cpa_ctx=(sold60, spend60, {}, {}))
+    d = decisions[0]
+    assert not d.should_pause and d.cpa == 6000 and d.cpa_sales == 1

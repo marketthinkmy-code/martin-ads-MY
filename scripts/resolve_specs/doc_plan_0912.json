@@ -1,0 +1,10 @@
+{
+  "accounts": ["act_1011719073600566"],
+  "names": [
+    {"label": "15岁以上 copies", "needle": "15岁以上还有机会长高"},
+    {"label": "MAR Video 1 copies (LAL 4-5%)", "needle": "我不会买牛奶"},
+    {"label": "Hook 1 早餐就錯了", "needle": "早餐就錯了"},
+    {"label": "爸妈165", "needle": "爸妈165"}
+  ],
+  "_note": "2026-09-12: ids for the doc's MY plan — which ad set holds each copy, and its status."
+}
