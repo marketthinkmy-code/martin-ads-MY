@@ -5,15 +5,17 @@ name: adbot · weekly ON (Thu 00:00 MYT)
 
 on:
   schedule:
+    # TEMPORARY: Thursday-night webinar on 2026-09-17 -> resume Fri 00:xx MYT (Thu 16:xx UTC).
+    # Revert to Wednesday (* * 3) before the 2026-09-23 webinar.
     # Resume is the costliest tick to miss (ads stay paused = lost revenue), so fire densely right
     # after midnight AND keep hourly backups. GitHub drops/delays scheduled runs, so we never rely
     # on one tick. Re-running is a no-op: weekly-on clears the label as it resumes, so later
     # attempts find nothing to do. Cron is UTC: Wed 16:xx == Thu 00:xx MYT.
-    - cron: "9 16 * * 3"       # Thu 00:09 MYT (Wed 16:09 UTC) — primary
-    - cron: "24 16 * * 3"      # Thu 00:24 MYT — backup
-    - cron: "39 16 * * 3"      # Thu 00:39 MYT — backup
-    - cron: "9 17 * * 3"       # Thu 01:09 MYT — backup
-    - cron: "9 18 * * 3"       # Thu 02:09 MYT — backup
+    - cron: "9 16 * * 4"       # Fri 00:09 MYT (Thu 16:09 UTC) — primary, TEMPORARY, see above
+    - cron: "24 16 * * 4"      # Fri 00:24 MYT — backup
+    - cron: "39 16 * * 4"      # Fri 00:39 MYT — backup
+    - cron: "9 17 * * 4"       # Fri 01:09 MYT — backup
+    - cron: "9 18 * * 4"       # Fri 02:09 MYT — backup
   workflow_dispatch:           # allow manual runs from the Actions tab
     inputs:
       dry_run:

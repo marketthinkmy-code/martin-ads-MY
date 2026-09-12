@@ -170,7 +170,7 @@ class KpiCfg(BaseModel):
     #  2. "spent 1.5x the target CPL with 0 registrations -> pause": cpl_zero_reg_spend_multiple
     #     x cpl_threshold_myr is the zero-registration spend line (1.5 x 60 = RM90). 0 falls back
     #     to cpl_min_spend_myr.
-    cpl_over_action: str = "pause"
+    cpl_over_action: str = "pause"      # "pause" | "cut" | "none" (log only)
     cpl_cut_pct: float = 30.0
     cpl_cut_floor_myr: float = 50.0
     cpl_cut_respect_cpa: bool = True    # an ad with 60d MY sales at CPA <= healthy_max is never cut
@@ -180,6 +180,9 @@ class KpiCfg(BaseModel):
 class CpaCfg(BaseModel):
     """Cost per real paid acquisition, from the Paid Student List sheet (RM2,399/2,099 a pax)."""
     enabled: bool = False
+    # False = CPA is still read and logged, but never pauses on its own (no hard stop, no
+    # unhealthy-band pause). Used while the operator runs the per-webinar budget plan by hand.
+    auto_pause: bool = True
     spreadsheet_id: str = ""
     sales_tab: str = "Paid Student List"
     price_myr: float = 2399.0

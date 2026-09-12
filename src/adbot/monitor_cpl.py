@@ -29,6 +29,7 @@ LEAD_QUALITY = "lead_quality_regs_no_sales"  # plenty of sign-ups, zero buyers â
 OVER_THRESHOLD_CUT = "cpl_over_threshold_cut"  # over the ceiling under the daily rule: cut budget, keep running
 CUT_RESCUED = "cpa_rescued_no_cut"             # over CPL but selling at a healthy CPA â€” budget left alone
 CUT_LABEL_PREFIX = "ADBOT_CPL_CUT_"            # + YYYY-MM-DD (MYT): marks an ad set / campaign cut today
+OVER_THRESHOLD_NOTED = "cpl_over_threshold_noted"  # over the ceiling but cpl_over_action="none": log only
 
 
 def grace_braked(spend: float, cpl: Optional[float], cpa_sales: int, kpi: KpiCfg) -> bool:
@@ -160,8 +161,11 @@ def decide(spend: float, results: float, kpi: KpiCfg) -> Tuple[bool, str, Option
         return False, INSUFFICIENT_SPEND, None
     cpl = spend / results
     if cpl > kpi.cpl_threshold_myr:
-        if (kpi.cpl_over_action or "pause").lower() == "cut":
+        action = (kpi.cpl_over_action or "pause").lower()
+        if action == "cut":
             return False, OVER_THRESHOLD_CUT, cpl
+        if action == "none":
+            return False, OVER_THRESHOLD_NOTED, cpl
         return True, OVER_THRESHOLD, cpl
     return False, WITHIN_THRESHOLD, cpl
 
@@ -308,11 +312,13 @@ def evaluate_account(graph, settings: Settings, *, cpa_ctx=None) -> List[AdDecis
                 last_sale = last60.get(key60)
                 cycle_done = (last_sale is not None
                               and (webinars_since(last_sale, today, settings.kpi) or 0) >= 1)
-                should_pause, reason = cpa.combined_decision(
-                    cpl_pause=cpl_pause, cpl_reason=cpl_reason, cpa_value=cpa_val,
-                    cpa_sales=n_sales, cpa_spend=sp60, age_days=age, tiers=tiers,
-                    conversion_days=settings.cpa.conversion_days, min_spend=settings.cpa.min_spend_myr,
-                    unhealthy_cycle_done=cycle_done)
+                if settings.cpa.auto_pause:
+                    should_pause, reason = cpa.combined_decision(
+                        cpl_pause=cpl_pause, cpl_reason=cpl_reason, cpa_value=cpa_val,
+                        cpa_sales=n_sales, cpa_spend=sp60, age_days=age, tiers=tiers,
+                        conversion_days=settings.cpa.conversion_days, min_spend=settings.cpa.min_spend_myr,
+                        unhealthy_cycle_done=cycle_done)
+                # auto_pause off: CPA is logged for the operator but never decides a pause
 
             # CPL grace for brand-new ads: a young ad over CPL but still pulling registrations hasn't
             # had time for those webinar sign-ups to mature into paid sales, so a CPL-only pause kills
