@@ -70,5 +70,30 @@
       "creative_id": "1125882730386030"
     }
   ],
-  "_note": "2026-09-14 operator: rebuild the 15-video drop as 1 campaign per audience, 1 ad set (RM30/day, ABO) carrying all 15 ads. Audience = F&R 兴趣定向 · Top5 赢家：Interest: Family and Relationships 定向 (29 单) 的在跑克隆，60 天内 4 单; targeting cloned from ad set 120247917148640575, buyer list excluded, Malaysia beneficiary/payer declaration copied from Top5 赢家 120247917148640575. 13 creatives minted from scripts/mint_specs/sept_batch13.json; Hook 1 / 旧鞋当尺 reuse the 2026-09-08 creatives. Built PAUSED; operator activates."
+  "_note": "2026-09-14 operator: rebuild the 15-video drop as 1 campaign per audience, 1 ad set (RM30/day, ABO) carrying all 15 ads. Audience = F&R 兴趣定向 · Top5 赢家：Interest: Family and Relationships 定向 (29 单) 的在跑克隆，60 天内 4 单; targeting cloned from ad set 120247917148640575, buyer list excluded, Malaysia beneficiary/payer declaration copied from Top5 赢家 120247917148640575. 13 creatives minted from scripts/mint_specs/sept_batch13.json; Hook 1 / 旧鞋当尺 reuse the 2026-09-08 creatives. Built PAUSED; operator activates.",
+  "_built": {
+    "run": "34839337253",
+    "campaign_id": "120248861739060575",
+    "adset_ids": [
+      "120248861740340575"
+    ],
+    "ad_ids": [
+      "120248861741520575",
+      "120248861742920575",
+      "120248861744560575",
+      "120248861745210575",
+      "120248861746620575",
+      "120248861747750575",
+      "120248861751610575",
+      "120248861756290575",
+      "120248861758290575",
+      "120248861762090575",
+      "120248861766320575",
+      "120248861767710575",
+      "120248861770300575",
+      "120248861771620575",
+      "120248861773380575"
+    ],
+    "built_at": "2026-09-14 11:40 UTC (all PAUSED, RM30/day, declaration copied from 120247917148640575)"
+  }
 }
