@@ -70,5 +70,30 @@
       "creative_id": "1125882730386030"
     }
   ],
-  "_note": "2026-09-14 operator: rebuild the 15-video drop as 1 campaign per audience, 1 ad set (RM30/day, ABO) carrying all 15 ads. Audience = Parents with Kids：家长 3-17 身份、无 Engaged Shoppers，90 天 3 单 CPA RM1,270; targeting cloned from ad set 120246300889160575, buyer list excluded, Malaysia beneficiary/payer declaration copied from Top5 赢家 120247917148640575. 13 creatives minted from scripts/mint_specs/sept_batch13.json; Hook 1 / 旧鞋当尺 reuse the 2026-09-08 creatives. Built PAUSED; operator activates."
+  "_note": "2026-09-14 operator: rebuild the 15-video drop as 1 campaign per audience, 1 ad set (RM30/day, ABO) carrying all 15 ads. Audience = Parents with Kids：家长 3-17 身份、无 Engaged Shoppers，90 天 3 单 CPA RM1,270; targeting cloned from ad set 120246300889160575, buyer list excluded, Malaysia beneficiary/payer declaration copied from Top5 赢家 120247917148640575. 13 creatives minted from scripts/mint_specs/sept_batch13.json; Hook 1 / 旧鞋当尺 reuse the 2026-09-08 creatives. Built PAUSED; operator activates.",
+  "_built": {
+    "run": "34839581193",
+    "campaign_id": "120248861923410575",
+    "adset_ids": [
+      "120248861924200575"
+    ],
+    "ad_ids": [
+      "120248861925520575",
+      "120248861926880575",
+      "120248861928760575",
+      "120248861929910575",
+      "120248861931070575",
+      "120248861933100575",
+      "120248861934230575",
+      "120248861934880575",
+      "120248861936580575",
+      "120248861938820575",
+      "120248861939900575",
+      "120248861941680575",
+      "120248861943850575",
+      "120248861946270575",
+      "120248861952500575"
+    ],
+    "built_at": "2026-09-14 11:43 UTC (all PAUSED, RM30/day, declaration copied from 120247917148640575)"
+  }
 }
