@@ -1,18 +1,154 @@
 {
   "videos": [
-    {"key": "v1", "drive_file_id": "1BZUVP0xwLFDSMBzKANVn9j9l6VuFKCde", "video_name": "马丁 新马 V1 去年半个头今年一粒头", "content_id": "my_v1_half_head_full_head", "ad_name": "新马 V1：去年半个头，今年一粒头", "headline": "🔴 去年差半个头，今年差一个头", "body_file": "scripts/mint_specs/sept_batch13.body_v1.txt"},
-    {"key": "v2", "drive_file_id": "1ewvREiDHVY7bgjtKytBN8HQgu6c6juSq", "video_name": "马丁 新马 V2 新马家长最怕这个东西", "content_id": "my_v2_parents_fear_most", "ad_name": "新马 V2：新马家长最怕这个东西", "headline": "🔴 方法试了一轮，孩子长了多少？", "body_file": "scripts/mint_specs/sept_batch13.body_v2.txt"},
-    {"key": "v3", "drive_file_id": "1ewEdAXZIKMyIExl4YQX8G2Ug20eMKdGF", "video_name": "马丁 新马 V3 基因不是保证书", "content_id": "my_v3_genes_not_guarantee", "ad_name": "新马 V3：基因不是保证书", "headline": "🔴 爸妈都高，孩子却长不高？", "body_file": "scripts/mint_specs/sept_batch13.body_v3.txt"},
-    {"key": "v4", "drive_file_id": "10RtRCKkt4hYEtrvmiUQmY7NGS3oFwQV5", "video_name": "马丁 新马 V4 每天记录身高却看不懂成长信号", "content_id": "my_v4_growth_signals", "ad_name": "新马 V4：每天量身高，却看不懂成长信号", "headline": "🔴 天天量身高，却看不懂成长信号", "body_file": "scripts/mint_specs/sept_batch13.body_v4.txt"},
-    {"key": "h3", "drive_file_id": "15l55Ts4anwW-n3Wyh4tenCWMcz3lDbVb", "video_name": "马丁 新马 H3 倒掉牛奶", "content_id": "my_h3_pour_out_milk", "ad_name": "新马 H3：倒掉牛奶", "headline": "🔴 这杯牛奶，倒了比喝了强", "body_file": "scripts/mint_specs/sept_batch13.body_h3.txt"},
-    {"key": "h4", "drive_file_id": "1dCK9KyWImQX6pwEznNBllGMgNs5V6Scd", "video_name": "马丁 新马 H4 门框上的线", "content_id": "my_h4_line_on_doorframe", "ad_name": "新马 H4：门框上的线", "headline": "🔴 门框上那条线，多久没画新的了？", "body_file": "scripts/mint_specs/sept_batch13.body_h4.txt"},
-    {"key": "h6", "drive_file_id": "11MiKuLQO6XiXOk2PAjWQueUhjHicE-Hu", "video_name": "马丁 新马 H6 没有人会告诉你", "content_id": "my_h6_nobody_tells_you", "ad_name": "新马 H6：没有人会告诉你", "headline": "🔴 没有人会告诉你这件事", "body_file": "scripts/mint_specs/sept_batch13.body_h6.txt"},
-    {"key": "h7", "drive_file_id": "1xtFaAhBFf6JTEHd4PCEi3TROppCE7HQo", "video_name": "马丁 新马 H7 算给你看", "content_id": "my_h7_do_the_math", "ad_name": "新马 H7：算给你看", "headline": "🔴 三年花了多少钱，长高了几公分？", "body_file": "scripts/mint_specs/sept_batch13.body_h7.txt"},
-    {"key": "h8", "drive_file_id": "1iUV7fpAmAj1Kb9TCM5ZjJMXoH1iPPY0Y", "video_name": "马丁 新马 H8 我劝你先别买", "content_id": "my_h8_dont_buy_yet", "ad_name": "新马 H8：我劝你，先别买", "headline": "🔴 先别买任何长高产品", "body_file": "scripts/mint_specs/sept_batch13.body_h8.txt"},
-    {"key": "na_h3", "drive_file_id": "1-3zQy23RkXvqbaw7aKQC35GhQWFu1p9b", "video_name": "马丁 北美 H3 卷尺越量越焦虑", "content_id": "na_h3_tape_measure_anxiety", "ad_name": "北美 H3：卷尺越量越焦虑", "headline": "🔴 越量越焦虑，数字几乎没动", "body_file": "scripts/mint_specs/sept_batch13.body_na_h3.txt"},
-    {"key": "na_h4", "drive_file_id": "1Gyz5CyouzH5IMgDfld5p_XZ_N8fF25iV", "video_name": "马丁 北美 H4 保健品叫你丢掉", "content_id": "na_h4_throw_supplements_away", "ad_name": "北美 H4：保健品叫你丢掉", "headline": "🔴 越贵的保健品，可能越帮倒忙", "body_file": "scripts/mint_specs/sept_batch13.body_na_h4.txt"},
-    {"key": "na_h5", "drive_file_id": "1cCW8PpfP2mQ2tKQkEnP8TOeEfgYvgsUi", "video_name": "马丁 北美 H5 基因打脸", "content_id": "na_h5_genes_slap", "ad_name": "北美 H5：基因打脸", "headline": "🔴 爸妈不高，孩子就矮定了？", "body_file": "scripts/mint_specs/sept_batch13.body_na_h5.txt"},
-    {"key": "na_h6", "drive_file_id": "1MwyKx7cIzeRssWMWZxjCsTwTntr_JzwC", "video_name": "马丁 北美 H6 最矮的那一个", "content_id": "na_h6_shortest_one", "ad_name": "北美 H6：最矮的那一个", "headline": "🔴 合照里最前排、最矮的那一个", "body_file": "scripts/mint_specs/sept_batch13.body_na_h6.txt"}
+    {
+      "key": "v1",
+      "drive_file_id": "1BZUVP0xwLFDSMBzKANVn9j9l6VuFKCde",
+      "video_name": "马丁 新马 V1 去年半个头今年一粒头",
+      "content_id": "my_v1_half_head_full_head",
+      "ad_name": "新马 V1：去年半个头，今年一粒头",
+      "headline": "🔴 去年差半个头，今年差一个头",
+      "body_file": "scripts/mint_specs/sept_batch13.body_v1.txt",
+      "video_id": "4531608200422428"
+    },
+    {
+      "key": "v2",
+      "drive_file_id": "1ewvREiDHVY7bgjtKytBN8HQgu6c6juSq",
+      "video_name": "马丁 新马 V2 新马家长最怕这个东西",
+      "content_id": "my_v2_parents_fear_most",
+      "ad_name": "新马 V2：新马家长最怕这个东西",
+      "headline": "🔴 方法试了一轮，孩子长了多少？",
+      "body_file": "scripts/mint_specs/sept_batch13.body_v2.txt",
+      "video_id": "1339021274973268"
+    },
+    {
+      "key": "v3",
+      "drive_file_id": "1ewEdAXZIKMyIExl4YQX8G2Ug20eMKdGF",
+      "video_name": "马丁 新马 V3 基因不是保证书",
+      "content_id": "my_v3_genes_not_guarantee",
+      "ad_name": "新马 V3：基因不是保证书",
+      "headline": "🔴 爸妈都高，孩子却长不高？",
+      "body_file": "scripts/mint_specs/sept_batch13.body_v3.txt",
+      "video_id": "28454428894192354"
+    },
+    {
+      "key": "v4",
+      "drive_file_id": "10RtRCKkt4hYEtrvmiUQmY7NGS3oFwQV5",
+      "video_name": "马丁 新马 V4 每天记录身高却看不懂成长信号",
+      "content_id": "my_v4_growth_signals",
+      "ad_name": "新马 V4：每天量身高，却看不懂成长信号",
+      "headline": "🔴 天天量身高，却看不懂成长信号",
+      "body_file": "scripts/mint_specs/sept_batch13.body_v4.txt",
+      "video_id": "2527523231102000"
+    },
+    {
+      "key": "h3",
+      "drive_file_id": "15l55Ts4anwW-n3Wyh4tenCWMcz3lDbVb",
+      "video_name": "马丁 新马 H3 倒掉牛奶",
+      "content_id": "my_h3_pour_out_milk",
+      "ad_name": "新马 H3：倒掉牛奶",
+      "headline": "🔴 这杯牛奶，倒了比喝了强",
+      "body_file": "scripts/mint_specs/sept_batch13.body_h3.txt",
+      "video_id": "1345240087425405"
+    },
+    {
+      "key": "h4",
+      "drive_file_id": "1dCK9KyWImQX6pwEznNBllGMgNs5V6Scd",
+      "video_name": "马丁 新马 H4 门框上的线",
+      "content_id": "my_h4_line_on_doorframe",
+      "ad_name": "新马 H4：门框上的线",
+      "headline": "🔴 门框上那条线，多久没画新的了？",
+      "body_file": "scripts/mint_specs/sept_batch13.body_h4.txt",
+      "video_id": "1414935953438957"
+    },
+    {
+      "key": "h6",
+      "drive_file_id": "11MiKuLQO6XiXOk2PAjWQueUhjHicE-Hu",
+      "video_name": "马丁 新马 H6 没有人会告诉你",
+      "content_id": "my_h6_nobody_tells_you",
+      "ad_name": "新马 H6：没有人会告诉你",
+      "headline": "🔴 没有人会告诉你这件事",
+      "body_file": "scripts/mint_specs/sept_batch13.body_h6.txt",
+      "video_id": "2955256434830947"
+    },
+    {
+      "key": "h7",
+      "drive_file_id": "1xtFaAhBFf6JTEHd4PCEi3TROppCE7HQo",
+      "video_name": "马丁 新马 H7 算给你看",
+      "content_id": "my_h7_do_the_math",
+      "ad_name": "新马 H7：算给你看",
+      "headline": "🔴 三年花了多少钱，长高了几公分？",
+      "body_file": "scripts/mint_specs/sept_batch13.body_h7.txt",
+      "video_id": "1057763826883508"
+    },
+    {
+      "key": "h8",
+      "drive_file_id": "1iUV7fpAmAj1Kb9TCM5ZjJMXoH1iPPY0Y",
+      "video_name": "马丁 新马 H8 我劝你先别买",
+      "content_id": "my_h8_dont_buy_yet",
+      "ad_name": "新马 H8：我劝你，先别买",
+      "headline": "🔴 先别买任何长高产品",
+      "body_file": "scripts/mint_specs/sept_batch13.body_h8.txt",
+      "video_id": "1093468549952879"
+    },
+    {
+      "key": "na_h3",
+      "drive_file_id": "1-3zQy23RkXvqbaw7aKQC35GhQWFu1p9b",
+      "video_name": "马丁 北美 H3 卷尺越量越焦虑",
+      "content_id": "na_h3_tape_measure_anxiety",
+      "ad_name": "北美 H3：卷尺越量越焦虑",
+      "headline": "🔴 越量越焦虑，数字几乎没动",
+      "body_file": "scripts/mint_specs/sept_batch13.body_na_h3.txt",
+      "video_id": "1792368755409296"
+    },
+    {
+      "key": "na_h4",
+      "drive_file_id": "1Gyz5CyouzH5IMgDfld5p_XZ_N8fF25iV",
+      "video_name": "马丁 北美 H4 保健品叫你丢掉",
+      "content_id": "na_h4_throw_supplements_away",
+      "ad_name": "北美 H4：保健品叫你丢掉",
+      "headline": "🔴 越贵的保健品，可能越帮倒忙",
+      "body_file": "scripts/mint_specs/sept_batch13.body_na_h4.txt",
+      "video_id": "1850013596359372"
+    },
+    {
+      "key": "na_h5",
+      "drive_file_id": "1cCW8PpfP2mQ2tKQkEnP8TOeEfgYvgsUi",
+      "video_name": "马丁 北美 H5 基因打脸",
+      "content_id": "na_h5_genes_slap",
+      "ad_name": "北美 H5：基因打脸",
+      "headline": "🔴 爸妈不高，孩子就矮定了？",
+      "body_file": "scripts/mint_specs/sept_batch13.body_na_h5.txt",
+      "video_id": "1712029859905096"
+    },
+    {
+      "key": "na_h6",
+      "drive_file_id": "1MwyKx7cIzeRssWMWZxjCsTwTntr_JzwC",
+      "video_name": "马丁 北美 H6 最矮的那一个",
+      "content_id": "na_h6_shortest_one",
+      "ad_name": "北美 H6：最矮的那一个",
+      "headline": "🔴 合照里最前排、最矮的那一个",
+      "body_file": "scripts/mint_specs/sept_batch13.body_na_h6.txt",
+      "video_id": "1621474816346348"
+    }
   ],
-  "_note": "2026-09-14 operator batch: the 13 NEW creatives of the 15-video drop (新马 V1–V4, H3/H4/H6/H7/H8; 北美 H3/H4/H5/H6). The other two — （通用）Hook 1 今晚回家检查三件事 (creative 1597432345209840) and 北美 Hook 2 旧鞋当尺 (creative 1419029943510844) — were minted 2026-09-08 (sept_hooks_5.json) and are reused as-is. Copy: 马丁医师, 10,000+ 位孩子, 5–17 岁, MY landing + MY url_tags from config, CTA LEARN_MORE. Not minted yet: copy shown to the operator first."
+  "_note": "2026-09-14 operator batch: the 13 NEW creatives of the 15-video drop (新马 V1–V4, H3/H4/H6/H7/H8; 北美 H3/H4/H5/H6). The other two — （通用）Hook 1 今晚回家检查三件事 (creative 1597432345209840) and 北美 Hook 2 旧鞋当尺 (creative 1419029943510844) — were minted 2026-09-08 (sept_hooks_5.json) and are reused as-is. Copy: 马丁医师, 10,000+ 位孩子, 5–17 岁, MY landing + MY url_tags from config, CTA LEARN_MORE. Not minted yet: copy shown to the operator first.",
+  "_minted": {
+    "run": "34837633910",
+    "built_at": "2026-09-14 11:19-11:38 UTC",
+    "creatives": {
+      "v1": "1731231888156707",
+      "v2": "1603684887821927",
+      "v3": "2199411583952989",
+      "v4": "2200378957211453",
+      "h3": "1589919435572886",
+      "h4": "2223522455159331",
+      "h6": "2168117794142221",
+      "h7": "1623539456183510",
+      "h8": "1609714287192681",
+      "na_h3": "1070425675834648",
+      "na_h4": "2520118428427946",
+      "na_h5": "1797806734971312",
+      "na_h6": "1125882730386030"
+    }
+  }
 }

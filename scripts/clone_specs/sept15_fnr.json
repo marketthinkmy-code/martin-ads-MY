@@ -1,0 +1,74 @@
+{
+  "campaign_name": "[MY] 儿童长高方程式 | Family and Relationships | Sept 15 新片 | 1-1-15",
+  "adset_name": "Family and Relationships",
+  "budget_myr": 30,
+  "abo": true,
+  "source_adset_id": "120247917148640575",
+  "regulation_source_adset_id": "120247917148640575",
+  "also_exclude": [
+    "120248429743500575"
+  ],
+  "ads": [
+    {
+      "name": "Hook 1：今晚回家检查三件事",
+      "creative_id": "1597432345209840"
+    },
+    {
+      "name": "Hook 2：旧鞋当尺",
+      "creative_id": "1419029943510844"
+    },
+    {
+      "name": "新马 V1：去年半个头，今年一粒头",
+      "creative_id": "1731231888156707"
+    },
+    {
+      "name": "新马 V2：新马家长最怕这个东西",
+      "creative_id": "1603684887821927"
+    },
+    {
+      "name": "新马 V3：基因不是保证书",
+      "creative_id": "2199411583952989"
+    },
+    {
+      "name": "新马 V4：每天量身高，却看不懂成长信号",
+      "creative_id": "2200378957211453"
+    },
+    {
+      "name": "新马 H3：倒掉牛奶",
+      "creative_id": "1589919435572886"
+    },
+    {
+      "name": "新马 H4：门框上的线",
+      "creative_id": "2223522455159331"
+    },
+    {
+      "name": "新马 H6：没有人会告诉你",
+      "creative_id": "2168117794142221"
+    },
+    {
+      "name": "新马 H7：算给你看",
+      "creative_id": "1623539456183510"
+    },
+    {
+      "name": "新马 H8：我劝你，先别买",
+      "creative_id": "1609714287192681"
+    },
+    {
+      "name": "北美 H3：卷尺越量越焦虑",
+      "creative_id": "1070425675834648"
+    },
+    {
+      "name": "北美 H4：保健品叫你丢掉",
+      "creative_id": "2520118428427946"
+    },
+    {
+      "name": "北美 H5：基因打脸",
+      "creative_id": "1797806734971312"
+    },
+    {
+      "name": "北美 H6：最矮的那一个",
+      "creative_id": "1125882730386030"
+    }
+  ],
+  "_note": "2026-09-14 operator: rebuild the 15-video drop as 1 campaign per audience, 1 ad set (RM30/day, ABO) carrying all 15 ads. Audience = F&R 兴趣定向 · Top5 赢家：Interest: Family and Relationships 定向 (29 单) 的在跑克隆，60 天内 4 单; targeting cloned from ad set 120247917148640575, buyer list excluded, Malaysia beneficiary/payer declaration copied from Top5 赢家 120247917148640575. 13 creatives minted from scripts/mint_specs/sept_batch13.json; Hook 1 / 旧鞋当尺 reuse the 2026-09-08 creatives. Built PAUSED; operator activates."
+}
