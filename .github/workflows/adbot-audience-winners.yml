@@ -15,6 +15,11 @@ on:
         description: "How many top audiences to expand (member ad sets + targeting)"
         required: false
         default: "3"
+  push:
+    branches: ["claude/sweet-curie-b6vql4"]
+    paths:
+      - ".github/workflows/adbot-audience-winners.yml"
+      - "scripts/audience_winners.py"
 
 jobs:
   winners:
