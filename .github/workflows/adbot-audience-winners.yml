@@ -1,0 +1,38 @@
+name: adbot · audience winners (manual)
+
+# Manual, read-only: pools Paid Student List sales (SG rows dropped) by the REAL targeting of
+# the MY ad sets they came from, so the operator sees which AUDIENCE converts — not which
+# ad-set label. Lifetime / 180d / 90d / 60d sales, spend, CPA per audience. No writes.
+
+on:
+  workflow_dispatch:
+    inputs:
+      top_n:
+        description: "How many audiences to list"
+        required: false
+        default: "8"
+      detail_n:
+        description: "How many top audiences to expand (member ad sets + targeting)"
+        required: false
+        default: "3"
+
+jobs:
+  winners:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install .
+      - name: Audience winners
+        env:
+          ADBOT_ROOT: ${{ github.workspace }}
+          ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
+          ADBOT_TOP_N: ${{ github.event.inputs.top_n || '8' }}
+          ADBOT_DETAIL_N: ${{ github.event.inputs.detail_n || '3' }}
+          GOOGLE_SERVICE_ACCOUNT_JSON_B64: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON_B64 }}
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
+          META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
+        run: python scripts/audience_winners.py
