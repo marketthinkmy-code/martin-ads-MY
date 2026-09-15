@@ -95,5 +95,6 @@
       "120248861862910575"
     ],
     "built_at": "2026-09-14 11:42 UTC (all PAUSED, RM30/day, declaration copied from 120247917148640575)"
-  }
+  },
+  "_deleted": "2026-09-15: wrong structure (1-1-15); campaign 120248861825760575 deleted never-spent, rebuilt as sept15x15_parents_engaged.json (1-15-15)."
 }
