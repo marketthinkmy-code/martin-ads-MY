@@ -157,5 +157,44 @@
       ]
     }
   ],
-  "_note": "2026-09-15 operator: REBUILD as 1-15-15 — one campaign per audience, FIFTEEN ad sets of ONE ad each, RM30/day per ad set (ABO, budget sharing off), so every creative is guaranteed its own spend. Replaces the 1-1-15 build of 2026-09-14 (sept15_fnr.json), deleted never-spent. Targeting cloned from ad set 120247917148640575 (Family and Relationships), buyer list excluded, Malaysia declaration copied from Top5 赢家 120247917148640575. Ad set name = targeting｜ad, so budgets can be read per creative in Ads Manager. Built PAUSED."
+  "_note": "2026-09-15 operator: REBUILD as 1-15-15 — one campaign per audience, FIFTEEN ad sets of ONE ad each, RM30/day per ad set (ABO, budget sharing off), so every creative is guaranteed its own spend. Replaces the 1-1-15 build of 2026-09-14 (sept15_fnr.json), deleted never-spent. Targeting cloned from ad set 120247917148640575 (Family and Relationships), buyer list excluded, Malaysia declaration copied from Top5 赢家 120247917148640575. Ad set name = targeting｜ad, so budgets can be read per creative in Ads Manager. Built PAUSED.",
+  "_built": {
+    "run": "34925155970",
+    "campaign_id": "120248877873040575",
+    "adset_ids": [
+      "120248877873620575",
+      "120248877874770575",
+      "120248877876430575",
+      "120248877877130575",
+      "120248877878090575",
+      "120248877879100575",
+      "120248877880390575",
+      "120248877881840575",
+      "120248877882320575",
+      "120248877882940575",
+      "120248877884340575",
+      "120248877884970575",
+      "120248877885740575",
+      "120248877886690575",
+      "120248877887140575"
+    ],
+    "ad_ids": [
+      "120248877887590575",
+      "120248877888050575",
+      "120248877888880575",
+      "120248877889650575",
+      "120248877890240575",
+      "120248877890660575",
+      "120248877891560575",
+      "120248877892150575",
+      "120248877892600575",
+      "120248877893400575",
+      "120248877893980575",
+      "120248877894470575",
+      "120248877895640575",
+      "120248877896830575",
+      "120248877897720575"
+    ],
+    "built_at": "2026-09-15 03:30 UTC (15 ad sets × 1 ad, RM30/day each, all PAUSED, declaration copied from 120247917148640575)"
+  }
 }
