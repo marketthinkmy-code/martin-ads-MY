@@ -7,7 +7,7 @@
   ],
   "adsets": [
     {
-      "name": "Parents 3-17 + Engaged｜Hook 1：今晚回家检查三件事",
+      "name": "Advantage+ Parents + Engaged",
       "budget_myr": 30,
       "ads": [
         {
@@ -17,7 +17,7 @@
       ]
     },
     {
-      "name": "Parents 3-17 + Engaged｜Hook 2：旧鞋当尺",
+      "name": "Advantage+ Parents + Engaged",
       "budget_myr": 30,
       "ads": [
         {
@@ -27,137 +27,137 @@
       ]
     },
     {
-      "name": "Parents 3-17 + Engaged｜新马 V1：去年半个头，今年一粒头",
+      "name": "Advantage+ Parents + Engaged",
       "budget_myr": 30,
       "ads": [
         {
-          "name": "新马 V1：去年半个头，今年一粒头",
+          "name": "Video 1：去年半个头，今年一粒头",
           "creative_id": "1731231888156707"
         }
       ]
     },
     {
-      "name": "Parents 3-17 + Engaged｜新马 V2：新马家长最怕这个东西",
+      "name": "Advantage+ Parents + Engaged",
       "budget_myr": 30,
       "ads": [
         {
-          "name": "新马 V2：新马家长最怕这个东西",
+          "name": "Video 2：新马家长最怕这个东西",
           "creative_id": "1603684887821927"
         }
       ]
     },
     {
-      "name": "Parents 3-17 + Engaged｜新马 V3：基因不是保证书",
+      "name": "Advantage+ Parents + Engaged",
       "budget_myr": 30,
       "ads": [
         {
-          "name": "新马 V3：基因不是保证书",
+          "name": "Video 3：基因不是保证书",
           "creative_id": "2199411583952989"
         }
       ]
     },
     {
-      "name": "Parents 3-17 + Engaged｜新马 V4：每天量身高，却看不懂成长信号",
+      "name": "Advantage+ Parents + Engaged",
       "budget_myr": 30,
       "ads": [
         {
-          "name": "新马 V4：每天量身高，却看不懂成长信号",
+          "name": "Video 4：每天记录身高，却看不懂成长信号",
           "creative_id": "2200378957211453"
         }
       ]
     },
     {
-      "name": "Parents 3-17 + Engaged｜新马 H3：倒掉牛奶",
+      "name": "Advantage+ Parents + Engaged",
       "budget_myr": 30,
       "ads": [
         {
-          "name": "新马 H3：倒掉牛奶",
+          "name": "Hook 3：倒掉牛奶",
           "creative_id": "1589919435572886"
         }
       ]
     },
     {
-      "name": "Parents 3-17 + Engaged｜新马 H4：门框上的线",
+      "name": "Advantage+ Parents + Engaged",
       "budget_myr": 30,
       "ads": [
         {
-          "name": "新马 H4：门框上的线",
+          "name": "Hook 4：门框上的线",
           "creative_id": "2223522455159331"
         }
       ]
     },
     {
-      "name": "Parents 3-17 + Engaged｜新马 H6：没有人会告诉你",
+      "name": "Advantage+ Parents + Engaged",
       "budget_myr": 30,
       "ads": [
         {
-          "name": "新马 H6：没有人会告诉你",
+          "name": "Hook 6：没有人会告诉你",
           "creative_id": "2168117794142221"
         }
       ]
     },
     {
-      "name": "Parents 3-17 + Engaged｜新马 H7：算给你看",
+      "name": "Advantage+ Parents + Engaged",
       "budget_myr": 30,
       "ads": [
         {
-          "name": "新马 H7：算给你看",
+          "name": "Hook 7：算给你看",
           "creative_id": "1623539456183510"
         }
       ]
     },
     {
-      "name": "Parents 3-17 + Engaged｜新马 H8：我劝你，先别买",
+      "name": "Advantage+ Parents + Engaged",
       "budget_myr": 30,
       "ads": [
         {
-          "name": "新马 H8：我劝你，先别买",
+          "name": "Hook 8：我劝你，先别买",
           "creative_id": "1609714287192681"
         }
       ]
     },
     {
-      "name": "Parents 3-17 + Engaged｜北美 H3：卷尺越量越焦虑",
+      "name": "Advantage+ Parents + Engaged",
       "budget_myr": 30,
       "ads": [
         {
-          "name": "北美 H3：卷尺越量越焦虑",
+          "name": "Hook 3：卷尺越量越焦虑",
           "creative_id": "1070425675834648"
         }
       ]
     },
     {
-      "name": "Parents 3-17 + Engaged｜北美 H4：保健品叫你丢掉",
+      "name": "Advantage+ Parents + Engaged",
       "budget_myr": 30,
       "ads": [
         {
-          "name": "北美 H4：保健品叫你丢掉",
+          "name": "Hook 4：保健品叫你丢掉",
           "creative_id": "2520118428427946"
         }
       ]
     },
     {
-      "name": "Parents 3-17 + Engaged｜北美 H5：基因打脸",
+      "name": "Advantage+ Parents + Engaged",
       "budget_myr": 30,
       "ads": [
         {
-          "name": "北美 H5：基因打脸",
+          "name": "Hook 5：基因打脸",
           "creative_id": "1797806734971312"
         }
       ]
     },
     {
-      "name": "Parents 3-17 + Engaged｜北美 H6：最矮的那一个",
+      "name": "Advantage+ Parents + Engaged",
       "budget_myr": 30,
       "ads": [
         {
-          "name": "北美 H6：最矮的那一个",
+          "name": "Hook 6：最矮的那一个",
           "creative_id": "1125882730386030"
         }
       ]
     }
   ],
-  "_note": "2026-09-15 operator: REBUILD as 1-15-15 — one campaign per audience, FIFTEEN ad sets of ONE ad each, RM30/day per ad set (ABO, budget sharing off), so every creative is guaranteed its own spend. Replaces the 1-1-15 build of 2026-09-14 (sept15_parents_engaged.json), deleted never-spent. Targeting cloned from ad set 120239546436180575 (Parents 3-17 + Engaged), buyer list excluded, Malaysia declaration copied from Top5 赢家 120247917148640575. Ad set name = targeting｜ad, so budgets can be read per creative in Ads Manager. Built PAUSED.",
+  "_note": "2026-09-15 operator: REBUILD as 1-15-15 — one campaign per audience, FIFTEEN ad sets of ONE ad each, RM30/day per ad set (ABO, budget sharing off), so every creative is guaranteed its own spend. Replaces the 1-1-15 build of 2026-09-14 (sept15_parents_engaged.json), deleted never-spent. Targeting cloned from ad set 120239546436180575 (Parents 3-17 + Engaged), buyer list excluded, Malaysia declaration copied from Top5 赢家 120247917148640575. Ad set name = the TARGETING it clones (operator rule 2026-09-03: never the ad inside it; identical names intended); ad name = Hook N / Video N：title. Built PAUSED.",
   "_built": {
     "run": "34925287686",
     "campaign_id": "120248877913750575",
@@ -196,5 +196,6 @@
       "120248877933600575"
     ],
     "built_at": "2026-09-15 03:32 UTC (15 ad sets × 1 ad, RM30/day each, all PAUSED, declaration copied from 120247917148640575)"
-  }
+  },
+  "_renamed": "2026-09-15: ad sets renamed to the targeting name, ads to Hook N / Video N：title (scripts/rename_specs/sept15x15_names.json)."
 }

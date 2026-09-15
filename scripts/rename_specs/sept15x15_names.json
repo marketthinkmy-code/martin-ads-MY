@@ -1,0 +1,341 @@
+{
+  "renames": [
+    {
+      "id": "120248877873620575",
+      "name": "Interest: Family and Relationships"
+    },
+    {
+      "id": "120248877874770575",
+      "name": "Interest: Family and Relationships"
+    },
+    {
+      "id": "120248877876430575",
+      "name": "Interest: Family and Relationships"
+    },
+    {
+      "id": "120248877888880575",
+      "name": "Video 1：去年半个头，今年一粒头"
+    },
+    {
+      "id": "120248877877130575",
+      "name": "Interest: Family and Relationships"
+    },
+    {
+      "id": "120248877889650575",
+      "name": "Video 2：新马家长最怕这个东西"
+    },
+    {
+      "id": "120248877878090575",
+      "name": "Interest: Family and Relationships"
+    },
+    {
+      "id": "120248877890240575",
+      "name": "Video 3：基因不是保证书"
+    },
+    {
+      "id": "120248877879100575",
+      "name": "Interest: Family and Relationships"
+    },
+    {
+      "id": "120248877890660575",
+      "name": "Video 4：每天记录身高，却看不懂成长信号"
+    },
+    {
+      "id": "120248877880390575",
+      "name": "Interest: Family and Relationships"
+    },
+    {
+      "id": "120248877891560575",
+      "name": "Hook 3：倒掉牛奶"
+    },
+    {
+      "id": "120248877881840575",
+      "name": "Interest: Family and Relationships"
+    },
+    {
+      "id": "120248877892150575",
+      "name": "Hook 4：门框上的线"
+    },
+    {
+      "id": "120248877882320575",
+      "name": "Interest: Family and Relationships"
+    },
+    {
+      "id": "120248877892600575",
+      "name": "Hook 6：没有人会告诉你"
+    },
+    {
+      "id": "120248877882940575",
+      "name": "Interest: Family and Relationships"
+    },
+    {
+      "id": "120248877893400575",
+      "name": "Hook 7：算给你看"
+    },
+    {
+      "id": "120248877884340575",
+      "name": "Interest: Family and Relationships"
+    },
+    {
+      "id": "120248877893980575",
+      "name": "Hook 8：我劝你，先别买"
+    },
+    {
+      "id": "120248877884970575",
+      "name": "Interest: Family and Relationships"
+    },
+    {
+      "id": "120248877894470575",
+      "name": "Hook 3：卷尺越量越焦虑"
+    },
+    {
+      "id": "120248877885740575",
+      "name": "Interest: Family and Relationships"
+    },
+    {
+      "id": "120248877895640575",
+      "name": "Hook 4：保健品叫你丢掉"
+    },
+    {
+      "id": "120248877886690575",
+      "name": "Interest: Family and Relationships"
+    },
+    {
+      "id": "120248877896830575",
+      "name": "Hook 5：基因打脸"
+    },
+    {
+      "id": "120248877887140575",
+      "name": "Interest: Family and Relationships"
+    },
+    {
+      "id": "120248877897720575",
+      "name": "Hook 6：最矮的那一个"
+    },
+    {
+      "id": "120248877914970575",
+      "name": "Advantage+ Parents + Engaged"
+    },
+    {
+      "id": "120248877915470575",
+      "name": "Advantage+ Parents + Engaged"
+    },
+    {
+      "id": "120248877916220575",
+      "name": "Advantage+ Parents + Engaged"
+    },
+    {
+      "id": "120248877926130575",
+      "name": "Video 1：去年半个头，今年一粒头"
+    },
+    {
+      "id": "120248877916740575",
+      "name": "Advantage+ Parents + Engaged"
+    },
+    {
+      "id": "120248877926700575",
+      "name": "Video 2：新马家长最怕这个东西"
+    },
+    {
+      "id": "120248877917580575",
+      "name": "Advantage+ Parents + Engaged"
+    },
+    {
+      "id": "120248877926950575",
+      "name": "Video 3：基因不是保证书"
+    },
+    {
+      "id": "120248877918170575",
+      "name": "Advantage+ Parents + Engaged"
+    },
+    {
+      "id": "120248877927310575",
+      "name": "Video 4：每天记录身高，却看不懂成长信号"
+    },
+    {
+      "id": "120248877918460575",
+      "name": "Advantage+ Parents + Engaged"
+    },
+    {
+      "id": "120248877927930575",
+      "name": "Hook 3：倒掉牛奶"
+    },
+    {
+      "id": "120248877919460575",
+      "name": "Advantage+ Parents + Engaged"
+    },
+    {
+      "id": "120248877928510575",
+      "name": "Hook 4：门框上的线"
+    },
+    {
+      "id": "120248877920170575",
+      "name": "Advantage+ Parents + Engaged"
+    },
+    {
+      "id": "120248877929010575",
+      "name": "Hook 6：没有人会告诉你"
+    },
+    {
+      "id": "120248877920720575",
+      "name": "Advantage+ Parents + Engaged"
+    },
+    {
+      "id": "120248877929690575",
+      "name": "Hook 7：算给你看"
+    },
+    {
+      "id": "120248877921430575",
+      "name": "Advantage+ Parents + Engaged"
+    },
+    {
+      "id": "120248877930490575",
+      "name": "Hook 8：我劝你，先别买"
+    },
+    {
+      "id": "120248877921720575",
+      "name": "Advantage+ Parents + Engaged"
+    },
+    {
+      "id": "120248877930760575",
+      "name": "Hook 3：卷尺越量越焦虑"
+    },
+    {
+      "id": "120248877922420575",
+      "name": "Advantage+ Parents + Engaged"
+    },
+    {
+      "id": "120248877931890575",
+      "name": "Hook 4：保健品叫你丢掉"
+    },
+    {
+      "id": "120248877923150575",
+      "name": "Advantage+ Parents + Engaged"
+    },
+    {
+      "id": "120248877932810575",
+      "name": "Hook 5：基因打脸"
+    },
+    {
+      "id": "120248877924040575",
+      "name": "Advantage+ Parents + Engaged"
+    },
+    {
+      "id": "120248877933600575",
+      "name": "Hook 6：最矮的那一个"
+    },
+    {
+      "id": "120248877945670575",
+      "name": "Parents with Kids"
+    },
+    {
+      "id": "120248877946180575",
+      "name": "Parents with Kids"
+    },
+    {
+      "id": "120248877946740575",
+      "name": "Parents with Kids"
+    },
+    {
+      "id": "120248877955260575",
+      "name": "Video 1：去年半个头，今年一粒头"
+    },
+    {
+      "id": "120248877947160575",
+      "name": "Parents with Kids"
+    },
+    {
+      "id": "120248877956580575",
+      "name": "Video 2：新马家长最怕这个东西"
+    },
+    {
+      "id": "120248877948040575",
+      "name": "Parents with Kids"
+    },
+    {
+      "id": "120248877957410575",
+      "name": "Video 3：基因不是保证书"
+    },
+    {
+      "id": "120248877948900575",
+      "name": "Parents with Kids"
+    },
+    {
+      "id": "120248877958430575",
+      "name": "Video 4：每天记录身高，却看不懂成长信号"
+    },
+    {
+      "id": "120248877949390575",
+      "name": "Parents with Kids"
+    },
+    {
+      "id": "120248877959360575",
+      "name": "Hook 3：倒掉牛奶"
+    },
+    {
+      "id": "120248877949780575",
+      "name": "Parents with Kids"
+    },
+    {
+      "id": "120248877960170575",
+      "name": "Hook 4：门框上的线"
+    },
+    {
+      "id": "120248877950450575",
+      "name": "Parents with Kids"
+    },
+    {
+      "id": "120248877961650575",
+      "name": "Hook 6：没有人会告诉你"
+    },
+    {
+      "id": "120248877950810575",
+      "name": "Parents with Kids"
+    },
+    {
+      "id": "120248877962390575",
+      "name": "Hook 7：算给你看"
+    },
+    {
+      "id": "120248877951710575",
+      "name": "Parents with Kids"
+    },
+    {
+      "id": "120248877963740575",
+      "name": "Hook 8：我劝你，先别买"
+    },
+    {
+      "id": "120248877952120575",
+      "name": "Parents with Kids"
+    },
+    {
+      "id": "120248877964330575",
+      "name": "Hook 3：卷尺越量越焦虑"
+    },
+    {
+      "id": "120248877952520575",
+      "name": "Parents with Kids"
+    },
+    {
+      "id": "120248877965020575",
+      "name": "Hook 4：保健品叫你丢掉"
+    },
+    {
+      "id": "120248877952950575",
+      "name": "Parents with Kids"
+    },
+    {
+      "id": "120248877965880575",
+      "name": "Hook 5：基因打脸"
+    },
+    {
+      "id": "120248877953520575",
+      "name": "Parents with Kids"
+    },
+    {
+      "id": "120248877966130575",
+      "name": "Hook 6：最矮的那一个"
+    }
+  ],
+  "_note": "2026-09-15 operator: fix the Sept 15-video 1-15-15 build — every ad set is named after its TARGETING (Interest: Family and Relationships / Advantage+ Parents + Engaged / Parents with Kids, identical within a campaign), every ad Hook N / Video N：title without market prefixes. Names only; status and budgets untouched (all still PAUSED)."
+}
