@@ -99,7 +99,7 @@ kpi:
   # the day before gets it immediately, and calendar age cannot tell those apart. This is what
   # 马六甲 cost: paused on 08-05 at noon for "RM1,281 / 0 sales", it took 2 sales that same evening.
   # settle_days covers the paid list being filled in by hand after the webinar runs.
-  webinar_weekday: 3                     # TEMPORARY: Thu=3 for the 2026-09-17 webinar; Wed=2 from 09-23 on
+  webinar_weekday: 2                     # Wednesday (Mon=0); the 09-17 Thursday exception is over
   cpl_grace_webinars: 1                  # an ad must sit through this many before CPL can pause it
   webinar_settle_days: 1                 # wait this long after a webinar before counting it
   # Lead-quality gate: this many 60-day registrations with ZERO matched paid sales pauses the ad
