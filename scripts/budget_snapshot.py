@@ -34,6 +34,15 @@ def main() -> None:
         "fields": "id,name,effective_status,daily_budget,lifetime_budget,campaign{id,name}",
         "effective_status": json.dumps(["ACTIVE"]), "limit": 200})
 
+    # An ACTIVE ad set whose ads are all paused spends nothing — count it separately so the
+    # planned total is what the account can actually spend today.
+    live_adsets = set()
+    for ad in g._get_all(f"{acct}/ads", {"fields": "id,adset_id",
+                                          "effective_status": json.dumps(["ACTIVE"]), "limit": 500}):
+        live_adsets.add(ad.get("adset_id"))
+    idle = [a for a in adsets if a["id"] not in live_adsets]
+    adsets = [a for a in adsets if a["id"] in live_adsets]
+
     cbo = {c["id"]: c for c in campaigns if c.get("daily_budget")}
     by_camp: dict = {}
     for a in adsets:
@@ -60,7 +69,13 @@ def main() -> None:
     for cid, c in cbo.items():
         if not any(k[0] == cid for k in by_camp):
             print(f"  RM{0:>7,.0f}/day  CBO  {c.get('name')}  (no active ad set — spends nothing)")
-    print(f"\nPLANNED TOTAL: RM{total:,.0f}/day\n")
+    print(f"\nPLANNED TOTAL: RM{total:,.0f}/day  (ad sets with at least one ACTIVE ad)")
+    if idle:
+        idle_sum = sum(_myr(a.get("daily_budget")) for a in idle)
+        print(f"  + RM{idle_sum:,.0f}/day sitting on {len(idle)} ACTIVE ad set(s) whose ads are all paused (spend nothing):")
+        for a in idle:
+            print(f"      RM{_myr(a.get('daily_budget')):>5,.0f}  {a.get('name')}  ({a.get('id')})  in {((a.get('campaign') or {}).get('name') or '?')[:50]}")
+    print()
 
     print("ACTUAL spend per day (account):")
     rows = g._get_all(f"{acct}/insights", {"fields": "spend,date_start", "time_increment": 1,

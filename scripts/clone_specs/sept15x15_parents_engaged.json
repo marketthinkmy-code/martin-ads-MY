@@ -1,0 +1,201 @@
+{
+  "campaign_name": "[MY] 儿童长高方程式 | Parents 3-17 + Engaged | Sept 15 新片 | 1-15-15",
+  "source_adset_id": "120239546436180575",
+  "regulation_source_adset_id": "120247917148640575",
+  "also_exclude": [
+    "120248429743500575"
+  ],
+  "adsets": [
+    {
+      "name": "Advantage+ Parents + Engaged",
+      "budget_myr": 30,
+      "ads": [
+        {
+          "name": "Hook 1：今晚回家检查三件事",
+          "creative_id": "1597432345209840"
+        }
+      ]
+    },
+    {
+      "name": "Advantage+ Parents + Engaged",
+      "budget_myr": 30,
+      "ads": [
+        {
+          "name": "Hook 2：旧鞋当尺",
+          "creative_id": "1419029943510844"
+        }
+      ]
+    },
+    {
+      "name": "Advantage+ Parents + Engaged",
+      "budget_myr": 30,
+      "ads": [
+        {
+          "name": "Video 1：去年半个头，今年一粒头",
+          "creative_id": "1731231888156707"
+        }
+      ]
+    },
+    {
+      "name": "Advantage+ Parents + Engaged",
+      "budget_myr": 30,
+      "ads": [
+        {
+          "name": "Video 2：新马家长最怕这个东西",
+          "creative_id": "1603684887821927"
+        }
+      ]
+    },
+    {
+      "name": "Advantage+ Parents + Engaged",
+      "budget_myr": 30,
+      "ads": [
+        {
+          "name": "Video 3：基因不是保证书",
+          "creative_id": "2199411583952989"
+        }
+      ]
+    },
+    {
+      "name": "Advantage+ Parents + Engaged",
+      "budget_myr": 30,
+      "ads": [
+        {
+          "name": "Video 4：每天记录身高，却看不懂成长信号",
+          "creative_id": "2200378957211453"
+        }
+      ]
+    },
+    {
+      "name": "Advantage+ Parents + Engaged",
+      "budget_myr": 30,
+      "ads": [
+        {
+          "name": "Hook 3：倒掉牛奶",
+          "creative_id": "1589919435572886"
+        }
+      ]
+    },
+    {
+      "name": "Advantage+ Parents + Engaged",
+      "budget_myr": 30,
+      "ads": [
+        {
+          "name": "Hook 4：门框上的线",
+          "creative_id": "2223522455159331"
+        }
+      ]
+    },
+    {
+      "name": "Advantage+ Parents + Engaged",
+      "budget_myr": 30,
+      "ads": [
+        {
+          "name": "Hook 6：没有人会告诉你",
+          "creative_id": "2168117794142221"
+        }
+      ]
+    },
+    {
+      "name": "Advantage+ Parents + Engaged",
+      "budget_myr": 30,
+      "ads": [
+        {
+          "name": "Hook 7：算给你看",
+          "creative_id": "1623539456183510"
+        }
+      ]
+    },
+    {
+      "name": "Advantage+ Parents + Engaged",
+      "budget_myr": 30,
+      "ads": [
+        {
+          "name": "Hook 8：我劝你，先别买",
+          "creative_id": "1609714287192681"
+        }
+      ]
+    },
+    {
+      "name": "Advantage+ Parents + Engaged",
+      "budget_myr": 30,
+      "ads": [
+        {
+          "name": "Hook 3：卷尺越量越焦虑",
+          "creative_id": "1070425675834648"
+        }
+      ]
+    },
+    {
+      "name": "Advantage+ Parents + Engaged",
+      "budget_myr": 30,
+      "ads": [
+        {
+          "name": "Hook 4：保健品叫你丢掉",
+          "creative_id": "2520118428427946"
+        }
+      ]
+    },
+    {
+      "name": "Advantage+ Parents + Engaged",
+      "budget_myr": 30,
+      "ads": [
+        {
+          "name": "Hook 5：基因打脸",
+          "creative_id": "1797806734971312"
+        }
+      ]
+    },
+    {
+      "name": "Advantage+ Parents + Engaged",
+      "budget_myr": 30,
+      "ads": [
+        {
+          "name": "Hook 6：最矮的那一个",
+          "creative_id": "1125882730386030"
+        }
+      ]
+    }
+  ],
+  "_note": "2026-09-15 operator: REBUILD as 1-15-15 — one campaign per audience, FIFTEEN ad sets of ONE ad each, RM30/day per ad set (ABO, budget sharing off), so every creative is guaranteed its own spend. Replaces the 1-1-15 build of 2026-09-14 (sept15_parents_engaged.json), deleted never-spent. Targeting cloned from ad set 120239546436180575 (Parents 3-17 + Engaged), buyer list excluded, Malaysia declaration copied from Top5 赢家 120247917148640575. Ad set name = the TARGETING it clones (operator rule 2026-09-03: never the ad inside it; identical names intended); ad name = Hook N / Video N：title. Built PAUSED.",
+  "_built": {
+    "run": "34925287686",
+    "campaign_id": "120248877913750575",
+    "adset_ids": [
+      "120248877914970575",
+      "120248877915470575",
+      "120248877916220575",
+      "120248877916740575",
+      "120248877917580575",
+      "120248877918170575",
+      "120248877918460575",
+      "120248877919460575",
+      "120248877920170575",
+      "120248877920720575",
+      "120248877921430575",
+      "120248877921720575",
+      "120248877922420575",
+      "120248877923150575",
+      "120248877924040575"
+    ],
+    "ad_ids": [
+      "120248877924740575",
+      "120248877925320575",
+      "120248877926130575",
+      "120248877926700575",
+      "120248877926950575",
+      "120248877927310575",
+      "120248877927930575",
+      "120248877928510575",
+      "120248877929010575",
+      "120248877929690575",
+      "120248877930490575",
+      "120248877930760575",
+      "120248877931890575",
+      "120248877932810575",
+      "120248877933600575"
+    ],
+    "built_at": "2026-09-15 03:32 UTC (15 ad sets × 1 ad, RM30/day each, all PAUSED, declaration copied from 120247917148640575)"
+  },
+  "_renamed": "2026-09-15: ad sets renamed to the targeting name, ads to Hook N / Video N：title (scripts/rename_specs/sept15x15_names.json)."
+}

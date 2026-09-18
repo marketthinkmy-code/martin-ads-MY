@@ -8,7 +8,8 @@ comments / shares) instead of splitting it across a second set of creatives.
 Use it to run a proven creative line-up against a second audience. Everything is created PAUSED.
 
 Spec JSON (path via ADBOT_AD_SPEC, default scripts/clone_specs/fnr_v11_v15.json):
-  budget_myr       CBO daily budget (default 100)
+  budget_myr       CBO daily budget (default 100); with "abo": true it becomes the single ad set's
+                   own daily budget and the campaign carries none (budget sharing off)
   campaign_name    name for the new campaign
   adset_name       name for the new ad set
   source_adset_id  ad set whose targeting is cloned   (either this...)
@@ -19,8 +20,12 @@ Spec JSON (path via ADBOT_AD_SPEC, default scripts/clone_specs/fnr_v11_v15.json)
   start_time       ISO-8601 WITH offset — the ad set is created scheduled for that moment. Meta
                    refuses to edit start_time once an ad set "has started", and it counts as
                    started from creation even while PAUSED, so this can only be set here.
-  adsets[]         {name, budget_myr, custom_audience_ids[], ads[]} — build SEVERAL ad sets, each
-                   with its own budget (ABO), its own audience, and (optionally) its OWN ads[];
+  adsets[]         {name, budget_myr, custom_audience_ids[], source_adset_id, also_exclude[],
+                   advantage_audience, ads[]} — build SEVERAL ad sets, each with its own budget
+                   (ABO), its own audience, and (optionally) its OWN ads[]. A plan-level
+                   source_adset_id / also_exclude / advantage_audience overrides the spec level,
+                   so one campaign can carry three DIFFERENT proven audiences side by side
+                   (operator, 2026-09-14: 15 new creatives x the 3 best-converting ad sets);
                    a plan without ads[] runs the spec-level ads. One ad per ad set is the
                    guaranteed-spend structure: inside a shared ad set, delivery starves all but
                    the early favourite — which is how proven winners end up untested. Use this
@@ -101,9 +106,14 @@ def main() -> None:
     graph = graph_client(settings)
     account = m.account_path
 
-    def build_targeting(audience_ids=None):
-        """Targeting for one ad set. audience_ids overrides whatever the spec's top level says."""
-        ids = audience_ids if audience_ids is not None else spec.get("custom_audience_ids")
+    def build_targeting(plan):
+        """Targeting for one ad set. Plan-level keys override the spec's top level."""
+        ids = plan.get("custom_audience_ids")
+        if ids is None:
+            ids = spec.get("custom_audience_ids")
+        source = plan.get("source_adset_id") or spec.get("source_adset_id")
+        aa_raw = plan.get("advantage_audience", spec.get("advantage_audience"))
+        also_exclude = plan.get("also_exclude", spec.get("also_exclude", []))
         if ids:
             # Saved-audience targeting: the account's standard geo/age/locale plus the audiences
             # themselves. A lookalike is already a similarity model, so layering interests on top
@@ -123,17 +133,17 @@ def main() -> None:
                     group[key] = [{"id": str(i["id"]), "name": i.get("name", "")} for i in spec[key]]
             tgt["flexible_spec"] = [group]
         else:
-            tgt = _clone_targeting(graph, spec["source_adset_id"])
+            tgt = _clone_targeting(graph, str(source))
 
-        if "advantage_audience" in spec:
-            aa = int(spec["advantage_audience"])
+        if aa_raw is not None:
+            aa = int(aa_raw)
             tgt["targeting_automation"] = {"advantage_audience": aa}
             if aa == 0:
                 # Expansion off means Meta must stay inside the audience — the whole point when
                 # ad sets differ only by which band they target.
                 tgt["targeting_relaxation_types"] = {"lookalike": 0, "custom_audience": 0}
 
-        for extra in spec.get("also_exclude", []):
+        for extra in also_exclude:
             excl = tgt.setdefault("excluded_custom_audiences", [])
             if not any(str(e.get("id")) == str(extra) for e in excl):
                 excl.append({"id": str(extra)})
@@ -145,7 +155,9 @@ def main() -> None:
     plans = spec.get("adsets") or [{"name": spec["adset_name"],
                                     "budget_myr": spec.get("budget_myr", 100),
                                     "custom_audience_ids": spec.get("custom_audience_ids")}]
-    abo = len(plans) > 1
+    # "abo": true forces an ad-set budget even for a single ad set: the operator's per-webinar
+    # adjust edits ad-set budgets, which a CBO campaign refuses (2026-09-14, 1-1-15 builds).
+    abo = len(plans) > 1 or bool(spec.get("abo"))
 
     existing = spec.get("existing_campaign_id")
     parent_abo = False
@@ -184,7 +196,7 @@ def main() -> None:
 
     adset_ids = []
     for plan in plans:
-        targeting = build_targeting(plan.get("custom_audience_ids"))
+        targeting = build_targeting(plan)
         fields = dict(
             campaign_id=cid, name=plan["name"],
             optimization_goal=m.optimization_goal, billing_event="IMPRESSIONS",
