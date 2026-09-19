@@ -23,6 +23,7 @@ from __future__ import annotations
 import datetime as dt
 import json
 import math
+import os
 import re
 from collections import defaultdict
 
@@ -33,6 +34,9 @@ from adbot.monitor_cpl import extract_results, result_action_type
 from adbot.settings import load_settings
 
 WINDOWS = (14, 30, 60, 90)
+# Optional extra window: ADBOT_SINCE=YYYY-MM-DD adds "since that date" spend / registrations / CPL
+# per ad, e.g. "since Friday" when the operator wants the days after a webinar judged on their own.
+SINCE = (os.environ.get("ADBOT_SINCE") or "").strip() or None
 
 
 def market_of(*texts: str) -> str:
@@ -100,6 +104,11 @@ def main() -> None:
             k = cpa.ad_key(r.get("ad_name") or "")
             by_key[w][k]["spend"] += sp
             by_key[w][k]["regs"] += regs
+    by_since = {}
+    if SINCE:
+        for r in g.account_insights(acct, level="ad", fields="ad_id,spend,actions",
+                                    time_range={"since": SINCE, "until": today.isoformat()}):
+            by_since[r.get("ad_id")] = (_money(r.get("spend")), extract_results(r.get("actions"), token))
 
     # ── 3. MY sales per creative name from the Paid Student List ─────────────
     sheets = SheetsClient(s.secrets.google_sa_json)
@@ -159,7 +168,8 @@ def main() -> None:
     tiers = s.cpa
     print(f"\nrules: CPL threshold RM{thr:.0f} · CPA max_acceptable RM{tiers.max_acceptable_myr:.0f} · "
           f"hard_stop RM{tiers.hard_stop_myr:.0f} · MY-only sales, matched by creative name\n")
-    hdr_line = (f"{'ad':42} {'budget':>7} {'14d$':>6} {'reg':>4} {'CPL14':>6} {'30d$':>6} {'reg':>4} {'CPL30':>6} "
+    since_hdr = f" {'since' + SINCE[5:] + '$':>9} {'reg':>4} {'CPL':>5}" if SINCE else ""
+    hdr_line = (f"{'ad':42} {'budget':>7}{since_hdr} {'14d$':>6} {'reg':>4} {'CPL14':>6} {'30d$':>6} {'reg':>4} {'CPL30':>6} "
                 f"{'MYsale 30/60/90':>15} {'CPA60':>6} {'reg90/buy':>9} {'teen':>5}  建议")
     print(hdr_line)
     rows = []
@@ -201,6 +211,12 @@ def main() -> None:
             why.append(f"+{un60} untagged sale")
         if teen is not None and teen >= 0.3:
             why.append(f"teen {teen:.0%}")
+        if SINCE:
+            sps, rgs = by_since.get(a["id"], (0.0, 0.0))
+            cpls = (sps / rgs) if rgs else math.inf
+            a["since"] = (sps, rgs, cpls)
+            if sps >= 60 and (not rgs or cpls > 1.3 * thr):
+                why.append(f"since {SINCE[5:]}: RM{sps:,.0f} → {rgs:.0f} reg, CPL {_fmt_cpa(cpls)}")
         rows.append((verdict, a, sp14, rg14, cpl14, sp30, rg30, cpl30, my30, my60, my90, cpa60, r90, my90, teen, why))
 
     order = {"关": 0, "调低": 1, "新·等": 2, "保留": 3, "保留·可加": 4}
@@ -208,7 +224,11 @@ def main() -> None:
             sorted(rows, key=lambda r: (order.get(r[0], 9), -r[2])):
         budget = f"RM{a['budget']:,.0f}" if a["budget"] else (f"CBO{a['cbo']:,.0f}" if a["cbo"] else "-")
         rb = f"{r90}/{b90}" if r90 or b90 else "-"
-        print(f"{a['name'][:42]:42} {budget:>7} {sp14:>6,.0f} {rg14:>4.0f} {_fmt_cpa(cpl14):>6} "
+        since_cols = ""
+        if SINCE:
+            sps, rgs, cpls = a.get("since", (0.0, 0.0, math.inf))
+            since_cols = f" {sps:>9,.0f} {rgs:>4.0f} {_fmt_cpa(cpls):>5}"
+        print(f"{a['name'][:42]:42} {budget:>7}{since_cols} {sp14:>6,.0f} {rg14:>4.0f} {_fmt_cpa(cpl14):>6} "
               f"{sp30:>6,.0f} {rg30:>4.0f} {_fmt_cpa(cpl30):>6} {f'{my30}/{my60}/{my90}':>15} "
               f"{_fmt_cpa(cpa60):>6} {rb:>9} {(f'{teen:.0%}' if teen is not None else '-'):>5}  "
               f"{verdict}  ({'; '.join(why)})")
