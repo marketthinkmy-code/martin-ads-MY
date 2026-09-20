@@ -54,7 +54,7 @@ def main() -> None:
     camps = {}
     for name in SPECS:
         spec = json.loads((REPO_ROOT / "scripts/clone_specs" / f"{name}.json").read_text(encoding="utf-8"))
-        camps[spec["_built"]["campaign_id"]] = spec["adset_name"]
+        camps[spec["_built"]["campaign_id"]] = spec.get("adset_name") or spec["adsets"][0]["name"]
 
     # ads + ad sets under the three campaigns
     ads, adsets = {}, {}
