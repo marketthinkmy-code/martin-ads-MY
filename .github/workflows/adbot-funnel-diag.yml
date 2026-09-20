@@ -1,0 +1,41 @@
+name: adbot · funnel diagnosis — why is CPL high (manual, read-only)
+
+# Manual, read-only: CPM / hook rate / thruplay / CTR / landing-page rate / registration rate per
+# ad since a date, the Sept 15-video rebuild against everything else that spent in the window,
+# plus learning-stage status of the new ad sets. No writes.
+
+on:
+  workflow_dispatch:
+    inputs:
+      since:
+        description: "count from this date (YYYY-MM-DD)"
+        type: string
+        required: false
+        default: "2026-09-15"
+  push:
+    branches: ["claude/sweet-curie-b6vql4"]
+    paths:
+      - ".github/workflows/adbot-funnel-diag.yml"
+      - "scripts/funnel_diagnosis.py"
+
+concurrency:
+  group: adbot-funnel-diag
+  cancel-in-progress: false
+
+jobs:
+  diag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install .
+      - name: Funnel diagnosis
+        env:
+          ADBOT_ROOT: ${{ github.workspace }}
+          ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
+          ADBOT_SINCE: ${{ inputs.since || '2026-09-15' }}
+          META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
+          META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
+        run: python scripts/funnel_diagnosis.py
