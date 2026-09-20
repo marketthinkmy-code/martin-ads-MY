@@ -13,6 +13,15 @@ on:
         type: string
         required: false
         default: ""
+      cpa_window:
+        description: "CPA window for the verdict: 60 (default) or 30"
+        type: string
+        required: false
+        default: "60"
+      strict:
+        description: "true = every non-new ad must have a qualifying CPA in the window (no sale or CPA > max_acceptable = 关)"
+        type: boolean
+        default: false
   push:
     branches: ["claude/sweet-curie-b6vql4"]
     paths:
@@ -42,4 +51,6 @@ jobs:
           META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
           META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
           ADBOT_SINCE: ${{ inputs.since || '' }}
+          ADBOT_CPA_WINDOW: ${{ inputs.cpa_window || '60' }}
+          ADBOT_STRICT: ${{ inputs.strict && '1' || '' }}
         run: python scripts/active_ads_cpl_cpa.py

@@ -37,6 +37,11 @@ WINDOWS = (14, 30, 60, 90)
 # Optional extra window: ADBOT_SINCE=YYYY-MM-DD adds "since that date" spend / registrations / CPL
 # per ad, e.g. "since Friday" when the operator wants the days after a webinar judged on their own.
 SINCE = (os.environ.get("ADBOT_SINCE") or "").strip() or None
+# CPA window for the verdict (30 or 60; default 60) and STRICT mode (operator, 2026-09-20): every
+# running ad that is not new must have a qualifying CPA in the window — no sale in the window,
+# or CPA above max_acceptable, is 关, not 调低.
+CPA_WINDOW = int(os.environ.get("ADBOT_CPA_WINDOW") or 60)
+STRICT = (os.environ.get("ADBOT_STRICT") or "").strip().lower() in ("1", "true", "yes")
 
 
 def market_of(*texts: str) -> str:
@@ -167,10 +172,11 @@ def main() -> None:
     thr = s.kpi.cpl_threshold_myr
     tiers = s.cpa
     print(f"\nrules: CPL threshold RM{thr:.0f} · CPA max_acceptable RM{tiers.max_acceptable_myr:.0f} · "
-          f"hard_stop RM{tiers.hard_stop_myr:.0f} · MY-only sales, matched by creative name\n")
+          f"hard_stop RM{tiers.hard_stop_myr:.0f} · MY-only sales, matched by creative name · "
+          f"verdict on CPA{CPA_WINDOW}{' · STRICT (no sale in window = 关)' if STRICT else ''}\n")
     since_hdr = f" {'since' + SINCE[5:] + '$':>9} {'reg':>4} {'CPL':>5}" if SINCE else ""
     hdr_line = (f"{'ad':42} {'budget':>7}{since_hdr} {'14d$':>6} {'reg':>4} {'CPL14':>6} {'30d$':>6} {'reg':>4} {'CPL30':>6} "
-                f"{'MYsale 30/60/90':>15} {'CPA60':>6} {'reg90/buy':>9} {'teen':>5}  建议")
+                f"{'MYsale 30/60/90':>15} {'pool30$':>7} {'CPA30':>6} {'CPA60':>6} {'reg90/buy':>9} {'teen':>5}  建议")
     print(hdr_line)
     rows = []
     for a in active:
@@ -178,35 +184,44 @@ def main() -> None:
         sp14, rg14 = by_ad[14].get(a["id"], (0.0, 0.0))
         sp30, rg30 = by_ad[30].get(a["id"], (0.0, 0.0))
         pooled60 = by_key[60][k]["spend"]
+        pooled30 = by_key[30][k]["spend"]
         my30, my60, my90 = my_sales[30][k], my_sales[60][k], my_sales[90][k]
         un60 = untagged[60][k]
         cpa60 = (pooled60 / my60) if my60 else math.inf
+        cpa30 = (pooled30 / my30) if my30 else math.inf
+        # the window the verdict is judged on
+        pooledW, myW, cpaW = (pooled30, my30, cpa30) if CPA_WINDOW == 30 else (pooled60, my60, cpa60)
         cpl14 = (sp14 / rg14) if rg14 else math.inf
         cpl30 = (sp30 / rg30) if rg30 else math.inf
         r90, t90 = regs90.get(k, 0), teen90.get(k, 0)
         teen = (t90 / r90) if r90 else None
 
         why = []
+        W = f"CPA{CPA_WINDOW}"
         if (a["age_days"] is not None and a["age_days"] < 7) or (pooled60 < 300 and my60 == 0):
             verdict = "新·等"
             why.append(f"{a['age_days']}d / RM{pooled60:,.0f}")
-        elif my60 and cpa60 > tiers.hard_stop_myr:
-            verdict = "关"; why.append(f"CPA60 RM{cpa60:,.0f} > hard stop")
-        elif my60 == 0 and pooled60 >= 1000:
-            verdict = "关"; why.append(f"60d RM{pooled60:,.0f} 0 MY sale")
+        elif STRICT and myW == 0:
+            verdict = "关"; why.append(f"{CPA_WINDOW}d RM{pooledW:,.0f} 0 MY sale (strict)")
+        elif STRICT and cpaW > tiers.max_acceptable_myr:
+            verdict = "关"; why.append(f"{W} RM{cpaW:,.0f} > max_acceptable (strict)")
+        elif myW and cpaW > tiers.hard_stop_myr:
+            verdict = "关"; why.append(f"{W} RM{cpaW:,.0f} > hard stop")
+        elif myW == 0 and pooledW >= 1000:
+            verdict = "关"; why.append(f"{CPA_WINDOW}d RM{pooledW:,.0f} 0 MY sale")
         elif my90 == 0 and r90 >= 30:
             verdict = "关"; why.append(f"90d {r90} MY regs, 0 buyer")
-        elif my60 and cpa60 > tiers.max_acceptable_myr:
-            verdict = "调低"; why.append(f"CPA60 RM{cpa60:,.0f} 过 max_acceptable")
-        elif my60 == 0 and pooled60 >= 500:
-            verdict = "调低"; why.append(f"60d RM{pooled60:,.0f} 0 MY sale (未到裁决线)")
+        elif myW and cpaW > tiers.max_acceptable_myr:
+            verdict = "调低"; why.append(f"{W} RM{cpaW:,.0f} 过 max_acceptable")
+        elif myW == 0 and pooledW >= 500:
+            verdict = "调低"; why.append(f"{CPA_WINDOW}d RM{pooledW:,.0f} 0 MY sale (未到裁决线)")
         elif rg14 and cpl14 > 1.3 * thr:
             verdict = "调低"; why.append(f"CPL14 RM{cpl14:,.0f} > 1.3x 门槛")
         else:
             verdict = "保留"
-            if my60 and cpa60 <= tiers.healthy_max_myr and (not rg14 or cpl14 <= thr * 1.3):
+            if myW and cpaW <= tiers.healthy_max_myr and (not rg14 or cpl14 <= thr * 1.3):
                 verdict = "保留·可加"
-            why.append(f"CPA60 RM{_fmt_cpa(cpa60)}")
+            why.append(f"{W} RM{_fmt_cpa(cpaW)}")
         if un60:
             why.append(f"+{un60} untagged sale")
         if teen is not None and teen >= 0.3:
@@ -217,6 +232,7 @@ def main() -> None:
             a["since"] = (sps, rgs, cpls)
             if sps >= 60 and (not rgs or cpls > 1.3 * thr):
                 why.append(f"since {SINCE[5:]}: RM{sps:,.0f} → {rgs:.0f} reg, CPL {_fmt_cpa(cpls)}")
+        a["pooled30"], a["cpa30"] = pooled30, cpa30
         rows.append((verdict, a, sp14, rg14, cpl14, sp30, rg30, cpl30, my30, my60, my90, cpa60, r90, my90, teen, why))
 
     order = {"关": 0, "调低": 1, "新·等": 2, "保留": 3, "保留·可加": 4}
@@ -230,7 +246,8 @@ def main() -> None:
             since_cols = f" {sps:>9,.0f} {rgs:>4.0f} {_fmt_cpa(cpls):>5}"
         print(f"{a['name'][:42]:42} {budget:>7}{since_cols} {sp14:>6,.0f} {rg14:>4.0f} {_fmt_cpa(cpl14):>6} "
               f"{sp30:>6,.0f} {rg30:>4.0f} {_fmt_cpa(cpl30):>6} {f'{my30}/{my60}/{my90}':>15} "
-              f"{_fmt_cpa(cpa60):>6} {rb:>9} {(f'{teen:.0%}' if teen is not None else '-'):>5}  "
+              f"{a['pooled30']:>7,.0f} {_fmt_cpa(a['cpa30']):>6} {_fmt_cpa(cpa60):>6} {rb:>9} "
+              f"{(f'{teen:.0%}' if teen is not None else '-'):>5}  "
               f"{verdict}  ({'; '.join(why)})")
         print(f"{'':42} ↳ {a['camp'][:70]}  adset {a['adset_id']}")
 
