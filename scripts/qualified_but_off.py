@@ -162,6 +162,13 @@ def main() -> None:
     print(f"\n=== D. 有近单但这个账户 30 天没花费（旧账户素材 / 无法从这里开）({len(no_spend)}) ===")
     for k, sp30, copies in no_spend:
         print(f"  MY30 {my30[k]}  {names[k][:60]}   ← 来自 {carried(k)}")
+
+    # Sales whose UTM carries no market tag cannot be counted as MY, but the operator should see
+    # them: an untagged sale on a paused creative may be the one that would have qualified it.
+    if untagged30:
+        print(f"\n=== E. 30 天内没标市场的成交（Campaign Name 空白，没算进 MY）({sum(untagged30.values())}) ===")
+        for k, n in sorted(untagged30.items(), key=lambda t: -t[1]):
+            print(f"  {n} 单  {names.get(k, k)[:60]}   ← MY30 已算 {my30.get(k, 0)}")
     print("\nDONE (no writes)")
 
 
