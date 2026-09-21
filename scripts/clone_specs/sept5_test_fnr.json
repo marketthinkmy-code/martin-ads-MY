@@ -1,0 +1,17 @@
+{
+  "campaign_name": "[MY] 儿童长高方程式 | Family and Relationships | 新片 5 支测试 | 1-1-5",
+  "adset_name": "Interest: Family and Relationships",
+  "budget_myr": 100,
+  "abo": true,
+  "source_adset_id": "120247917148640575",
+  "regulation_source_adset_id": "120247917148640575",
+  "also_exclude": ["120248429743500575"],
+  "ads": [
+    {"name": "Hook 4：保健品叫你丢掉", "creative_id": "2520118428427946"},
+    {"name": "Hook 2：旧鞋当尺", "creative_id": "1419029943510844"},
+    {"name": "Video 4：每天记录身高，却看不懂成长信号", "creative_id": "2200378957211453"},
+    {"name": "Video 3：基因不是保证书", "creative_id": "2199411583952989"},
+    {"name": "Hook 4：门框上的线", "creative_id": "2223522455159331"}
+  ],
+  "_note": "2026-09-21 operator: second round for the Sept 15-video drop after the 1-15-15 x RM30 test (45 ad sets, RM4,019, 28 regs, CPL 144, none out of learning). Consolidate: ONE ad set, RM100/day, F&R targeting cloned from Top5 赢家 (the audience with the best registration rate), the five creatives that showed a normal landing-page registration rate (保健品 6.3% / 旧鞋 7.3% / 每天记录 5.8% / 基因不是保证书 4.7% / 门框 5.9%). Rules: untouched for 7 days, judge on CPL <= 78 at day 7 and on 09-23 buyers. Built PAUSED; operator activates."
+}
