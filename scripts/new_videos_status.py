@@ -20,7 +20,7 @@ from adbot.commands import graph_client
 from adbot.monitor_cpl import extract_results, result_action_type
 from adbot.settings import REPO_ROOT, load_settings
 
-SPECS = ("sept15x15_fnr", "sept15x15_parents_engaged", "sept15x15_parents_kids")
+SPECS = ("sept15x15_fnr", "sept15x15_parents_engaged", "sept15x15_parents_kids", "sept5_test_fnr")
 SINCE = os.environ.get("ADBOT_SINCE") or "2026-09-15"
 
 
