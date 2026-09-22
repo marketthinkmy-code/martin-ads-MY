@@ -10,11 +10,12 @@ on 2026-09-22 — is a JSON LIST with one entry per video, the VIDEO id in objec
 id in context_id, and retention_days as a top-level field:
     [{"event_name": "video_view_25_percent", "object_id": "<VIDEO_ID>", "context_id": "<PAGE_ID>"}, ...]
 Threshold events: video_view_25_percent / video_view_50_percent / video_view_75_percent.
-Only PAGE-associated videos are eligible: a video uploaded to the ad account for a creative is
-refused with "(#2654) No Page or New Page Experience Association ... video <id>", so creatives are
-resolved through their effective_object_story_id to the page post's attached video, and any id
-Meta still names as ineligible is dropped and the create retried. (The event_sources/inclusions
-grammar and the {"object_id": <page>, "video_ids": [...]} shape are both rejected — earlier runs.)
+Only PAGE-associated videos are eligible: the ad-account upload id used at mint time is refused
+with "(#2654) No Page or New Page Experience Association ... video <id>", while the creative's own
+video_id (read from the creative) is accepted — run 35683071793 built audience 120248996628200575
+that way. Any id Meta still names as ineligible is dropped and the create retried. (The
+event_sources/inclusions grammar and the {"object_id": <page>, "video_ids": [...]} shape are both
+rejected; reading a post's attachments needs pages_read_engagement, which the SU token lacks.)
 
 Videos = ADBOT_VIDEO_IDS + the page-post videos behind ADBOT_AD_IDS and behind every creative_id in
 ADBOT_CREATIVE_SPECS (clone specs) + (ADBOT_INCLUDE_EXISTING=1) every video already listed in the
@@ -54,17 +55,8 @@ def _parse_rule(raw):
         return None
 
 
-def _post_video(g, story_id: str):
-    """The video attached to a page post (the page-associated id Meta accepts)."""
-    post = g.get_object(story_id, "attachments{type,media_type,target{id}}") or {}
-    for att in ((post.get("attachments") or {}).get("data") or []):
-        if "video" in str(att.get("type", "")).lower() or str(att.get("media_type", "")).lower() == "video":
-            return str(((att.get("target") or {}).get("id")) or "") or None
-    return None
-
-
 def videos_from_creatives(g, creative_ids, ad_ids):
-    """Resolve ads/creatives to their page-post video (preferred) or raw creative video."""
+    """Resolve ads/creatives to the creative-level video id (the page-associated one)."""
     found = []
     creatives = list(dict.fromkeys(str(c) for c in creative_ids))
     for ad_id in ad_ids:
@@ -82,15 +74,8 @@ def videos_from_creatives(g, creative_ids, ad_ids):
             print(f"[creative] {cid}: cannot read ({str(exc)[:100]})")
             continue
         raw = c.get("video_id") or ((c.get("object_story_spec") or {}).get("video_data") or {}).get("video_id")
-        story = c.get("effective_object_story_id")
-        post_vid = None
-        if story:
-            try:
-                post_vid = _post_video(g, str(story))
-            except Exception as exc:  # noqa: BLE001
-                print(f"[post] {story}: cannot read attachments ({str(exc)[:100]})")
-        print(f"[creative] {cid} -> video {raw} · post {story} -> video {post_vid}")
-        pick = post_vid or (str(raw) if raw else None)
+        print(f"[creative] {cid} -> video {raw} (post {c.get('effective_object_story_id')})")
+        pick = str(raw) if raw else None
         if pick and pick not in found:
             found.append(pick)
     return found

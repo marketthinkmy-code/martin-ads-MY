@@ -4,6 +4,8 @@ name: adbot · build video-viewer retargeting audience (manual)
 # last D days, for a retargeting ad set aimed at viewers who never registered. Tries the known
 # rule is the per-video list Meta itself stores (see the script header); the account's existing
 # video audiences are printed and their videos folded in, so the new audience is a superset.
+# Dispatch only: the self-path push trigger used to register the workflow was removed after the
+# first audience (run 35683071793, audience 120248996628200575) so an edit cannot build a duplicate.
 
 on:
   workflow_dispatch:
@@ -38,11 +40,6 @@ on:
         type: string
         required: false
         default: "1"
-  push:
-    branches: ["claude/sweet-curie-b6vql4"]
-    paths:
-      - ".github/workflows/adbot-video-audience.yml"
-      - "scripts/create_video_audience.py"
 
 concurrency:
   group: adbot-video-audience
