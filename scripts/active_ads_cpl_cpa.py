@@ -102,8 +102,13 @@ def main() -> None:
     by_key = {w: defaultdict(lambda: {"spend": 0.0, "regs": 0.0}) for w in WINDOWS}
     for w in WINDOWS:
         since = (today - dt.timedelta(days=w)).isoformat()
-        for r in g.account_insights(acct, level="ad", fields="ad_id,ad_name,spend,actions",
-                                    time_range={"since": since, "until": today.isoformat()}):
+        try:
+            rows = g.account_insights(acct, level="ad", fields="ad_id,ad_name,spend,actions",
+                                      time_range={"since": since, "until": today.isoformat()})
+        except Exception as exc:  # noqa: BLE001 - Meta's generic "unexpected error" on one window must not sink the report
+            print(f"[warn] {w}d ad-level insights failed ({str(exc)[:90]}); that window reads as 0")
+            rows = []
+        for r in rows:
             sp, regs = _money(r.get("spend")), extract_results(r.get("actions"), token)
             by_ad[w][r.get("ad_id")] = (sp, regs)
             k = cpa.ad_key(r.get("ad_name") or "")
