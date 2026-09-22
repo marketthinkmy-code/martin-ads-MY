@@ -4,7 +4,8 @@
   "budget_myr": 50,
   "abo": true,
   "custom_audience_ids": [
-    "__CA_ID__"
+    "120248996628200575",
+    "120245379412380575"
   ],
   "advantage_audience": 0,
   "regulation_source_adset_id": "120247917148640575",
@@ -17,5 +18,5 @@
       "post_id": "341825319024143_122175862454485585"
     }
   ],
-  "_note": "2026-09-22 operator (都做 · 再营销): warm viewers are the cheapest lead the account is not buying. ONE ad set, RM50/day (ABO so the webinar adjust can edit it), targeting = the engagement custom audience 'watched >= 25% of a Dr. Martin video, last 30 days' on the account's standard MY / 25-65 / Chinese-locale base with Advantage+ expansion OFF (stay inside the audience) and the standard exclusions (15-day registrants, paid customers) plus the paid list 120248429743500575 -> viewers who never registered. Ad = the 鼻窦炎 winner via its existing post 341825319024143_122175862454485585 so the retargeting ad keeps pooling that post's social proof. Declaration copied from Top5 赢家 120247917148640575. Built PAUSED; operator activates. Judge on CPL vs the cold F&R line (<= 78) after 7 days / RM300."
+  "_note": "2026-09-22 operator (都做 · 再营销): warm viewers are the cheapest lead the account is not buying. ONE ad set, RM50/day (ABO so the webinar adjust can edit it). Targeting = two engagement audiences OR'ed on the account's standard MY / 25-65 / Chinese-locale base with Advantage+ expansion OFF (stay inside the audiences): 120248996628200575 'MY · 看过视频25%+ · 30天 · retarget' (built by adbot-video-audience run 35683071793: video_view_25_percent, 30 days, 182 page videos = the 15 Sept creatives + the 4 running winners + 163 older videos; populating, usable at once) and the operator's own 120245379412380575 '30days viewed at least 50% of your video - MARTIN' (321 videos, 8.1-9.5k people, ready). Standard exclusions (15-day registrants, paid customers) plus the paid list 120248429743500575 -> viewers who never registered. Ad = the 鼻窦炎 winner via its existing post 341825319024143_122175862454485585 so the retargeting ad keeps pooling that post's social proof. Declaration copied from Top5 赢家 120247917148640575. Built PAUSED; operator activates. Judge on CPL vs the cold F&R line (<= 78) after 7 days / RM300."
 }
