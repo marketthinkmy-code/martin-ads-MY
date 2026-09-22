@@ -1,0 +1,8 @@
+{
+  "accounts": ["act_1011719073600566"],
+  "names": [
+    {"label": "鼻窦炎 copies (retarget ad source)", "needle": "孩子如果有鼻窦炎"},
+    {"label": "Video 13 copies", "needle": "三年前他長了10公分"}
+  ],
+  "_note": "2026-09-22: find the creative / page post behind the 鼻窦炎 winner so the retargeting ad set can reuse it (existing-post route pools social proof)."
+}
