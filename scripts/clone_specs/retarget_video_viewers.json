@@ -1,0 +1,21 @@
+{
+  "campaign_name": "[MY] 儿童长高方程式 | Retarget 看过视频25%+ 未报名 | 鼻窦炎 | 1-1-1",
+  "adset_name": "Retarget: 看过视频 25%+ · 30 天 · 未报名",
+  "budget_myr": 50,
+  "abo": true,
+  "custom_audience_ids": [
+    "__CA_ID__"
+  ],
+  "advantage_audience": 0,
+  "regulation_source_adset_id": "120247917148640575",
+  "also_exclude": [
+    "120248429743500575"
+  ],
+  "ads": [
+    {
+      "name": "Video 1：孩子如果有鼻窦炎",
+      "post_id": "341825319024143_122175862454485585"
+    }
+  ],
+  "_note": "2026-09-22 operator (都做 · 再营销): warm viewers are the cheapest lead the account is not buying. ONE ad set, RM50/day (ABO so the webinar adjust can edit it), targeting = the engagement custom audience 'watched >= 25% of a Dr. Martin video, last 30 days' on the account's standard MY / 25-65 / Chinese-locale base with Advantage+ expansion OFF (stay inside the audience) and the standard exclusions (15-day registrants, paid customers) plus the paid list 120248429743500575 -> viewers who never registered. Ad = the 鼻窦炎 winner via its existing post 341825319024143_122175862454485585 so the retargeting ad keeps pooling that post's social proof. Declaration copied from Top5 赢家 120247917148640575. Built PAUSED; operator activates. Judge on CPL vs the cold F&R line (<= 78) after 7 days / RM300."
+}
