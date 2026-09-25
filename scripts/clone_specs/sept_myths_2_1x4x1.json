@@ -1,0 +1,54 @@
+{
+  "campaign_name": "[MY] 儿童长高方程式 | Parents with Kids + F&R | 9 月新片 是谁说的 · 完蛋了 | 1-4-1",
+  "regulation_source_adset_id": "120247917148640575",
+  "also_exclude": [
+    "120248429743500575"
+  ],
+  "adsets": [
+    {
+      "name": "Parents with Kids",
+      "budget_myr": 50,
+      "source_adset_id": "120246300889160575",
+      "ads": [
+        {
+          "name": "Video 1：是谁说的？",
+          "creative_id": "__V1__"
+        }
+      ]
+    },
+    {
+      "name": "Parents with Kids",
+      "budget_myr": 50,
+      "source_adset_id": "120246300889160575",
+      "ads": [
+        {
+          "name": "Video 3：完蛋了！",
+          "creative_id": "__V3__"
+        }
+      ]
+    },
+    {
+      "name": "Interest: Family and Relationships",
+      "budget_myr": 50,
+      "source_adset_id": "120247917148640575",
+      "ads": [
+        {
+          "name": "Video 1：是谁说的？",
+          "creative_id": "__V1__"
+        }
+      ]
+    },
+    {
+      "name": "Interest: Family and Relationships",
+      "budget_myr": 50,
+      "source_adset_id": "120247917148640575",
+      "ads": [
+        {
+          "name": "Video 3：完蛋了！",
+          "creative_id": "__V3__"
+        }
+      ]
+    }
+  ],
+  "_note": "2026-09-25 operator (铸 -> 建): the two Sept myth-breaking videos, one ad per ad set so neither can be starved, RM50 each (RM30 sets never left learning in Sept), ABO. Audiences = the account's two best-converting ones: Parents with Kids (family_statuses 3-17, A+ on; cloned from the June set 120246300889160575 — 90-day CPA 915) and F&R Top5 赢家 (120247917148640575 — 3 of the last 9 MY sales). Declaration copied from Top5 赢家; buyers list excluded on top of config. Built PAUSED; operator activates campaign + ad sets + ads. Judge each ad set at 7 days / RM300: CPL <= 78 keep, any MY sale keeps regardless of CPL; the RM90 zero-registration monitor rule applies as usual."
+}
