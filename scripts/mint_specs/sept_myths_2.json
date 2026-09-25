@@ -7,7 +7,9 @@
       "content_id": "my_sep_v1_who_said_milk_calcium",
       "ad_name": "Video 1：是谁说的？",
       "headline": "🔴 天天喝牛奶补钙，孩子为什么还是不长高？",
-      "body_file": "scripts/mint_specs/sept_myths_2.body_v1.txt"
+      "body_file": "scripts/mint_specs/sept_myths_2.body_v1.txt",
+      "video_id": "1857807902298873",
+      "creative_id": "2512404452616073"
     },
     {
       "key": "v3",
@@ -16,8 +18,18 @@
       "content_id": "my_sep_v3_doomed_genes",
       "ad_name": "Video 3：完蛋了！",
       "headline": "🔴 爸妈不高，孩子就一定矮？谁说的",
-      "body_file": "scripts/mint_specs/sept_myths_2.body_v3.txt"
+      "body_file": "scripts/mint_specs/sept_myths_2.body_v3.txt",
+      "video_id": "1806147427196247",
+      "creative_id": "1530840259077721"
     }
   ],
-  "_note": "2026-09-25 operator: two new Sept videos (scripts supplied in chat). V1 breaks the milk/calcium myth and reframes the parent's question from '还要补什么' to '哪里卡住'; V3 breaks the genes myth ('完蛋了') and points at the 5-17 黄金期 conditions parents still control. Copy: 马丁医师 (never 药师), 10,000+ 位孩子, 5-17 岁, MY landing + url_tags from config, CTA LEARN_MORE. NOT minted yet — copy shown to the operator first; mint on approval, then build 1-4-1 (Parents with Kids x2 + Interest: Family and Relationships x2, RM50 each)."
+  "_note": "2026-09-25 operator: two new Sept videos (scripts supplied in chat). V1 breaks the milk/calcium myth and reframes the parent's question from '还要补什么' to '哪里卡住'; V3 breaks the genes myth ('完蛋了') and points at the 5-17 黄金期 conditions parents still control. Copy: 马丁医师 (never 药师), 10,000+ 位孩子, 5-17 岁, MY landing + url_tags from config, CTA LEARN_MORE. Copy approved (铸, 2026-09-25 20:47 MYT) and minted; next: build 1-4-1 (Parents with Kids x2 + Interest: Family and Relationships x2, RM50 each).",
+  "_minted": {
+    "run": "36137157640",
+    "built_at": "2026-09-25 12:54 UTC",
+    "creatives": {
+      "v1": "2512404452616073",
+      "v3": "1530840259077721"
+    }
+  }
 }
