@@ -1,18 +1,52 @@
 {
-  "accounts": ["act_1011719073600566", "act_1024930575770087"],
-  "names": [
-    {"label": "我不会买牛奶 (60 lifetime sales)", "needle": "我不会买牛奶"},
-    {"label": "一个3～15岁正常健康的孩子 (56)", "needle": "正常健康的孩子"},
-    {"label": "如果你的孩子 (44)", "needle": "如果你的孩子"},
-    {"label": "准备早餐面包 (43)", "needle": "准备早餐面包"},
-    {"label": "hook 18 13岁 141cm (27)", "needle": "141cm"},
-    {"label": "鼻子敏感 (25)", "needle": "鼻子敏感"},
-    {"label": "林書豪 story (25)", "needle": "林書豪"},
-    {"label": "10个孩子会有8个 (20)", "needle": "10 个孩子"},
-    {"label": "马六甲 (15, MY 2 in 60d)", "needle": "马六甲"},
-    {"label": "运动但是没长高 (15)", "needle": "运动但是没长高"},
-    {"label": "迷思喝牛奶增高 (11)", "needle": "迷思喝牛奶"},
-    {"label": "15岁以上还有机会长高吗 (49, SG)", "needle": "15岁以上还有机会"}
+  "accounts": [
+    "act_1011719073600566"
   ],
-  "_note": "2026-09-25 operator asked which well-converting ads were forgotten or switched off. These are the lifetime top sellers from the Paid Student List; the run shows whether each exists in the MY account (any status) or only in SG, with creative/post ids so a winner can be re-opened via clone_test post_id."
+  "names": [
+    {
+      "label": "我不会买牛奶 (60 lifetime sales)",
+      "needle": "我不会买牛奶"
+    },
+    {
+      "label": "一个3～15岁正常健康的孩子 (56)",
+      "needle": "正常健康的孩子"
+    },
+    {
+      "label": "如果你的孩子 (44)",
+      "needle": "如果你的孩子"
+    },
+    {
+      "label": "准备早餐面包 (43)",
+      "needle": "准备早餐面包"
+    },
+    {
+      "label": "hook 18 13岁 141cm (27)",
+      "needle": "141cm"
+    },
+    {
+      "label": "鼻子敏感 (25)",
+      "needle": "鼻子敏感"
+    },
+    {
+      "label": "林書豪 story (25)",
+      "needle": "林書豪"
+    },
+    {
+      "label": "10个孩子会有8个 (20)",
+      "needle": "10 个孩子"
+    },
+    {
+      "label": "马六甲 (15, MY 2 in 60d)",
+      "needle": "马六甲"
+    },
+    {
+      "label": "运动但是没长高 (15)",
+      "needle": "运动但是没长高"
+    },
+    {
+      "label": "迷思喝牛奶增高 (11)",
+      "needle": "迷思喝牛奶"
+    }
+  ],
+  "_note": "2026-09-25 operator asked which well-converting ads were forgotten or switched off. These are the lifetime top sellers from the Paid Student List; the run shows whether each exists in the MY account (any status) or only in SG, with creative/post ids so a winner can be re-opened via clone_test post_id. 2026-09-25 17:40: narrowed to the MY account only (the SG copies of 15岁以上 alone were 380 log lines; only 'can it be re-opened HERE' matters)."
 }
