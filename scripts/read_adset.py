@@ -19,7 +19,7 @@ def main() -> None:
         raise SystemExit("Set ADSET_IDS=<comma-separated ad set ids> (or ADSET_ID for one).")
     s = load_settings()
     g = graph_client(s)
-    fields = ("name,campaign_id,optimization_goal,billing_event,bid_strategy,"
+    fields = ("name,status,effective_status,campaign_id,optimization_goal,billing_event,bid_strategy,"
               "daily_budget,destination_type,promoted_object,attribution_spec,"
               "use_new_app_click,targeting")
     for adset_id in id_list:
@@ -27,6 +27,15 @@ def main() -> None:
         try:
             obj = g.get_object(adset_id, fields)
             print(json.dumps(obj, indent=2, ensure_ascii=False))
+            # Delivery needs all three layers on: show the parent campaign and every ad under
+            # the ad set with their own status, so an "activated but not delivering" ad set
+            # can be diagnosed from one read.
+            camp = g.get_object(str(obj.get("campaign_id")), "name,status,effective_status,daily_budget")
+            print(f"[campaign] {camp.get('id')} {camp.get('name')!r} status={camp.get('status')} "
+                  f"effective={camp.get('effective_status')} daily_budget={camp.get('daily_budget')}")
+            for ad in g._get_all(f"{adset_id}/ads", {"fields": "id,name,status,effective_status", "limit": 100}):
+                print(f"[ad] {ad.get('id')} {ad.get('name')!r} status={ad.get('status')} "
+                      f"effective={ad.get('effective_status')}")
         except Exception as exc:  # noqa: BLE001 - report each, keep reading the rest
             print(f"[error] {adset_id}: {exc}")
         print(f"===== END {adset_id} =====")

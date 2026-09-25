@@ -1,0 +1,34 @@
+{
+  "campaign_name": "[MY] 儿童长高方程式 | Retarget 看过视频25%+ 未报名 | 鼻窦炎 | 1-1-1",
+  "adset_name": "Retarget: 看过视频 25%+ · 30 天 · 未报名",
+  "budget_myr": 50,
+  "abo": true,
+  "custom_audience_ids": [
+    "120248996628200575",
+    "120245379412380575"
+  ],
+  "advantage_audience": 0,
+  "regulation_source_adset_id": "120247917148640575",
+  "also_exclude": [
+    "120248429743500575"
+  ],
+  "ads": [
+    {
+      "name": "Video 1：孩子如果有鼻窦炎",
+      "post_id": "341825319024143_122175862454485585"
+    }
+  ],
+  "_note": "2026-09-22 operator (都做 · 再营销): warm viewers are the cheapest lead the account is not buying. ONE ad set, RM50/day (ABO so the webinar adjust can edit it). Targeting = two engagement audiences OR'ed on the account's standard MY / 25-65 / Chinese-locale base with Advantage+ expansion OFF (stay inside the audiences): 120248996628200575 'MY · 看过视频25%+ · 30天 · retarget' (built by adbot-video-audience run 35683071793: video_view_25_percent, 30 days, 182 page videos = the 15 Sept creatives + the 4 running winners + 163 older videos; populating, usable at once) and the operator's own 120245379412380575 '30days viewed at least 50% of your video - MARTIN' (321 videos, 8.1-9.5k people, ready). Standard exclusions (15-day registrants, paid customers) plus the paid list 120248429743500575 -> viewers who never registered. Ad = the 鼻窦炎 winner via its existing post 341825319024143_122175862454485585 so the retargeting ad keeps pooling that post's social proof. Declaration copied from Top5 赢家 120247917148640575. Built PAUSED; operator activates. Judge on CPL vs the cold F&R line (<= 78) after 7 days / RM300.",
+  "_built": {
+    "run": "35683353402",
+    "campaign_id": "120248996657350575",
+    "adset_ids": [
+      "120248996657800575"
+    ],
+    "ad_ids": [
+      "120248996660380575"
+    ],
+    "creative_id": "1063526696461828",
+    "built_at": "2026-09-22 03:30 UTC (1 ad set RM50/day ABO, 1 ad from post 341825319024143_122175862454485585, all PAUSED, declaration copied from 120247917148640575; audiences 120248996628200575 + 120245379412380575, Advantage+ audience OFF)"
+  }
+}
