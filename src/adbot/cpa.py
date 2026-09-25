@@ -32,6 +32,9 @@ def norm(s: str) -> str:
     return " ".join(s.split()).casefold()
 
 
+_MARKET_TAG = re.compile(r"^\s*(?:🌟\s*)?(?:北美|新马|新馬|新加坡|马来西亚|馬來西亞|大马|大馬)\s*[:\-–|]?\s*")
+
+
 def ad_key(s: str) -> str:
     """Width/punctuation-robust match key for a campaign or ad name.
 
@@ -41,6 +44,11 @@ def ad_key(s: str) -> str:
     colon / space / full-vs-half-width differences that broke exact matching fall away.
     """
     s = unicodedata.normalize("NFKC", (s or "").replace("\\", "")).casefold()
+    # Mint-time UTMs carry a market tag the ad names no longer have ('北美 h4：保健品叫你丢掉' in the
+    # sheet vs 'Hook 4：保健品叫你丢掉' in the account, 2026-09-25) — drop a leading tag and spell
+    # 'h4' as 'hook 4' on BOTH sides so the same creative keys the same way wherever it is written.
+    s = _MARKET_TAG.sub("", s)
+    s = re.sub(r"(?<![a-z0-9])h(\d+)(?=[\s:])", r"hook \1", s)
     return re.sub(r"[\W_]+", "", s)
 
 
