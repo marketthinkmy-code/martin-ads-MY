@@ -1,0 +1,50 @@
+name: adbot · top creatives by MY CPA with their post ids (manual, read-only)
+
+# Manual, read-only: every creative with a MY sale in the last N days (default 60), its pooled
+# spend / CPA / CPL across all copies in this account, ranked by CPA, with the page post behind
+# each so the operator can rebuild a winner by hand with "use existing post". No writes.
+# The self-path push trigger only registers the workflow for dispatch (first push runs it once).
+
+on:
+  workflow_dispatch:
+    inputs:
+      window:
+        description: "days of MY sales / spend to pool (60 or 30)"
+        type: string
+        required: false
+        default: "60"
+      top_n:
+        description: "how many to rank"
+        type: string
+        required: false
+        default: "5"
+  push:
+    branches: ["claude/sweet-curie-b6vql4"]
+    paths:
+      - ".github/workflows/adbot-top-cpa.yml"
+      - "scripts/top_cpa.py"
+
+concurrency:
+  group: adbot-top-cpa
+  cancel-in-progress: false
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install .
+      - name: Top creatives by MY CPA
+        env:
+          ADBOT_ROOT: ${{ github.workspace }}
+          ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
+          ADBOT_WINDOW: ${{ inputs.window || '60' }}
+          ADBOT_TOP_N: ${{ inputs.top_n || '5' }}
+          GOOGLE_SERVICE_ACCOUNT_JSON_B64: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON_B64 }}
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
+          META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
+        run: python scripts/top_cpa.py
