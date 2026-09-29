@@ -1,0 +1,103 @@
+{
+  "campaign_name": "[MY] FAMILY",
+  "cbo": true,
+  "budget_myr": 80,
+  "start_time": "2026-09-30T00:00:00+0800",
+  "advantage_audience": 1,
+  "regulation_source_adset_id": "120247917148640575",
+  "also_exclude": [
+    "120248429743500575"
+  ],
+  "targeting_override": {
+    "genders": [
+      2
+    ]
+  },
+  "interests": [
+    {
+      "id": "6002991239659",
+      "name": "Motherhood"
+    },
+    {
+      "id": "6003101323797",
+      "name": "Fatherhood"
+    },
+    {
+      "id": "6003135982408",
+      "name": "Married... with Children"
+    },
+    {
+      "id": "6003192786505",
+      "name": "Children's literature"
+    },
+    {
+      "id": "6003200511682",
+      "name": "Children's music"
+    },
+    {
+      "id": "6003232518610",
+      "name": "Parenting"
+    },
+    {
+      "id": "6003280661823",
+      "name": "Children's Day"
+    },
+    {
+      "id": "6003341627396",
+      "name": "Child care"
+    },
+    {
+      "id": "6003345696474",
+      "name": "Child"
+    },
+    {
+      "id": "6003415393053",
+      "name": "Children's clothing"
+    },
+    {
+      "id": "6003476182657",
+      "name": "Family"
+    },
+    {
+      "id": "6003649931713",
+      "name": "Children's television series"
+    },
+    {
+      "id": "6003717177960",
+      "name": "Children's song"
+    },
+    {
+      "id": "6004100985609",
+      "name": "Friendship"
+    }
+  ],
+  "adsets": [
+    {
+      "name": "FAMILY",
+      "ads": [
+        {
+          "name": "Hook 7：算给你看",
+          "post_id": "341825319024143_122197861214485585"
+        }
+      ]
+    },
+    {
+      "name": "FAMILY",
+      "ads": [
+        {
+          "name": "Hook 1：今晚回家检查三件事",
+          "post_id": "341825319024143_122197861208485585"
+        }
+      ]
+    },
+    {
+      "name": "FAMILY",
+      "ads": [
+        {
+          "name": "Video 3：基因不是保证书",
+          "post_id": "341825319024143_122197328774485585"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,111 @@
+{
+  "campaign_name": "[MY] HOUSEWIFE",
+  "cbo": true,
+  "budget_myr": 60,
+  "start_time": "2026-09-30T00:00:00+0800",
+  "advantage_audience": 1,
+  "regulation_source_adset_id": "120247917148640575",
+  "also_exclude": [
+    "120248429743500575"
+  ],
+  "targeting_override": {
+    "genders": [
+      2
+    ]
+  },
+  "interests": [
+    {
+      "id": "6003343997689",
+      "name": "Home appliances"
+    },
+    {
+      "id": "6003468061203",
+      "name": "Household goods"
+    },
+    {
+      "id": "6004025488989",
+      "name": "Desperate Housewives"
+    }
+  ],
+  "work_employers": [
+    {
+      "id": "104155516286895",
+      "name": "Housewife"
+    },
+    {
+      "id": "110798202273057",
+      "name": "Stay at home mom"
+    },
+    {
+      "id": "1393703070850292",
+      "name": "Stay-at-home parent"
+    }
+  ],
+  "work_positions": [
+    {
+      "id": "104155516286895",
+      "name": "Housewife"
+    },
+    {
+      "id": "110446002316801",
+      "name": "House mom"
+    },
+    {
+      "id": "123449204368898",
+      "name": "Wife, Mother, Homemaker"
+    },
+    {
+      "id": "131353070240490",
+      "name": "Mother/Homemaker"
+    },
+    {
+      "id": "1393703070850292",
+      "name": "Stay-at-home parent"
+    },
+    {
+      "id": "140310089323750",
+      "name": "Mommy 24/7"
+    },
+    {
+      "id": "168764976504761",
+      "name": "Full-Time Mother & Housewife"
+    },
+    {
+      "id": "226571957464931",
+      "name": "Being a Full time Mommy!"
+    },
+    {
+      "id": "324077447737845",
+      "name": "Stay-At-Home Mommy"
+    }
+  ],
+  "adsets": [
+    {
+      "name": "HOUSEWIFE",
+      "ads": [
+        {
+          "name": "Video 1：去年半个头，今年一粒头",
+          "post_id": "341825319024143_122197328510485585"
+        }
+      ]
+    },
+    {
+      "name": "HOUSEWIFE",
+      "ads": [
+        {
+          "name": "Video 2：新马家长最怕这个东西！",
+          "post_id": "341825319024143_122197328492485585"
+        }
+      ]
+    },
+    {
+      "name": "HOUSEWIFE",
+      "ads": [
+        {
+          "name": "Hook 8：我劝你，先别买",
+          "post_id": "341825319024143_122197328822485585"
+        }
+      ]
+    }
+  ]
+}
