@@ -1,0 +1,11 @@
+{
+  "accounts": ["act_1024930575770087"],
+  "names": [
+    {"label": "ENGAGED WOMEN · 倒掉牛奶", "needle": "倒掉牛奶"},
+    {"label": "FAMILY · 算给你看", "needle": "算给你看"},
+    {"label": "HOUSEWIFE · 去年半个头", "needle": "去年半个头"},
+    {"label": "MILK · 准备早餐面包", "needle": "准备早餐面包"},
+    {"label": "HEALTH & WELLNESS · 什麼樣的孩子", "needle": "什麼樣的孩子"}
+  ],
+  "_note": "2026-09-29 operator: MY is to mirror the SG account's 5 interest campaigns (ENGAGED WOMEN / FAMILY / HOUSEWIFE / MILK / HEALTH & WELLNESS, 3 identical ad sets x 1 ad, CBO). Locate each SG ad set so its targeting (interests, employers, job titles, genders, locales) can be cloned with country switched to MY."
+}
