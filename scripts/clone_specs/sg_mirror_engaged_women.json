@@ -1,0 +1,61 @@
+{
+  "campaign_name": "[MY] ENGAGED WOMEN",
+  "cbo": true,
+  "budget_myr": 80,
+  "start_time": "2026-09-30T00:00:00+0800",
+  "advantage_audience": 1,
+  "regulation_source_adset_id": "120247917148640575",
+  "also_exclude": [
+    "120248429743500575"
+  ],
+  "targeting_override": {
+    "genders": [
+      2
+    ]
+  },
+  "interests": [
+    {
+      "id": "6003263791114",
+      "name": "Shopping"
+    },
+    {
+      "id": "6003346592981",
+      "name": "Online shopping"
+    }
+  ],
+  "behaviors": [
+    {
+      "id": "6071631541183",
+      "name": "Engaged Shoppers"
+    }
+  ],
+  "adsets": [
+    {
+      "name": "ENGAGED WOMEN",
+      "ads": [
+        {
+          "name": "Hook 3：倒掉牛奶",
+          "post_id": "341825319024143_122197861250485585"
+        }
+      ]
+    },
+    {
+      "name": "ENGAGED WOMEN",
+      "ads": [
+        {
+          "name": "Hook 4：保健品叫你丢掉",
+          "post_id": "341825319024143_122197861274485585"
+        }
+      ]
+    },
+    {
+      "name": "ENGAGED WOMEN",
+      "ads": [
+        {
+          "name": "Hook 1：今晚回家检查三件事",
+          "post_id": "341825319024143_122197861208485585"
+        }
+      ]
+    }
+  ]
+}

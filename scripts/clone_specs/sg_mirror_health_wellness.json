@@ -1,0 +1,71 @@
+{
+  "campaign_name": "[MY] HEALTH & WELLNESS",
+  "cbo": true,
+  "budget_myr": 80,
+  "start_time": "2026-09-30T00:00:00+0800",
+  "advantage_audience": 1,
+  "regulation_source_adset_id": "120247917148640575",
+  "also_exclude": [
+    "120248429743500575"
+  ],
+  "targeting_override": {
+    "genders": [
+      2
+    ]
+  },
+  "interests": [
+    {
+      "id": "6003135449040",
+      "name": "Personal care"
+    },
+    {
+      "id": "6003258544357",
+      "name": "Health & wellness"
+    },
+    {
+      "id": "6003263791114",
+      "name": "Shopping"
+    },
+    {
+      "id": "6003277229371",
+      "name": "Physical fitness"
+    },
+    {
+      "id": "6003346592981",
+      "name": "Online shopping"
+    },
+    {
+      "id": "6003393295343",
+      "name": "Health And Beauty"
+    }
+  ],
+  "adsets": [
+    {
+      "name": "HEALTH & WELLNESS",
+      "ads": [
+        {
+          "name": "Video: 什麼樣的孩子基本上不會再長高",
+          "post_id": "341825319024143_122192843480485585"
+        }
+      ]
+    },
+    {
+      "name": "HEALTH & WELLNESS",
+      "ads": [
+        {
+          "name": "Hook 6：没有人会告诉你",
+          "post_id": "341825319024143_122197861238485585"
+        }
+      ]
+    },
+    {
+      "name": "HEALTH & WELLNESS",
+      "ads": [
+        {
+          "name": "Video 4：每天记录身高，却看不懂成长信号",
+          "post_id": "341825319024143_122197328660485585"
+        }
+      ]
+    }
+  ]
+}

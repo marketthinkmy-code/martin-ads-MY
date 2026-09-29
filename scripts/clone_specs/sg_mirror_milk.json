@@ -1,0 +1,83 @@
+{
+  "campaign_name": "[MY] MILK",
+  "cbo": true,
+  "budget_myr": 80,
+  "start_time": "2026-09-30T00:00:00+0800",
+  "advantage_audience": 1,
+  "regulation_source_adset_id": "120247917148640575",
+  "also_exclude": [
+    "120248429743500575"
+  ],
+  "targeting_override": {
+    "genders": [
+      2
+    ]
+  },
+  "interests": [
+    {
+      "id": "6003011899481",
+      "name": "Milk"
+    },
+    {
+      "id": "6003012654197",
+      "name": "Dairy product"
+    },
+    {
+      "id": "6003107444301",
+      "name": "Dairy"
+    },
+    {
+      "id": "6003115078416",
+      "name": "Milk substitute"
+    },
+    {
+      "id": "6003185579408",
+      "name": "Cheese"
+    },
+    {
+      "id": "6003207844630",
+      "name": "Powdered milk"
+    },
+    {
+      "id": "6003283346254",
+      "name": "Almond milk"
+    },
+    {
+      "id": "6003455412083",
+      "name": "Silk (soy milk)"
+    },
+    {
+      "id": "6005173031630",
+      "name": "Yogurt"
+    }
+  ],
+  "adsets": [
+    {
+      "name": "MILK",
+      "ads": [
+        {
+          "name": "MAR Video Hook 3: 准备早餐面包",
+          "post_id": "341825319024143_122140406480485585"
+        }
+      ]
+    },
+    {
+      "name": "MILK",
+      "ads": [
+        {
+          "name": "MAR Video 1：我不会买牛奶",
+          "post_id": "341825319024143_122140405604485585"
+        }
+      ]
+    },
+    {
+      "name": "MILK",
+      "ads": [
+        {
+          "name": "MAR Single image 1：牛奶+面包",
+          "post_id": "341825319024143_122184069494485585"
+        }
+      ]
+    }
+  ]
+}

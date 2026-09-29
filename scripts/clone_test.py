@@ -41,6 +41,8 @@ Spec JSON (path via ADBOT_AD_SPEC, default scripts/clone_specs/fnr_v11_v15.json)
                    nothing.
   cbo              true = one campaign budget shared by ALL adsets[] (3 identical ad sets x RM80);
                    default is ABO whenever several ad sets are listed
+  work_employers / work_positions  [{id, name}] lists (spec or plan level) that join the same
+                   flexible_spec group as interests[] / behaviors[] — the HOUSEWIFE structure.
   targeting_override {countries[], genders[], locales[], exclusions: "config"} applied after the
                    clone — clone an SG ad set's interests/behaviors/employers into MY
   also_exclude[]   extra audience ids to exclude on top of the ones in config (e.g. a freshly
@@ -73,6 +75,9 @@ from adbot.settings import REPO_ROOT, load_settings
 # Fields safe to copy from a live ad set's targeting onto a new one (drops read-only/derived keys).
 _KEEP = ("geo_locations", "age_min", "age_max", "genders", "locales",
          "excluded_custom_audiences", "flexible_spec")
+
+# Detailed-targeting lists a spec (or one plan) may declare instead of a source ad set.
+_AUDIENCE_KEYS = ("interests", "behaviors", "work_employers", "work_positions")
 
 
 # Beneficiary / payer declaration. Meta refuses any new MY ad set without it since 2026-09-08,
@@ -124,17 +129,19 @@ def main() -> None:
             # only narrows what Meta chose — the audience IS the targeting.
             tgt = m.targeting.to_spec()
             tgt["custom_audiences"] = [{"id": str(a)} for a in ids]
-        elif spec.get("interests") or spec.get("behaviors"):
+        elif any(plan.get(k) or spec.get(k) for k in _AUDIENCE_KEYS):
             # Brand-new audience: the account's standard targeting (MY / age / Chinese locale /
             # excluded customer lists) plus the interest ids, so the ONLY variable versus a proven
             # ad set is the interest itself. Ids must come from find_interests.py or a read of a
-            # live ad set — never invented. behaviors[] (e.g. Engaged Shoppers) join the same
-            # flexible_spec group, i.e. they widen it (OR), exactly as the source ad sets do.
+            # live ad set — never invented. behaviors[] (e.g. Engaged Shoppers), work_employers[]
+            # and work_positions[] (the HOUSEWIFE structure) join the same flexible_spec group,
+            # i.e. they widen it (OR), exactly as the source ad sets do. Plan level wins.
             tgt = m.targeting.to_spec()
             group = {}
-            for key in ("interests", "behaviors"):
-                if spec.get(key):
-                    group[key] = [{"id": str(i["id"]), "name": i.get("name", "")} for i in spec[key]]
+            for key in _AUDIENCE_KEYS:
+                rows = plan.get(key, spec.get(key))
+                if rows:
+                    group[key] = [{"id": str(i["id"]), "name": i.get("name", "")} for i in rows]
             tgt["flexible_spec"] = [group]
         else:
             tgt = _clone_targeting(graph, str(source))

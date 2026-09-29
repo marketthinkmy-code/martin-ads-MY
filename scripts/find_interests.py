@@ -40,14 +40,15 @@ def main() -> None:
         found_names = []
         for kw in keywords:
             try:
-                rows = graph.search_interests(kw, limit=int(os.environ.get("ADBOT_TOP", "3")))
+                rows = graph.search_interests(kw, limit=int(os.environ.get("ADBOT_TOP", "6")))
             except Exception as exc:  # noqa: BLE001 - one bad keyword must not kill the sweep
                 print(f"\n-- {kw!r}: search failed ({exc})")
                 continue
             print(f"\n-- {kw!r} -> {len(rows)} match(es)")
             for r in rows:
                 path = " > ".join(r.get("path") or [])
-                print(f"   {r.get('id'):<20} {_size(r):>12}  {r.get('name','')[:40]:40} {path[:46]}")
+                exact = "*" if (r.get("name") or "").strip().casefold() == kw.strip().casefold() else " "
+                print(f" {exact} {r.get('id'):<20} {_size(r):>12}  {r.get('name','')[:40]:40} {path[:46]}")
                 if r.get("name"):
                     found_names.append(r["name"])
 
