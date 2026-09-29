@@ -99,5 +99,21 @@
         }
       ]
     }
-  ]
+  ],
+  "_built": {
+    "campaign_id": "120249148396810575",
+    "adset_ids": [
+      "120249148397240575",
+      "120249148397930575",
+      "120249148398550575"
+    ],
+    "ad_ids": [
+      "120249148399140575",
+      "120249148399800575",
+      "120249148400540575"
+    ],
+    "run": "36587350382",
+    "status": "PAUSED — DUPLICATE: the team had already built '[MY] 儿童长高方程式 | FAMILY | 1-3-3 new ads' (120249148222260575, ACTIVE, same 3 posts, start 2026-09-30 00:00); the cancel came too late (run finished in ~1 min); left paused for the operator to delete"
+  },
+  "_note": "2026-09-29 operator brief '照 SG 结构建 5 条 campaign': CBO, 3 identical same-name ad sets x 1 existing-post ad, MY 25-65 women only, Chinese locale, Advantage+ audience on, auto placements, config exclusions (15days complete registration + PAID CUSTOMER 13 APR) + PAID CUSTOMER 16 AUG, url_tags from config, MALAYSIA_UNIVERSAL declaration copied from 120247917148640575, start 2026-09-30 00:00 +0800. Interest ids: live ad sets (SG/MY) + find-interests run 36587162769. The team built ENGAGED WOMEN / HOUSEWIFE / FAMILY by hand at the same time (ACTIVE, ids 1202491480..-1202491482..)."
 }

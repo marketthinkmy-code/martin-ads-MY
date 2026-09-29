@@ -79,5 +79,21 @@
         }
       ]
     }
-  ]
+  ],
+  "_built": {
+    "campaign_id": "120249148383080575",
+    "adset_ids": [
+      "120249148383540575",
+      "120249148384150575",
+      "120249148384650575"
+    ],
+    "ad_ids": [
+      "120249148386470575",
+      "120249148387090575",
+      "120249148387650575"
+    ],
+    "run": "36587166843",
+    "status": "ACTIVATED 2026-09-29 15:06Z (adbot-activate) — no team version existed; scheduled start 2026-09-30 00:00 +0800"
+  },
+  "_note": "2026-09-29 operator brief '照 SG 结构建 5 条 campaign': CBO, 3 identical same-name ad sets x 1 existing-post ad, MY 25-65 women only, Chinese locale, Advantage+ audience on, auto placements, config exclusions (15days complete registration + PAID CUSTOMER 13 APR) + PAID CUSTOMER 16 AUG, url_tags from config, MALAYSIA_UNIVERSAL declaration copied from 120247917148640575, start 2026-09-30 00:00 +0800. Interest ids: live ad sets (SG/MY) + find-interests run 36587162769. The team built ENGAGED WOMEN / HOUSEWIFE / FAMILY by hand at the same time (ACTIVE, ids 1202491480..-1202491482..)."
 }
