@@ -41,4 +41,9 @@ jobs:
           ADBOT_SEEDS: ${{ inputs.seeds_path || 'scripts/targeting_specs/seeds.json' }}
           META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
           META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
-        run: python scripts/find_interests.py
+        run: |
+          set -o pipefail
+          python scripts/find_interests.py 2>&1 | tee /tmp/adbot_out.txt
+      - name: Surface the results as annotations (job logs are unreachable from the operator's sandbox)
+        if: always()
+        run: python scripts/annotate_output.py /tmp/adbot_out.txt find-interests

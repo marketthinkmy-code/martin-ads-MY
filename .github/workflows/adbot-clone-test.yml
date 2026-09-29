@@ -43,4 +43,9 @@ jobs:
           ADBOT_AD_SPEC: ${{ inputs.spec_path || 'scripts/clone_specs/starved_winners.json' }}
           META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
           META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
-        run: python scripts/clone_test.py
+        run: |
+          set -o pipefail
+          python scripts/clone_test.py 2>&1 | tee /tmp/adbot_out.txt
+      - name: Surface built ids / the failure as annotations (job logs are unreachable from the operator's sandbox)
+        if: always()
+        run: python scripts/annotate_output.py /tmp/adbot_out.txt clone-test '\[campaign\]|\[regulation\]|\[adset\]|^\s+ad \d+|^DONE|Error|Traceback|Exception|SystemExit|no spec|raise '
