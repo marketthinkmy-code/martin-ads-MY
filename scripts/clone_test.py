@@ -39,6 +39,10 @@ Spec JSON (path via ADBOT_AD_SPEC, default scripts/clone_specs/fnr_v11_v15.json)
                    ad sets differ only by audience: with it ON, Meta may deliver outside each
                    lookalike band, the bands blur into each other, and the comparison measures
                    nothing.
+  cbo              true = one campaign budget shared by ALL adsets[] (3 identical ad sets x RM80);
+                   default is ABO whenever several ad sets are listed
+  targeting_override {countries[], genders[], locales[], exclusions: "config"} applied after the
+                   clone — clone an SG ad set's interests/behaviors/employers into MY
   also_exclude[]   extra audience ids to exclude on top of the ones in config (e.g. a freshly
                    rebuilt buyer list, so prospecting does not pay to reach existing customers)
   regional_regulated_categories[] / regional_regulation_identities{}
@@ -143,6 +147,19 @@ def main() -> None:
                 # ad sets differ only by which band they target.
                 tgt["targeting_relaxation_types"] = {"lookalike": 0, "custom_audience": 0}
 
+        # targeting_override — for cloning an ad set from ANOTHER market (SG -> MY): swap the
+        # country, force genders / locales, and replace the source's exclusion lists (SG lists
+        # are invalid in this account) with this account's standard ones from config.
+        ov = plan.get("targeting_override", spec.get("targeting_override")) or {}
+        if ov.get("countries"):
+            tgt["geo_locations"] = {"countries": [str(c) for c in ov["countries"]]}
+        if "genders" in ov:
+            tgt["genders"] = [int(x) for x in ov["genders"]]
+        if ov.get("locales"):
+            tgt["locales"] = [int(x) for x in ov["locales"]]
+        if ov.get("exclusions") == "config":
+            tgt["excluded_custom_audiences"] = list(m.targeting.to_spec().get("excluded_custom_audiences") or [])
+
         for extra in also_exclude:
             excl = tgt.setdefault("excluded_custom_audiences", [])
             if not any(str(e.get("id")) == str(extra) for e in excl):
@@ -157,7 +174,10 @@ def main() -> None:
                                     "custom_audience_ids": spec.get("custom_audience_ids")}]
     # "abo": true forces an ad-set budget even for a single ad set: the operator's per-webinar
     # adjust edits ad-set budgets, which a CBO campaign refuses (2026-09-14, 1-1-15 builds).
-    abo = len(plans) > 1 or bool(spec.get("abo"))
+    # "cbo": true keeps ONE campaign budget over several ad sets (the SG-mirror structure of
+    # 2026-09-29: 3 identical ad sets sharing RM80, the operator's explicit choice) — the
+    # per-band comparison logic above does not apply when the ad sets are deliberately the same.
+    abo = (len(plans) > 1 or bool(spec.get("abo"))) and not bool(spec.get("cbo"))
 
     existing = spec.get("existing_campaign_id")
     parent_abo = False
