@@ -1,0 +1,52 @@
+name: adbot · declare MY beneficiary/payer on ad sets + activate (manual)
+
+# Ad sets built before Meta's 2026-09-08 "verified advertiser" rule cannot be re-activated once
+# paused until they carry the MALAYSIA_UNIVERSAL beneficiary/payer declaration. This copies the
+# declaration from a live MY ad set onto the given ad sets and sets them ACTIVE. The push trigger
+# only registers the workflow (an empty id list is a no-op).
+
+on:
+  workflow_dispatch:
+    inputs:
+      adset_ids:
+        description: "comma-separated ad set ids to declare + activate"
+        type: string
+        required: true
+      source_adset_id:
+        description: "live MY ad set to copy the declaration from"
+        type: string
+        required: false
+        default: "120247917148640575"
+      no_activate:
+        description: "stamp the declaration only, leave the status untouched"
+        type: boolean
+        default: false
+  push:
+    branches: ["claude/sweet-curie-b6vql4"]
+    paths:
+      - ".github/workflows/adbot-declare-adset.yml"
+
+concurrency:
+  group: adbot-declare
+  cancel-in-progress: false
+
+jobs:
+  declare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install .
+      - name: Declare + activate
+        env:
+          ADBOT_ROOT: ${{ github.workspace }}
+          ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
+          ADBOT_ADSET_IDS: ${{ inputs.adset_ids }}
+          ADBOT_REG_SOURCE: ${{ inputs.source_adset_id || '120247917148640575' }}
+          ADBOT_NO_ACTIVATE: ${{ inputs.no_activate && '1' || '0' }}
+          META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
+          META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
+        run: python scripts/declare_adset.py
