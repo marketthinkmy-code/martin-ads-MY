@@ -1,0 +1,43 @@
+name: adbot · Paid Student List · recent rows by date (read-only)
+
+# Aggregates only (date + UTM tags, never personal data): shows how the latest sales were
+# entered so a "webinar sales entered but no ad shows a buyer" question can be answered.
+
+on:
+  workflow_dispatch:
+    inputs:
+      days:
+        description: "look back this many days"
+        type: string
+        required: false
+        default: "10"
+  push:
+    branches: ["claude/sweet-curie-b6vql4"]
+    paths:
+      - ".github/workflows/adbot-sheet-recent.yml"
+      - "scripts/sheet_recent_sales.py"
+
+concurrency:
+  group: adbot-sheet-recent
+  cancel-in-progress: false
+
+jobs:
+  recent:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install .
+      - name: Rows by date
+        env:
+          ADBOT_ROOT: ${{ github.workspace }}
+          ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
+          ADBOT_DAYS: ${{ inputs.days || '10' }}
+          GOOGLE_SERVICE_ACCOUNT_JSON_B64: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON_B64 }}
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
+          META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
+        run: python scripts/sheet_recent_sales.py
