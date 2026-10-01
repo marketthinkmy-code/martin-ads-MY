@@ -5,9 +5,22 @@
   "budget_myr": 50,
   "source_adset_id": "120248670466640575",
   "regulation_source_adset_id": "120247917148640575",
-  "also_exclude": ["120248429743500575"],
-  "ads": [
-    {"name": "JAN Video 10: 马六甲", "post_id": "341825319024143_122129511296485585"}
+  "also_exclude": [
+    "120248429743500575"
   ],
-  "_note": "2026-10-01 operator: 開馬六甲. The only creative under the RM960 line (60d: 2 MY sales / RM1,270 = CPA 635, CPL 47) had no copy running; it sold in the Food & Drink + Milk audience, so one RM50 ad set is cloned from the Food & Drink + Milk + Bread Top10 set (buyer list excluded), existing post reused for its social proof, activated right after the build at the operator's instruction."
+  "ads": [
+    {
+      "name": "JAN Video 10: 马六甲",
+      "post_id": "341825319024143_122129511296485585"
+    }
+  ],
+  "_note": "2026-10-01 operator: 開馬六甲. The only creative under the RM960 line (60d: 2 MY sales / RM1,270 = CPA 635, CPL 47) had no copy running; it sold in the Food & Drink + Milk audience, so one RM50 ad set is cloned from the Food & Drink + Milk + Bread Top10 set (buyer list excluded), existing post reused for its social proof, activated right after the build at the operator's instruction.",
+  "_built": {
+    "campaign_id": "120249176297210575",
+    "adset_id": "120249176298640575",
+    "ad_id": "120249176300130575",
+    "creative_id": "1118875527207836",
+    "run": "36828065618",
+    "status": "ACTIVATED 2026-10-01 ~15:00 MYT via adbot-activate (run 36828136468) on the operator's 開馬六甲"
+  }
 }
