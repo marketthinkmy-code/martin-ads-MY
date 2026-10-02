@@ -21,7 +21,7 @@ from adbot.monitor_cpl import extract_results, result_action_type
 from adbot.settings import load_settings
 
 SINCE, UNTIL = dt.date(2026, 9, 30), dt.date(2026, 10, 2)
-CPL_LINE, ZERO_FLOOR = 70.0, 30.0
+CPL_LINE, ZERO_FLOOR = 70.0, 70.0      # operator correction: 0-lead kill needs >= RM70 spend
 STATE_PATH = Path("state") / "sweep_1002.json"
 
 
@@ -48,6 +48,20 @@ def main() -> None:
         d["ld"] += extract_results(r.get("actions"), token)
 
     st = json.loads(STATE_PATH.read_text()) if STATE_PATH.exists() else {"closed": {}}
+
+    # reconcile: run #1 used a RM30 zero-lead floor — reopen anything it closed that
+    # the corrected rule (CPL>70, or 0 lead on >= RM70) would NOT close.
+    for ad_id in list(st["closed"]):
+        p = perf.get(ad_id, {"sp": 0.0, "ld": 0.0})
+        sp, ld = p["sp"], p["ld"]
+        should_close = (ld and sp / ld > CPL_LINE) or (not ld and sp >= ZERO_FLOOR)
+        if not should_close:
+            g._request("POST", ad_id, data={"status": "ACTIVE"})
+            log.info("↩ 重开（修正线 RM70）: %s · %s", ad_id, st["closed"].pop(ad_id))
+            STATE_PATH.parent.mkdir(parents=True, exist_ok=True)
+            STATE_PATH.write_text(json.dumps(st, ensure_ascii=False, indent=2))
+            time.sleep(0.5)
+
     keep, small = [], []
     for a in g._get_all(f"{acct}/ads",
                         {"fields": "id,name,status,effective_status,adset_id,"
