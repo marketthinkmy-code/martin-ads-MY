@@ -1,0 +1,25 @@
+{
+  "videos": [
+    {
+      "key": "v3",
+      "drive_file_id": "1bxTj0aAGJMFET8Cf6pyMNwKHRD8pEVN1",
+      "video_name": "Martin SGMY Video 3#.mp4",
+      "content_id": "my_oct_v3_15_not_too_late_r2",
+      "ad_name": "Video 3：15岁后就不能长高了？",
+      "headline": "🔴 孩子 15 岁了，还有机会长高吗？",
+      "body_file": "scripts/mint_specs/oct_15plus.body_v3.txt",
+      "video_id": "974358561662732"
+    },
+    {
+      "key": "h3",
+      "drive_file_id": "1d3Zaydl3nDQPuzdOlgEC2tDnqC82Ynm_",
+      "video_name": "Martin SGMY H3#.mp4",
+      "content_id": "my_oct_h3_16yo_2cm_r2",
+      "ad_name": "Hook 3：16岁还长高",
+      "headline": "🔴 16 岁 3 个月长高 2cm，关键是找对卡点",
+      "body_file": "scripts/mint_specs/oct_15plus.body_h3.txt",
+      "video_id": "1457901882859178"
+    }
+  ],
+  "_note": "2026-10-05 operator approved the final copy ('okay proceed，建好給我，paused'): Video 3 and Hook 3 re-minted with hook lines 2-3 deleted (they repeated the shared body's opening). Nothing else changed: same headline, same shared body, same clip (video_id reuse, no re-upload). Hook 2 keeps its first mint (oct_15plus.json _minted.h2)."
+}
