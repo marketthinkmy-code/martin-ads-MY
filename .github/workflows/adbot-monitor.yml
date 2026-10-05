@@ -14,7 +14,8 @@ on:
     # GitHub drops top-of-hour (":00") scheduled runs under load, so stagger to odd minutes
     # AND run a few times an hour for redundancy. The monitor is safe to repeat: it only
     # pauses over-threshold ACTIVE ads and never un-pauses, so extra runs are no-ops.
-    - cron: "7,27,47 * * * *"   # ~every 20 min, off the congested hour boundary (UTC)
+    - cron: "5,15,25,35,45,55 * * * *"   # every 10 min (public repo = free minutes); GitHub delivers only a
+                                         # fraction of scheduled slots lately, so denser slots = more actual runs
   workflow_dispatch:            # allow manual runs from the Actions tab
     inputs:
       dry_run:
