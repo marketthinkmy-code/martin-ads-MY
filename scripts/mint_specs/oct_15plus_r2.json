@@ -21,5 +21,20 @@
       "video_id": "1457901882859178"
     }
   ],
-  "_note": "2026-10-05 operator approved the final copy ('okay proceed，建好給我，paused'): Video 3 and Hook 3 re-minted with hook lines 2-3 deleted (they repeated the shared body's opening). Nothing else changed: same headline, same shared body, same clip (video_id reuse, no re-upload). Hook 2 keeps its first mint (oct_15plus.json _minted.h2)."
+  "_note": "2026-10-05 operator approved the final copy ('okay proceed，建好給我，paused'): Video 3 and Hook 3 re-minted with hook lines 2-3 deleted (they repeated the shared body's opening). Nothing else changed: same headline, same shared body, same clip (video_id reuse, no re-upload). Hook 2 keeps its first mint (oct_15plus.json _minted.h2).",
+  "_minted": {
+    "run": "37272629072",
+    "v3": {
+      "ad_name": "Video 3：15岁后就不能长高了？",
+      "video_id": "974358561662732",
+      "creative_id": "1655876909443239",
+      "post_id": "341825319024143_122199408818485585"
+    },
+    "h3": {
+      "ad_name": "Hook 3：16岁还长高",
+      "video_id": "1457901882859178",
+      "creative_id": "1111524221219683",
+      "post_id": "341825319024143_122199408812485585"
+    }
+  }
 }

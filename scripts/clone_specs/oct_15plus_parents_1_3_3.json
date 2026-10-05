@@ -1,0 +1,41 @@
+{
+  "campaign_name": "[MY] 儿童长高方程式 | Parents 3-17 + Engaged | 15岁以上新片 | 1-3-3",
+  "source_adset_id": "120248670491000575",
+  "regulation_source_adset_id": "120247917148640575",
+  "also_exclude": [
+    "120248429743500575"
+  ],
+  "adsets": [
+    {
+      "name": "Parents 3-17 + Engaged",
+      "budget_myr": 50,
+      "ads": [
+        {
+          "name": "Video 3：15岁后就不能长高了？",
+          "post_id": "341825319024143_122199408818485585"
+        }
+      ]
+    },
+    {
+      "name": "Parents 3-17 + Engaged",
+      "budget_myr": 50,
+      "ads": [
+        {
+          "name": "Hook 2：上了中学却没有长高？",
+          "post_id": "341825319024143_122199406766485585"
+        }
+      ]
+    },
+    {
+      "name": "Parents 3-17 + Engaged",
+      "budget_myr": 50,
+      "ads": [
+        {
+          "name": "Hook 3：16岁还长高",
+          "post_id": "341825319024143_122199408812485585"
+        }
+      ]
+    }
+  ],
+  "_note": "2026-10-05 operator: placement discussed first ('先不要自己建，跟我討論，开在哪里，什么 ad set'), then approved ('okay proceed，建好給我，paused'). NEW campaign, Parents 3-17 + Engaged, 1-3-3 ABO: 3 ad sets x 1 existing-post ad, RM50/day each, budget sharing off, so each hook gets its own spend. Why this audience: in the last 60 days the older-kid creatives (Video 7, Video 13, 15岁以上) made 4 MY sales, all in Parents 3-17 + Engaged and none in F&R. Kept out of BROAD WOMEN (one shared ad set starves all but the leader), MILK / Food & Drink (milk/bread interest audiences with the best current CPL; adding ads would reset learning) and ENGAGED WOMEN. Targeting cloned from 120248670491000575 (Parents 3-17 + Engaged in the Top10 RM50 1-5-1 campaign, also the Hooks 0907 Parents source). The 16 AUG buyer list is excluded and the Malaysia declaration is copied from 120247917148640575. Ad sets are named after the targeting (operator rule 2026-09-03). Video 3 + Hook 3 use the r2 posts (copy fix, mint_specs/oct_15plus_r2.json); Hook 2 uses its first-mint post. Built PAUSED, operator activates."
+}
