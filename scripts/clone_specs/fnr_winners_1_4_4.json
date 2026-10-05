@@ -1,0 +1,51 @@
+{
+  "campaign_name": "[MY] 儿童长高方程式 | Family and Relationships | F&R 赢家 | 1-4-4",
+  "source_adset_id": "120247917148640575",
+  "regulation_source_adset_id": "120247917148640575",
+  "also_exclude": [
+    "120248429743500575"
+  ],
+  "adsets": [
+    {
+      "name": "Family and Relationships",
+      "budget_myr": 50,
+      "ads": [
+        {
+          "name": "Video 1：孩子如果有鼻窦炎",
+          "post_id": "341825319024143_122175862454485585"
+        }
+      ]
+    },
+    {
+      "name": "Family and Relationships",
+      "budget_myr": 50,
+      "ads": [
+        {
+          "name": "Video：H2 面包牛奶一点都不健康",
+          "post_id": "341825319024143_122191208630485585"
+        }
+      ]
+    },
+    {
+      "name": "Family and Relationships",
+      "budget_myr": 50,
+      "ads": [
+        {
+          "name": "Extra Video 1 - 鼻子敏感",
+          "post_id": "341825319024143_122120353700485585"
+        }
+      ]
+    },
+    {
+      "name": "Family and Relationships",
+      "budget_myr": 50,
+      "ads": [
+        {
+          "name": "Hook 4：保健品叫你丢掉",
+          "post_id": "341825319024143_122197275662485585"
+        }
+      ]
+    }
+  ],
+  "_note": "2026-10-05 operator: '先建 F&R 的组，paused' after the audience review (Paid Student List UTMs x Meta spend): F&R is the best-selling MY audience (sales 120/60/30d = 13/7/3, 60d CPA ~2,550, best of any audience with volume) and nothing F&R was running. The 7 F&R sales in 60 days came from 4 creatives; each ad here uses the exact page post that sold in F&R: Video 1 鼻窦炎 (creative 1313038780758717 in F&R Top5 赢家, 3 sales; post CTA is WhatsApp as originally built), H2 面包牛奶 (creative 2904644519883869 in F&R Top5 赢家, 2 sales; this is the '· Hook' post, not the Food & Drink copy's post 122192839352485585), Extra Video 1 鼻子敏感 (F&R Top10 1-4-1, 1 sale), Hook 4 保健品 (creative 2520118428427946 in F&R Sept 15 新片, 1 sale). 1-4-4 ABO: 4 ad sets x 1 existing-post ad, RM50/day each (operator's Top10 RM50 method), budget sharing off. Targeting cloned from the F&R Top5 赢家 ad set 120247917148640575 (its Aug run was the only ad set under the RM960 CPA line in 4 months); the 16 AUG buyer list is added to its exclusions; Malaysia declaration copied from the same ad set. Ad sets named after the targeting (operator rule 2026-09-03). Built PAUSED, operator activates."
+}
