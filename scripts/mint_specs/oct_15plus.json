@@ -1,0 +1,32 @@
+{
+  "videos": [
+    {
+      "key": "v3",
+      "drive_file_id": "1bxTj0aAGJMFET8Cf6pyMNwKHRD8pEVN1",
+      "video_name": "Martin SGMY Video 3#.mp4",
+      "content_id": "my_oct_v3_15_not_too_late",
+      "ad_name": "Video 3：15岁后就不能长高了？",
+      "headline": "🔴 孩子 15 岁了，还有机会长高吗？",
+      "body_file": "scripts/mint_specs/oct_15plus.body_v3.txt"
+    },
+    {
+      "key": "h2",
+      "drive_file_id": "15fdYmnrv7NUNOfS3u2MYZSe33EhIcXsQ",
+      "video_name": "Martin SGMY H2#.mp4",
+      "content_id": "my_oct_h2_secondary_school",
+      "ad_name": "Hook 2：上了中学却没有长高？",
+      "headline": "🔴 上了中学还是小六的身高？黄金期快结束了",
+      "body_file": "scripts/mint_specs/oct_15plus.body_h2.txt"
+    },
+    {
+      "key": "h3",
+      "drive_file_id": "1d3Zaydl3nDQPuzdOlgEC2tDnqC82Ynm_",
+      "video_name": "Martin SGMY H3#.mp4",
+      "content_id": "my_oct_h3_16yo_2cm",
+      "ad_name": "Hook 3：16岁还长高",
+      "headline": "🔴 16 岁 3 个月长高 2cm，关键是找对卡点",
+      "body_file": "scripts/mint_specs/oct_15plus.body_h3.txt"
+    }
+  ],
+  "_note": "2026-10-05 operator: three new SGMY videos for 14-17 year olds (scripts supplied in chat). Video 3 '15歲後就不能長高了？' is the full video; Hook 2 '上了中學卻沒有長高？' and Hook 3 '16歲還長高' are new openers that cut into Video 3's scenes, so all three share one body and only the opening 3 lines differ. Copy: 马丁医师 (never 药师), 10,000+ 位孩子, MY landing + url_tags from config, CTA LEARN_MORE. Copy approved (铸, 2026-10-05 MYT). Mint only: nothing built. Suggested next: one ad set 1-3-3 hook test, since the three share a body and would otherwise compete."
+}
