@@ -70,5 +70,6 @@
       "1430295252376936"
     ],
     "_verified": "2026-10-05: campaign + 4 ad sets PAUSED, RM50/day each (ABO); F&R targeting incl. 15-day registrants + 13 APR + 16 AUG excluded; each creative points at its F&R-selling post (V1 CTA WhatsApp as the original). Ads were PENDING_REVIEW / IN_PROCESS at read-back."
-  }
+  },
+  "_status": "2026-10-05: built on a misreading. The operator wanted the 3 new videos in F&R (see oct_15plus_fnr_1_3_3.json), not these 4. Left PAUSED and never spent; delete only on the operator's word."
 }
