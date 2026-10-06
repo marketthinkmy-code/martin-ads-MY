@@ -1,0 +1,21 @@
+{
+  "campaign_name": "[MY] 儿童长高方程式 | Parents 3-17 + Engaged | 新马线下课 | 1-1-2",
+  "adset_name": "Parents 3-17 + Engaged",
+  "budget_myr": 50,
+  "source_adset_id": "120248670491000575",
+  "regulation_source_adset_id": "120247917148640575",
+  "also_exclude": [
+    "120248429743500575"
+  ],
+  "ads": [
+    {
+      "name": "Video 1：KL&SG 线下见面",
+      "post_id": "341825319024143_122199534104485585"
+    },
+    {
+      "name": "Video 2：长高了17cm",
+      "post_id": "341825319024143_122199534206485585"
+    }
+  ],
+  "_note": "2026-10-06 operator: '我想要你跑新的 campaign，1-1-2，ad set 跟回，cbo RM50' + '也可以建多一个，for parents 3-17 + engaged'. The two new SGMY videos (Video 1 KL&SG 线下见面, Video 2 长高了17cm; mint_specs/oct_sgmy_v1v2.json) as existing-post ads in ONE ad set, campaign budget RM50/day (CBO, operator's explicit choice), so Meta splits delivery between the two ads. 16 AUG buyer list excluded on top of the source's exclusions; Malaysia declaration copied from 120247917148640575. Ad set named after its targeting (operator rule 2026-09-03). Built PAUSED, operator activates. Second copy for Parents 3-17 + Engaged; targeting cloned from 120248670491000575 (same source as the 15岁以上新片 Parents build)."
+}
