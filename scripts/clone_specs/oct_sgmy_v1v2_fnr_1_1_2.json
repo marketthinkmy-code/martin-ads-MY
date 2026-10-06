@@ -17,5 +17,21 @@
       "post_id": "341825319024143_122199534206485585"
     }
   ],
-  "_note": "2026-10-06 operator: '我想要你跑新的 campaign，1-1-2，ad set 跟回，cbo RM50' + '也可以建多一个，for parents 3-17 + engaged'. The two new SGMY videos (Video 1 KL&SG 线下见面, Video 2 长高了17cm; mint_specs/oct_sgmy_v1v2.json) as existing-post ads in ONE ad set, campaign budget RM50/day (CBO, operator's explicit choice), so Meta splits delivery between the two ads. 16 AUG buyer list excluded on top of the source's exclusions; Malaysia declaration copied from 120247917148640575. Ad set named after its targeting (operator rule 2026-09-03). Built PAUSED, operator activates. 'ad set 跟回' = F&R, the targeting the operator chose for the previous new videos; cloned from the F&R Top5 赢家 ad set 120247917148640575."
+  "_note": "2026-10-06 operator: '我想要你跑新的 campaign，1-1-2，ad set 跟回，cbo RM50' + '也可以建多一个，for parents 3-17 + engaged'. The two new SGMY videos (Video 1 KL&SG 线下见面, Video 2 长高了17cm; mint_specs/oct_sgmy_v1v2.json) as existing-post ads in ONE ad set, campaign budget RM50/day (CBO, operator's explicit choice), so Meta splits delivery between the two ads. 16 AUG buyer list excluded on top of the source's exclusions; Malaysia declaration copied from 120247917148640575. Ad set named after its targeting (operator rule 2026-09-03). Built PAUSED, operator activates. 'ad set 跟回' = F&R, the targeting the operator chose for the previous new videos; cloned from the F&R Top5 赢家 ad set 120247917148640575.",
+  "_built": {
+    "run": "37437802338",
+    "campaign_id": "120249261626340575",
+    "adset_ids": [
+      "120249261626590575"
+    ],
+    "ad_ids": [
+      "120249261628020575",
+      "120249261629030575"
+    ],
+    "creative_ids": [
+      "1781999739383346",
+      "1648549063564557"
+    ],
+    "_verified": "2026-10-06: campaign PAUSED with CBO RM50/day, ad set PAUSED, both ads IN_PROCESS (Meta review) at read-back."
+  }
 }
