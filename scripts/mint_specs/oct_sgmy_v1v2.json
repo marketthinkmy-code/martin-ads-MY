@@ -1,0 +1,23 @@
+{
+  "videos": [
+    {
+      "key": "v1",
+      "drive_file_id": "1KH_aegPvsnsMsWMIgz-28GyUrbNR7-t6",
+      "video_name": "Martin SGMY Video 1#.mp4",
+      "content_id": "my_oct_v1_klsg_meetup",
+      "ad_name": "Video 1：KL&SG 线下见面",
+      "headline": "🔴 新马线下见面会：上过课的孩子，真的长高了",
+      "body_file": "scripts/mint_specs/oct_sgmy_v1v2.body_v1.txt"
+    },
+    {
+      "key": "v2",
+      "drive_file_id": "13AgbS43PH9du1kKl77nLvcdgbxXKbIBN",
+      "video_name": "Martin SGMY Video 2#.mp4",
+      "content_id": "my_oct_v2_grew_17cm",
+      "ad_name": "Video 2：长高了17cm",
+      "headline": "🔴 长高了 17cm！不靠保健品，也不吃药",
+      "body_file": "scripts/mint_specs/oct_sgmy_v1v2.body_v2.txt"
+    }
+  ],
+  "_note": "2026-10-06 operator: two new SGMY videos (scripts supplied in chat): Video 1 KL&SG 線下見面 (offline meetups; 8/14/17cm, avg 8cm; skin/eczema/nose improvements; find where the child is stuck) and Video 2 長高了17cm (top 3 = 17/15/14cm, avg +8.8cm; natural, no supplements or medicine; diet/exercise/sleep). Drive: 1KH_ae... = Video 1#, 13AgbS... = Video 2#. Copy: 马丁医师 (never 药师), 10,000+ 位孩子, 5–17 岁, MY landing + url_tags from config, CTA LEARN_MORE; operator asked for every 公分 to read cm. Copy approved ('可以建了', 2026-10-06). The two videos quote different averages (8 vs 8.8cm); each ad follows its own video. Next: 1-1-2 CBO RM50 in F&R + a second 1-1-2 CBO RM50 in Parents 3-17 + Engaged, PAUSED."
+}
