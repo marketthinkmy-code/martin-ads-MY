@@ -1,0 +1,37 @@
+{
+  "campaign_name": "[MY] 儿童长高方程式 | Parents 3-17 + Engaged | 新片5支重测 | 1-1-5 | OCT 8",
+  "adset_name": "Parents 3-17 + Engaged",
+  "budget_myr": 100,
+  "source_adset_id": "120248670491000575",
+  "regulation_source_adset_id": "120247917148640575",
+  "also_exclude": [
+    "120248429743500575"
+  ],
+  "ads": [
+    {
+      "name": "Video 3：15岁后就不能长高了？",
+      "post_id": "341825319024143_122199408818485585"
+    },
+    {
+      "name": "Hook 2：上了中学却没有长高？",
+      "post_id": "341825319024143_122199406766485585"
+    },
+    {
+      "name": "Hook 3：16岁还长高",
+      "post_id": "341825319024143_122199408812485585"
+    },
+    {
+      "name": "Video 4：看舌头就知道了",
+      "post_id": "341825319024143_122199728984485585"
+    },
+    {
+      "name": "Video 1：KL&SG 线下见面",
+      "post_id": "341825319024143_122199534104485585"
+    },
+    {
+      "name": "Video 2：长高了17cm",
+      "post_id": "341825319024143_122199534206485585"
+    }
+  ],
+  "_note": "2026-10-08 operator: '帮我根据 SG 的建法，也建在 MY' — mirror of the SG account's three '新片5支重测 | 1-1-5 | OCT 8' campaigns (act_1024930575770087, read 2026-10-08: CBO RM100/day, one ad set named after its targeting, six existing-post ads). Campaign name copied from the operator's example with SG -> MY (it says 1-1-5 although six ads run, exactly as in SG). Ads: the three 15岁以上 posts (shared with SG), the MY-copy posts of Video 1 / Video 2 (SG runs its own posts for those two), and the new Video 4 看舌头就知道了 on the post the operator gave (122199728984485585, minted on the SG side; the copy reads 马丁医师 / 10,000+ / lists 马来西亚, and the funnel is the shared as.dr-martin.com.tw landing — the Register list carries [SG] and [MY] UTMs side by side). 16 AUG buyer list excluded on top of the source's exclusions; Malaysia declaration copied from 120247917148640575. Built PAUSED, operator activates. Targeting cloned from 120248670491000575 (Parents 3-17 + Engaged, Top10 RM50 1-5-1)."
+}
