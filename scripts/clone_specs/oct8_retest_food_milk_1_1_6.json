@@ -33,5 +33,29 @@
       "post_id": "341825319024143_122199534206485585"
     }
   ],
-  "_note": "2026-10-08 operator: '帮我根据 SG 的建法，也建在 MY' — mirror of the SG account's three '新片5支重测 | 1-1-5 | OCT 8' campaigns (act_1024930575770087, read 2026-10-08: CBO RM100/day, one ad set named after its targeting, six existing-post ads). Campaign name copied from the operator's example with SG -> MY (it says 1-1-5 although six ads run, exactly as in SG). Ads: the three 15岁以上 posts (shared with SG), the MY-copy posts of Video 1 / Video 2 (SG runs its own posts for those two), and the new Video 4 看舌头就知道了 on the post the operator gave (122199728984485585, minted on the SG side; the copy reads 马丁医师 / 10,000+ / lists 马来西亚, and the funnel is the shared as.dr-martin.com.tw landing — the Register list carries [SG] and [MY] UTMs side by side). 16 AUG buyer list excluded on top of the source's exclusions; Malaysia declaration copied from 120247917148640575. Built PAUSED, operator activates. Targeting cloned from the Food & Drink + Milk + Bread Top10 ad set 120248670466640575 (the same source as the 马六甲 1-1-1)."
+  "_note": "2026-10-08 operator: '帮我根据 SG 的建法，也建在 MY' — mirror of the SG account's three '新片5支重测 | 1-1-5 | OCT 8' campaigns (act_1024930575770087, read 2026-10-08: CBO RM100/day, one ad set named after its targeting, six existing-post ads). Campaign name copied from the operator's example with SG -> MY (it says 1-1-5 although six ads run, exactly as in SG). Ads: the three 15岁以上 posts (shared with SG), the MY-copy posts of Video 1 / Video 2 (SG runs its own posts for those two), and the new Video 4 看舌头就知道了 on the post the operator gave (122199728984485585, minted on the SG side; the copy reads 马丁医师 / 10,000+ / lists 马来西亚, and the funnel is the shared as.dr-martin.com.tw landing — the Register list carries [SG] and [MY] UTMs side by side). 16 AUG buyer list excluded on top of the source's exclusions; Malaysia declaration copied from 120247917148640575. Built PAUSED, operator activates. Targeting cloned from the Food & Drink + Milk + Bread Top10 ad set 120248670466640575 (the same source as the 马六甲 1-1-1).",
+  "_built": {
+    "run": "37722960769",
+    "campaign_id": "120249299129210575",
+    "adset_ids": [
+      "120249299129440575"
+    ],
+    "ad_ids": [
+      "120249299130330575",
+      "120249299130740575",
+      "120249299131120575",
+      "120249299131720575",
+      "120249299132120575",
+      "120249299132710575"
+    ],
+    "creative_ids": [
+      "1641099217546469",
+      "1074753105531889",
+      "1658952658908991",
+      "1588875985580213",
+      "1781999739383346",
+      "1648549063564557"
+    ],
+    "_verified": "2026-10-08: campaign PAUSED, CBO RM100/day; ad set PAUSED; six ads PAUSED / PENDING_REVIEW at read-back. Video 4 creative 1588875985580213 points at post 341825319024143_122199728984485585 (title 🔴 看舌头，就知道孩子为什么长不高)."
+  }
 }
