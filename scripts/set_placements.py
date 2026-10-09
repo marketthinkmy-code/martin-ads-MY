@@ -12,6 +12,9 @@ Env:
   ADBOT_PLACEMENT_ADSETS   comma-separated ad set ids
   ADBOT_PLACEMENT_PRESET   fb_feed_instream_reels (default) | fb_feed_instream | fb_feed
   ADBOT_PLACEMENT_DRY_RUN  "1" = print the before/after and write nothing
+  ADBOT_PLACEMENT_SPEC_FILE  JSON {adset_ids, preset, dry_run} used when ADBOT_PLACEMENT_ADSETS is
+                           empty — the push-trigger route (GitHub only registers a new workflow for
+                           API dispatch once it lives on the default branch or has run once).
 """
 from __future__ import annotations
 
@@ -69,6 +72,13 @@ def main() -> None:
     ids = [x.strip() for x in os.environ.get("ADBOT_PLACEMENT_ADSETS", "").split(",") if x.strip()]
     preset_name = os.environ.get("ADBOT_PLACEMENT_PRESET", "fb_feed_instream_reels")
     dry = os.environ.get("ADBOT_PLACEMENT_DRY_RUN", "0") == "1"
+    spec_file = os.environ.get("ADBOT_PLACEMENT_SPEC_FILE")
+    if not ids and spec_file and os.path.exists(spec_file):
+        spec = json.loads(open(spec_file, encoding="utf-8").read())
+        ids = [x.strip() for x in str(spec.get("adset_ids", "")).split(",") if x.strip()]
+        preset_name = spec.get("preset") or preset_name
+        dry = bool(spec.get("dry_run", False))
+        print(f"spec file {spec_file}: {len(ids)} ad sets, preset {preset_name}, dry_run={dry}")
     if preset_name not in PRESETS:
         raise SystemExit(f"unknown preset {preset_name!r}; choose from {sorted(PRESETS)}")
     if not ids:

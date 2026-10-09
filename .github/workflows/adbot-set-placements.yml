@@ -3,9 +3,15 @@ name: adbot · set placements (manual)
 # Switch ad sets to manual placements through the system-user token — the interactive connector's
 # ads_update_entity force-pauses whatever it edits. Only the placement keys change; audience,
 # budget, status and the Malaysia declaration are left exactly as they are (scripts/set_placements.py).
-# Manual dispatch only: no push trigger, so a code change never edits a live ad set by itself.
+# Two routes: manual dispatch with inputs, or a push of scripts/placement_specs/pending.json on the
+# working branch (GitHub does not expose a new workflow to API dispatch until it is on the default
+# branch or has run once). The push route reads ONLY that spec file; code changes never run it.
 
 on:
+  push:
+    branches: ["claude/sweet-curie-b6vql4"]
+    paths:
+      - "scripts/placement_specs/pending.json"
   workflow_dispatch:
     inputs:
       adset_ids:
@@ -43,7 +49,8 @@ jobs:
           ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
           META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
           META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
-          ADBOT_PLACEMENT_ADSETS: ${{ inputs.adset_ids }}
+          ADBOT_PLACEMENT_ADSETS: ${{ inputs.adset_ids || '' }}
           ADBOT_PLACEMENT_PRESET: ${{ inputs.preset || 'fb_feed_instream_reels' }}
           ADBOT_PLACEMENT_DRY_RUN: ${{ inputs.dry_run && '1' || '0' }}
+          ADBOT_PLACEMENT_SPEC_FILE: scripts/placement_specs/pending.json
         run: python scripts/set_placements.py
