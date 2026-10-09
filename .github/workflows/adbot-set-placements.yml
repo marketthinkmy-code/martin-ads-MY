@@ -1,0 +1,49 @@
+name: adbot · set placements (manual)
+
+# Switch ad sets to manual placements through the system-user token — the interactive connector's
+# ads_update_entity force-pauses whatever it edits. Only the placement keys change; audience,
+# budget, status and the Malaysia declaration are left exactly as they are (scripts/set_placements.py).
+# Manual dispatch only: no push trigger, so a code change never edits a live ad set by itself.
+
+on:
+  workflow_dispatch:
+    inputs:
+      adset_ids:
+        description: "comma-separated ad set ids"
+        type: string
+        required: true
+      preset:
+        description: "fb_feed_instream_reels | fb_feed_instream | fb_feed"
+        type: string
+        required: false
+        default: "fb_feed_instream_reels"
+      dry_run:
+        description: "print before/after, write nothing"
+        type: boolean
+        required: false
+        default: false
+
+concurrency:
+  group: adbot-set-placements
+  cancel-in-progress: false
+
+jobs:
+  placements:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install .
+      - name: Set placements
+        env:
+          ADBOT_ROOT: ${{ github.workspace }}
+          ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
+          META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
+          META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
+          ADBOT_PLACEMENT_ADSETS: ${{ inputs.adset_ids }}
+          ADBOT_PLACEMENT_PRESET: ${{ inputs.preset || 'fb_feed_instream_reels' }}
+          ADBOT_PLACEMENT_DRY_RUN: ${{ inputs.dry_run && '1' || '0' }}
+        run: python scripts/set_placements.py
