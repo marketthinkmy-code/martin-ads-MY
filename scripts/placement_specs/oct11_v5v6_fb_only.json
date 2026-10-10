@@ -1,0 +1,11 @@
+{
+  "adset_ids": "120249343166480575,120249343166860575,120249343170210575,120249343170550575",
+  "preset": "fb_feed_instream_reels",
+  "dry_run": false,
+  "_note": "2026-10-10: the four 新片 V5+V6 OCT 11 ad sets (Parents x2, F&R x2) -> FB Feed + In-stream + Reels, same as the OCT 8 retest. Ad sets are PAUSED and scheduled for 2026-10-11 00:00 MYT; nothing else changes.",
+  "_applied": {
+    "run": "38051989580",
+    "job": "114212808310",
+    "verified": "2026-10-10: 4/4 ad sets -> facebook: feed, instream_video, facebook_reels; audience unchanged; RM50 each, PAUSED, scheduled 2026-10-11 00:00 MYT."
+  }
+}
