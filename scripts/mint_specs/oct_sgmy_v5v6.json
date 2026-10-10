@@ -19,5 +19,20 @@
       "body_file": "scripts/mint_specs/oct_sgmy_v5v6.body_v6.txt"
     }
   ],
-  "_note": "2026-10-10 operator: two new SGMY videos for 10+ year olds (scripts in chat). Video 5 Kaya 麵包配 Milo: the MY/SG breakfast staple as a dampness (湿气) / 脾胃 load for some constitutions - nose/skin sensitivity, poor appetite, temper - 'not telling you to quit bread, milk, Milo; read the child's constitution first'. Video 6 花了幾千塊: 10+ child, hundreds-thousands spent on milk powder / calcium / supplements, no change - 'more is not the fix; find out why first'. Drive: 1TnPS... = Video 5#, 1zP9t... = Video 6#. Copy: 马丁医师 (never 药师), 10,000+ 位孩子, fit line '10 岁以上' per the scripts (not the usual 5-17), MY landing + url_tags from config, CTA LEARN_MORE. Not minted yet: copy shown to the operator first. Plan: 1-2-2 ABO RM50/ad set in Parents 3-17 + Engaged and in F&R, FB Feed+In-stream+Reels only, start 2026-10-11 00:00 MYT."
+  "_note": "2026-10-10 operator: two new SGMY videos for 10+ year olds (scripts in chat). Video 5 Kaya 麵包配 Milo: the MY/SG breakfast staple as a dampness (湿气) / 脾胃 load for some constitutions - nose/skin sensitivity, poor appetite, temper - 'not telling you to quit bread, milk, Milo; read the child's constitution first'. Video 6 花了幾千塊: 10+ child, hundreds-thousands spent on milk powder / calcium / supplements, no change - 'more is not the fix; find out why first'. Drive: 1TnPS... = Video 5#, 1zP9t... = Video 6#. Copy: 马丁医师 (never 药师), 10,000+ 位孩子, fit line '10 岁以上' per the scripts (not the usual 5-17), MY landing + url_tags from config, CTA LEARN_MORE. Not minted yet: copy shown to the operator first. Plan: 1-2-2 ABO RM50/ad set in Parents 3-17 + Engaged and in F&R, FB Feed+In-stream+Reels only, start 2026-10-11 00:00 MYT. Copy approved (铸, 2026-10-10 MYT).",
+  "_minted": {
+    "run": "38051546946",
+    "v5": {
+      "ad_name": "Video 5：Kaya 面包配 Milo",
+      "video_id": "1507155971235692",
+      "creative_id": "1759528338436394",
+      "post_id": "341825319024143_122199998054485585"
+    },
+    "v6": {
+      "ad_name": "Video 6：花了几千块，孩子还是没长高？",
+      "video_id": "1133727159593992",
+      "creative_id": "1568489748360217",
+      "post_id": "341825319024143_122199998384485585"
+    }
+  }
 }

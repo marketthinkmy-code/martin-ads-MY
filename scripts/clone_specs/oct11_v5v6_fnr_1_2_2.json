@@ -1,0 +1,32 @@
+{
+  "campaign_name": "[MY] 儿童长高方程式 | Family and Relationships | 新片 V5+V6 | 1-2-2 | OCT 11",
+  "source_adset_id": "120247917148640575",
+  "regulation_source_adset_id": "120247917148640575",
+  "also_exclude": [
+    "120248429743500575"
+  ],
+  "start_time": "2026-10-11T00:00:00+0800",
+  "adsets": [
+    {
+      "name": "Interest: Family and Relationships",
+      "budget_myr": 50,
+      "ads": [
+        {
+          "name": "Video 5：Kaya 面包配 Milo",
+          "post_id": "341825319024143_122199998054485585"
+        }
+      ]
+    },
+    {
+      "name": "Interest: Family and Relationships",
+      "budget_myr": 50,
+      "ads": [
+        {
+          "name": "Video 6：花了几千块，孩子还是没长高？",
+          "post_id": "341825319024143_122199998384485585"
+        }
+      ]
+    }
+  ],
+  "_note": "2026-10-10 operator: two new videos (Video 5 Kaya 面包配 Milo, Video 6 花了几千块), '记得全部 schedule 11 oct 2026 00:00 跑'. 1-2-2 ABO: one ad set per ad so both get their own RM50/day (the OCT 8 retest showed 4 of 6 ads in a 6-ad CBO getting under RM20 in two days), budget sharing off, start_time 2026-10-11 00:00 MYT. 16 AUG buyer list excluded on top of the source's exclusions; Malaysia declaration copied from 120247917148640575. Ad sets named after the targeting. Built PAUSED; placements then set to FB Feed + In-stream + Reels with adbot-set-placements; the operator decides on activation before midnight. Targeting cloned from the F&R Top5 赢家 ad set 120247917148640575."
+}
