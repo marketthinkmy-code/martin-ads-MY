@@ -1,0 +1,51 @@
+{
+  "campaign_name": "[MY] 儿童长高方程式 | Parents 3-17 + Engaged | 老赢家回炉 | 1-4-4 | OCT 17",
+  "source_adset_id": "120248670491000575",
+  "regulation_source_adset_id": "120247917148640575",
+  "also_exclude": [
+    "120248429743500575"
+  ],
+  "adsets": [
+    {
+      "name": "Parents 3-17 + Engaged",
+      "budget_myr": 50,
+      "ads": [
+        {
+          "name": "Hook 18：13 141cm",
+          "post_id": "341825319024143_122200714280485585"
+        }
+      ]
+    },
+    {
+      "name": "Parents 3-17 + Engaged",
+      "budget_myr": 50,
+      "ads": [
+        {
+          "name": "MAR Video 5：林書豪story",
+          "post_id": "341825319024143_122200714286485585"
+        }
+      ]
+    },
+    {
+      "name": "Parents 3-17 + Engaged",
+      "budget_myr": 50,
+      "ads": [
+        {
+          "name": "MAY Video Hook 1: 10 个孩子会有 8 个",
+          "post_id": "341825319024143_122200714304485585"
+        }
+      ]
+    },
+    {
+      "name": "Parents 3-17 + Engaged",
+      "budget_myr": 50,
+      "ads": [
+        {
+          "name": "DEC HOOK 13：花了几千块买增高 supplement 给孩子吃？",
+          "post_id": "341825319024143_122200714322485585"
+        }
+      ]
+    }
+  ],
+  "_note": "2026-10-17 operator ('建', option 2): revive 4 dormant winners from re-minted posts (马丁医师 copy, scripts/mint_specs/oct17_revive.json). 1-4-4 ABO, one ad per ad set, RM50 each, targeting cloned from Parents 3-17 + Engaged (120248670491000575) like the OCT 11 V5+V6 build; 16 AUG buyer list excluded; Malaysia declaration from 120247917148640575. Built PAUSED, then FB Feed + In-stream + Reels via adbot-set-placements; operator activates."
+}
