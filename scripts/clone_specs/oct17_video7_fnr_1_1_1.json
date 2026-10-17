@@ -17,5 +17,15 @@
       ]
     }
   ],
-  "_note": "2026-10-17 operator '建 Video 7': Video 7 (CPA30 RM519, all 3 MY sales from Parents 3-17 + Engaged) was never really tested elsewhere — the Sept 1-5-5 CBO copies in F&R / Food got RM4-5. Same post (pools social proof), ABO RM50, built PAUSED, then FB Feed + In-stream + Reels; operator activates."
+  "_note": "2026-10-17 operator '建 Video 7': Video 7 (CPA30 RM519, all 3 MY sales from Parents 3-17 + Engaged) was never really tested elsewhere — the Sept 1-5-5 CBO copies in F&R / Food got RM4-5. Same post (pools social proof), ABO RM50, built PAUSED, then FB Feed + In-stream + Reels; operator activates.",
+  "_built": {
+    "campaign_id": "120249441013820575",
+    "adset_ids": [
+      "120249441014010575"
+    ],
+    "ad_ids": [
+      "120249441014560575"
+    ],
+    "note": "clone_test made a single-adset spec CBO at the RM100 default; campaign budget set to RM50 with adbot-set-budget"
+  }
 }
