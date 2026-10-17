@@ -1,6 +1,6 @@
 {
-  "adset_ids": "120249441014010575,120249441017780575",
+  "adset_ids": "",
   "preset": "fb_feed_instream_reels",
-  "dry_run": false,
-  "_note": "2026-10-17 Video 7 扩受众 F&R + Food (campaigns 120249441013820575, 120249441017580575): FB Feed + In-stream + Reels only, other ad settings unchanged."
+  "dry_run": true,
+  "_note": "Empty on purpose. Put ad set ids here (dry_run true first) and push WITHOUT [skip ci] to run adbot-set-placements; applied specs are archived beside this file."
 }
