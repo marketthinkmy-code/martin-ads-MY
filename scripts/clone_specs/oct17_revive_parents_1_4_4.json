@@ -47,5 +47,21 @@
       ]
     }
   ],
-  "_note": "2026-10-17 operator ('建', option 2): revive 4 dormant winners from re-minted posts (马丁医师 copy, scripts/mint_specs/oct17_revive.json). 1-4-4 ABO, one ad per ad set, RM50 each, targeting cloned from Parents 3-17 + Engaged (120248670491000575) like the OCT 11 V5+V6 build; 16 AUG buyer list excluded; Malaysia declaration from 120247917148640575. Built PAUSED, then FB Feed + In-stream + Reels via adbot-set-placements; operator activates."
+  "_note": "2026-10-17 operator ('建', option 2): revive 4 dormant winners from re-minted posts (马丁医师 copy, scripts/mint_specs/oct17_revive.json). 1-4-4 ABO, one ad per ad set, RM50 each, targeting cloned from Parents 3-17 + Engaged (120248670491000575) like the OCT 11 V5+V6 build; 16 AUG buyer list excluded; Malaysia declaration from 120247917148640575. Built PAUSED, then FB Feed + In-stream + Reels via adbot-set-placements; operator activates.",
+  "_built": {
+    "run": "38997388922",
+    "campaign_id": "120249440644020575",
+    "adset_ids": [
+      "120249440644190575",
+      "120249440644490575",
+      "120249440644990575",
+      "120249440645360575"
+    ],
+    "ad_ids": [
+      "120249440647960575",
+      "120249440648670575",
+      "120249440649090575",
+      "120249440649350575"
+    ]
+  }
 }
