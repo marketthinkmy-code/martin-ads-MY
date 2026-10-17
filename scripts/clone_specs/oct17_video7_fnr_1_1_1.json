@@ -1,0 +1,21 @@
+{
+  "regulation_source_adset_id": "120247917148640575",
+  "also_exclude": [
+    "120248429743500575"
+  ],
+  "campaign_name": "[MY] 儿童长高方程式 | Family and Relationships | Video 7 扩受众 | 1-1-1 | OCT 17",
+  "source_adset_id": "120247917148640575",
+  "adsets": [
+    {
+      "name": "Interest: Family and Relationships",
+      "budget_myr": 50,
+      "ads": [
+        {
+          "name": "Video 7：我13岁身高173",
+          "post_id": "341825319024143_122196834554485585"
+        }
+      ]
+    }
+  ],
+  "_note": "2026-10-17 operator '建 Video 7': Video 7 (CPA30 RM519, all 3 MY sales from Parents 3-17 + Engaged) was never really tested elsewhere — the Sept 1-5-5 CBO copies in F&R / Food got RM4-5. Same post (pools social proof), ABO RM50, built PAUSED, then FB Feed + In-stream + Reels; operator activates."
+}
