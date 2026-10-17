@@ -1,0 +1,13 @@
+{
+  "videos": [
+    {"key": "h18", "drive_file_id": "", "video_id": "1076863440597500", "video_name": "Hook 18 13 141cm", "content_id": "my_oct17_revive_h18",
+     "ad_name": "Hook 18：13 141cm", "headline": "🫵 别让孩子因为身材矮小而终身自卑 😭", "body_file": "scripts/mint_specs/oct17_revive.body_h18.txt"},
+    {"key": "lin", "drive_file_id": "", "video_id": "957572979939862", "video_name": "MAR Video 5 林書豪story", "content_id": "my_oct17_revive_lin",
+     "ad_name": "MAR Video 5：林書豪story", "headline": "🔴 想让孩子健康长高？我可以帮助你！", "body_file": "scripts/mint_specs/oct17_revive.body_lin.txt"},
+    {"key": "may1", "drive_file_id": "", "video_id": "1647815912603851", "video_name": "MAY Video Hook 1 10个孩子会有8个", "content_id": "my_oct17_revive_may1",
+     "ad_name": "MAY Video Hook 1: 10 个孩子会有 8 个", "headline": "🫵 别让孩子因为身材矮小而终身自卑 😭", "body_file": "scripts/mint_specs/oct17_revive.body_h18.txt"},
+    {"key": "dec13", "drive_file_id": "", "video_id": "496794476124482", "video_name": "DEC HOOK 13 花了几千块", "content_id": "my_oct17_revive_dec13",
+     "ad_name": "DEC HOOK 13：花了几千块买增高 supplement 给孩子吃？", "headline": "👨‍🏫 想让孩子健康长高？我可以帮助你！", "body_file": "scripts/mint_specs/oct17_revive.body_dec13.txt"}
+  ],
+  "_note": "2026-10-17 operator: revive 4 dormant winners (Hook 18 13岁141cm, MAR Video 5 林書豪story, MAY Hook 1 10个孩子会有8个, DEC Hook 13 花了几千块) as '老赢家回炉'. Old posts say 马丁药师 / 6000 名孩子, so the operator chose option 2: re-mint from the same library videos with the original copy, changed only 马丁药师->马丁医师 (incl. hashtags), 6000/6,000+ -> 10,000+ 位孩子, and two typos in DEC 13. MAY Hook 1's original text was unreadable; it shares Hook 18's headline, so it reuses Hook 18's body. Video ids come from the original creatives (627160417006999, 771036832509513, 777044531565485, 1797332344233948). Next: clone spec Parents 3-17 + Engaged 1-4-4 ABO RM50 each, FB Feed+In-stream+Reels, built PAUSED."
+}
