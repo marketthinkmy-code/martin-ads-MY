@@ -37,5 +37,20 @@
       ]
     }
   ],
-  "_note": "2026-10-19 operator ('铸'; 版位 Advantage+ Placement; headline 也要写): 3 under-tested videos re-minted (scripts/mint_specs/oct19_retest.json). 1-3-3 ABO RM50 each, targeting cloned from Parents 3-17 + Engaged (120248670491000575), 16 AUG buyer list excluded, Malaysia declaration from 120247917148640575. Placements left automatic (Advantage+) per operator. Built PAUSED; operator activates."
+  "_note": "2026-10-19 operator ('铸'; 版位 Advantage+ Placement; headline 也要写): 3 under-tested videos re-minted (scripts/mint_specs/oct19_retest.json). 1-3-3 ABO RM50 each, targeting cloned from Parents 3-17 + Engaged (120248670491000575), 16 AUG buyer list excluded, Malaysia declaration from 120247917148640575. Placements left automatic (Advantage+) per operator. Built PAUSED; operator activates.",
+  "_built": {
+    "run": "39216243508",
+    "campaign_id": "120249462359200575",
+    "adset_ids": [
+      "120249462359340575",
+      "120249462360000575",
+      "120249462360880575"
+    ],
+    "ad_ids": [
+      "120249462363090575",
+      "120249462364160575",
+      "120249462365740575"
+    ],
+    "placements": "automatic (Advantage+), verified"
+  }
 }
