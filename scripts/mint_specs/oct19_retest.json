@@ -1,0 +1,11 @@
+{
+  "videos": [
+    {"key": "sinus", "drive_file_id": "", "video_id": "1092740986690529", "video_name": "Hook Edit 08 鼻子敏感 Sinus", "content_id": "my_oct19_retest_sinus",
+     "ad_name": "Hook Edit 08：鼻子敏感 Sinus", "headline": "🔴 想让孩子健康长高？我可以帮助你！", "body_file": "scripts/mint_specs/oct19_retest.body_sinus.txt"},
+    {"key": "v2stuck", "drive_file_id": "", "video_id": "2227952418040243", "video_name": "Video 2 5-15岁身高卡着很久", "content_id": "my_oct19_retest_v2stuck",
+     "ad_name": "Video 2：如果你的孩子 5-15岁，身高却卡着很久了", "headline": "🔴 10,000+ 位孩子见证｜每年健康长高 6-8cm", "body_file": "scripts/mint_specs/oct19_retest.body_v2.txt"},
+    {"key": "calcium", "drive_file_id": "", "video_id": "1028884276150011", "video_name": "Video 补钙90%是错的", "content_id": "my_oct19_retest_calcium",
+     "ad_name": "Video：补钙90%是错的", "headline": "🔴 先看这个，再决定要不要给孩子补钙", "body_file": "scripts/mint_specs/oct19_retest.body_calcium.txt"}
+  ],
+  "_note": "2026-10-19 operator ('铸', headline 也要写): re-test 3 under-tested videos (Hook Edit 08 鼻子敏感 Sinus RM403/7 reg, Video 2 5-15岁卡着 RM183/3, 补钙90%是错的 RM126/3) from the same library videos (original creatives 946282424402140, 1022936057260391, 1688860248986010). Copy = original text with only 马丁药师->马丁医师, '台湾执照药师'->'来自台湾，同时拥有两个执照', 6000+/近7,000 -> 10,000+ 位孩子; Video 2 headline '近 7,000 个家庭见证' -> '10,000+ 位孩子见证'. Next: Parents 3-17 + Engaged 1-3-3 ABO RM50 each, Advantage+ placements (operator), built PAUSED."
+}
