@@ -1,0 +1,41 @@
+{
+  "campaign_name": "[MY] 儿童长高方程式 | Parents 3-17 + Engaged | 老片补测 | 1-3-3 | OCT 19",
+  "source_adset_id": "120248670491000575",
+  "regulation_source_adset_id": "120247917148640575",
+  "also_exclude": [
+    "120248429743500575"
+  ],
+  "adsets": [
+    {
+      "name": "Parents 3-17 + Engaged",
+      "budget_myr": 50,
+      "ads": [
+        {
+          "name": "Hook Edit 08：鼻子敏感 Sinus",
+          "post_id": "341825319024143_122200904804485585"
+        }
+      ]
+    },
+    {
+      "name": "Parents 3-17 + Engaged",
+      "budget_myr": 50,
+      "ads": [
+        {
+          "name": "Video 2：如果你的孩子 5-15岁，身高却卡着很久了",
+          "post_id": "341825319024143_122200904816485585"
+        }
+      ]
+    },
+    {
+      "name": "Parents 3-17 + Engaged",
+      "budget_myr": 50,
+      "ads": [
+        {
+          "name": "Video：补钙90%是错的",
+          "post_id": "341825319024143_122200904828485585"
+        }
+      ]
+    }
+  ],
+  "_note": "2026-10-19 operator ('铸'; 版位 Advantage+ Placement; headline 也要写): 3 under-tested videos re-minted (scripts/mint_specs/oct19_retest.json). 1-3-3 ABO RM50 each, targeting cloned from Parents 3-17 + Engaged (120248670491000575), 16 AUG buyer list excluded, Malaysia declaration from 120247917148640575. Placements left automatic (Advantage+) per operator. Built PAUSED; operator activates."
+}
