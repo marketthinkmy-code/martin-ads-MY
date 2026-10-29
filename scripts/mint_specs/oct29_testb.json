@@ -1,0 +1,25 @@
+{
+ "videos": [
+  {
+   "key": "lin_b",
+   "drive_file_id": "",
+   "video_id": "957572979939862",
+   "video_name": "MAR Video 5 林書豪story",
+   "content_id": "my_oct29_testb_lin",
+   "ad_name": "Test B · MAR Video 5：林書豪story",
+   "headline": "🔴 想让孩子健康长高？先看看这个方法适不适合你家",
+   "body_file": "scripts/mint_specs/oct29_testb.body.txt"
+  },
+  {
+   "key": "sinus_b",
+   "drive_file_id": "",
+   "video_id": "1092740986690529",
+   "video_name": "Hook Edit 08 鼻子敏感 Sinus",
+   "content_id": "my_oct29_testb_sinus",
+   "ad_name": "Test B · Hook Edit 08：鼻子敏感 Sinus",
+   "headline": "🔴 想让孩子健康长高？先看看这个方法适不适合你家",
+   "body_file": "scripts/mint_specs/oct29_testb.body.txt"
+  }
+ ],
+ "_note": "2026-10-29 operator ('建，但我会马上跑'): Test B of the 4-webinar plan — same videos as the live Control A (林書豪 120249440644490575, Sinus 120249462359340575), copy = problem + paid-solution awareness (自选付费成长计划 disclosed up front). Judged on New Lead CPA, not CPL. Next: Parents 3-17 + Engaged 1-2-2 ABO RM50 each, Advantage+ placements, built PAUSED; operator activates immediately."
+}
