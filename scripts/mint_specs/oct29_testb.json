@@ -21,5 +21,16 @@
    "body_file": "scripts/mint_specs/oct29_testb.body.txt"
   }
  ],
- "_note": "2026-10-29 operator ('建，但我会马上跑'): Test B of the 4-webinar plan — same videos as the live Control A (林書豪 120249440644490575, Sinus 120249462359340575), copy = problem + paid-solution awareness (自选付费成长计划 disclosed up front). Judged on New Lead CPA, not CPL. Next: Parents 3-17 + Engaged 1-2-2 ABO RM50 each, Advantage+ placements, built PAUSED; operator activates immediately."
+ "_note": "2026-10-29 operator ('建，但我会马上跑'): Test B of the 4-webinar plan — same videos as the live Control A (林書豪 120249440644490575, Sinus 120249462359340575), copy = problem + paid-solution awareness (自选付费成长计划 disclosed up front). Judged on New Lead CPA, not CPL. Next: Parents 3-17 + Engaged 1-2-2 ABO RM50 each, Advantage+ placements, built PAUSED; operator activates immediately.",
+ "_minted": {
+  "run": "40819234377",
+  "lin_b": {
+   "creative_id": "1122105706888356",
+   "post_id": "341825319024143_122201810492485585"
+  },
+  "sinus_b": {
+   "creative_id": "4117542291882529",
+   "post_id": "341825319024143_122201810504485585"
+  }
+ }
 }
