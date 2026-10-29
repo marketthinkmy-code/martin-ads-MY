@@ -9,6 +9,7 @@ Env:
 from __future__ import annotations
 
 import os
+import re
 
 from adbot.clients.sheets import SheetsClient
 from adbot.settings import load_settings
@@ -30,7 +31,11 @@ def main() -> None:
         header = values[hdr_i] if values else []
         rows = sum(1 for r in values[hdr_i + 1:] if any(c.strip() for c in r))
         print(f"\n[{title}] gid {gid} · header row {hdr_i + 1} · {rows} data rows")
-        print(f"    header: {header[:30]}")
+        # a tab with no header row starts with a person's row — never print that
+        if any("@" in c or len(re.sub(r"\D", "", c)) >= 8 for c in header):
+            print("    header: (first row looks like personal data, not a header — not printed)")
+        else:
+            print(f"    header: {header[:30]}")
     print("\nDONE (no writes, no data rows printed)")
 
 
