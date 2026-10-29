@@ -18,7 +18,8 @@ cost_per_attendee:         # gate 2 — what one parent who actually shows up co
 cpa:                       # gate 3 — what the ad finally earns (MY sales only)
   line_myr: 960            # keep / scale at or under
   stop_myr: 1200           # hard stop
-  roas_line: 2.0           # revenue / spend
+  roas_line: 2.0           # revenue / spend: at or above -> keep / scale even if CPA is over its line
+  roas_stop: 1.65          # operator's per-webinar ROAS target: CPA over hard stop AND ROAS under this -> 关
 
 sample:
   min_spend_myr: 300       # under this, or younger than min_days: 样本不足, no verdict

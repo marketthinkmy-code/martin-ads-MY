@@ -129,16 +129,17 @@ def load_attendance(sheets: SheetsClient, cfg: dict) -> Optional[Dict[str, List[
     return seen
 
 
-def verdict(ev: dict, spend, days, cpl, c_att, n_att, sales, cpa_v, life_cpa) -> str:
+def verdict(ev: dict, spend, days, cpl, c_att, n_att, sales, cpa_v, roas, life_cpa) -> str:
     smp, g1, g2, g3 = ev["sample"], ev["cpl"], ev["cost_per_attendee"], ev["cpa"]
     if spend < smp["min_spend_myr"] or (days is not None and days < smp["min_days"]):
         return "样本不足 · 继续"
     if sales:
-        if cpa_v <= g3["line_myr"]:
+        # revenue per sale varies (RM1,997 / RM2,591), so ROAS can clear an ad whose CPA reads high
+        if cpa_v <= g3["line_myr"] or (roas or 0) >= g3["roas_line"]:
             return "✅ 保留/加码"
-        if cpa_v <= g3["stop_myr"]:
-            return "观察 (CPA 超线未到硬顶)"
-        return "关 (CPA 超硬顶)"
+        if cpa_v > g3["stop_myr"] and (roas or 0) < g3["roas_stop"]:
+            return "关 (CPA 超硬顶 + ROAS 不达标)"
+        return "观察 (CPA 超线, ROAS 未达 2)"
     proven = life_cpa is not None and life_cpa <= g3["line_myr"]
     patience = smp["proven_patience_myr"] if proven else smp["zero_sale_patience_myr"]
     if spend >= patience:
@@ -166,7 +167,7 @@ def main() -> None:
     print(f"===== AD FUNNEL · MY · {since}..{today} ({days}d) =====")
     print(f"gates: CPL ≤ RM{ev['cpl']['line_myr']} (关 > {ev['cpl']['stop_myr']}) · "
           f"cost/attendee ≤ RM{ev['cost_per_attendee']['line_myr']} (关 > {ev['cost_per_attendee']['stop_myr']}) · "
-          f"CPA ≤ RM{ev['cpa']['line_myr']} (硬顶 {ev['cpa']['stop_myr']}) · ROAS ≥ {ev['cpa']['roas_line']}\n")
+          f"CPA ≤ RM{ev['cpa']['line_myr']} or ROAS ≥ {ev['cpa']['roas_line']} (关: CPA > {ev['cpa']['stop_myr']} and ROAS < {ev['cpa']['roas_stop']})\n")
 
     # ── Meta: window + lifetime spend, pooled per creative key ───────────────
     names: Dict[str, str] = {}
@@ -241,7 +242,7 @@ def main() -> None:
         roas = rev / spend if spend else None
         life_cpa = life_spend[k] / l_sales[k] if l_sales[k] and life_spend[k] else None
         age = (today - first_day[k]).days if k in first_day else None
-        v = verdict(ev, spend, age, cpl, c_att, n_att, sales, cpa_v, life_cpa)
+        v = verdict(ev, spend, age, cpl, c_att, n_att, sales, cpa_v, roas, life_cpa)
         rows.append((k in active, spend, k, leads, cpl, len(rr), n_att, c_att, sales, rev, cpa_v, roas,
                      l_sales[k], life_cpa, v))
         for name, val in (("spend", spend), ("leads", leads), ("regs", len(rr)), ("att", n_att or 0),
