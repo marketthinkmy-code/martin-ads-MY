@@ -27,5 +27,18 @@
       ]
     }
   ],
-  "_note": "2026-10-29 operator ('建，但我会马上跑。不等'): Test B (paid-solution awareness copy, scripts/mint_specs/oct29_testb.json) vs live Control A (林書豪 120249440644490575, Sinus 120249462359340575). Same videos, same Parents 3-17 + Engaged targeting cloned from 120248670491000575, 1-2-2 ABO RM50 each, Advantage+ placements. Judged on New Lead CPA. Built PAUSED; operator activates."
+  "_note": "2026-10-29 operator ('建，但我会马上跑。不等'): Test B (paid-solution awareness copy, scripts/mint_specs/oct29_testb.json) vs live Control A (林書豪 120249440644490575, Sinus 120249462359340575). Same videos, same Parents 3-17 + Engaged targeting cloned from 120248670491000575, 1-2-2 ABO RM50 each, Advantage+ placements. Judged on New Lead CPA. Built PAUSED; operator activates.",
+  "_built": {
+    "run": "40819341198",
+    "campaign_id": "120249619676040575",
+    "adset_ids": [
+      "120249619676490575",
+      "120249619676860575"
+    ],
+    "ad_ids": [
+      "120249619678060575",
+      "120249619682300575"
+    ],
+    "placements": "automatic (Advantage+)"
+  }
 }
