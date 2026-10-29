@@ -11,21 +11,22 @@ cpl:                       # gate 1 — is the registration cost sane?
   stop_myr: 120            # above this after min_spend -> 关 candidate (if no sale yet)
 
 cost_per_attendee:         # gate 2 — what one parent who actually shows up costs
-  line_myr: 135            # = CPA line 960 x 14% target attendee->purchase conversion
-  stop_myr: 170            # = CPA hard stop 1,200 x 14%
+  line_myr: 146            # = CPA max_acceptable 1,040 x 14% target attendee->purchase conversion
+  stop_myr: 182            # = CPA hard stop 1,300 x 14%
   min_attendees: 3         # below this many matched show-ups the gate is not applied
 
 cpa:                       # gate 3 — what the ad finally earns (MY sales only)
-  line_myr: 960            # keep / scale at or under
-  stop_myr: 1200           # hard stop
+  # operator's Martin MY bands (2026-10-29): target 740 · healthy_max 860 · max_acceptable 1,040 · hard_stop 1,300
+  line_myr: 1040           # keep at or under (max_acceptable)
+  stop_myr: 1300           # hard stop
   roas_line: 2.0           # revenue / spend: at or above -> keep / scale even if CPA is over its line
   roas_stop: 1.65          # operator's per-webinar ROAS target: CPA over hard stop AND ROAS under this -> 关
 
 sample:
   min_spend_myr: 300       # under this, or younger than min_days: 样本不足, no verdict
   min_days: 7
-  zero_sale_patience_myr: 1200   # spend with 0 MY sales before a 关 on CPA grounds
-  proven_patience_myr: 1800      # same, for a creative whose lifetime MY CPA <= cpa.line_myr
+  zero_sale_patience_myr: 1300   # spend with 0 MY sales before a 关 on CPA grounds (= hard stop)
+  proven_patience_myr: 1950      # same, for a creative whose lifetime MY CPA <= cpa.line_myr (1.5x)
 
 attendance:                # webinar show-up lists (Zoom / WebinarKit exports), joined on phone/email
   sheet_id: "1h9ikVAQiiso4UtF1ncMaRtWzqSGidUAOdF4oyLpY05Q"   # "Zoom ... Attendance Phone" — share with the SA

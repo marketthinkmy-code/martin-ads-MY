@@ -135,10 +135,10 @@ cpa:                                     # cost per real PAID acquisition (joins
   # (no scale, watch); max_acceptable..hard_stop Unhealthy (auto-paused once a full webinar +
   # settle cycle passes since its last sale with no new one); >hard_stop pauses outright once
   # matured.
-  target_myr: 720.00                     # primary target CPA (RM2,399 / 3.33x)
-  healthy_max_myr: 800.00                # end of healthy range (NOT an auto-pause line)
-  max_acceptable_myr: 960.00             # above here -> unhealthy: paused after a saleless full webinar cycle
-  hard_stop_myr: 1200.00                 # above here (with real sales, matured) -> auto-pause
+  target_myr: 740.00                     # primary target CPA (RM2,399 / 3.33x)
+  healthy_max_myr: 860.00                # end of healthy range (NOT an auto-pause line)
+  max_acceptable_myr: 1040.00             # above here -> unhealthy: paused after a saleless full webinar cycle
+  hard_stop_myr: 1300.00                 # above here (with real sales, matured) -> auto-pause
   conversion_days: 14                    # don't judge CPA / 'no sales' until this old
   min_spend_myr: 1000.00                 # need >= this spend before a CPA verdict is fair
 
