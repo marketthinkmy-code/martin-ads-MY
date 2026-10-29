@@ -1,0 +1,50 @@
+name: adbot · ad funnel · CPL → cost per attendee → CPA/ROAS (read-only)
+
+# Every MY ad judged Ad -> Lead -> Show-up -> Purchase -> Revenue with the gates in
+# config/evaluation.yaml. Aggregates only — phone/email are join keys, never printed.
+
+on:
+  workflow_dispatch:
+    inputs:
+      window:
+        description: "days of spend / registrations / sales to judge"
+        type: string
+        required: false
+        default: "60"
+      only_active:
+        description: "1 = list only ads ACTIVE now"
+        type: string
+        required: false
+        default: "0"
+  push:
+    branches: ["claude/sweet-curie-b6vql4"]
+    paths:
+      - ".github/workflows/adbot-ad-funnel.yml"
+      - "scripts/ad_funnel.py"
+      - "config/evaluation.yaml"
+
+concurrency:
+  group: adbot-ad-funnel
+  cancel-in-progress: false
+
+jobs:
+  funnel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install .
+      - name: Funnel per ad
+        env:
+          ADBOT_ROOT: ${{ github.workspace }}
+          ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
+          ADBOT_WINDOW: ${{ inputs.window || '60' }}
+          ADBOT_ONLY_ACTIVE: ${{ inputs.only_active || '0' }}
+          GOOGLE_SERVICE_ACCOUNT_JSON_B64: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON_B64 }}
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
+          META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
+        run: python scripts/ad_funnel.py

@@ -1,0 +1,31 @@
+# How every MY ad is judged (operator, 2026-10-29): not by CPL alone, but down the whole funnel
+#   Ad -> Lead -> Show-up -> Closing -> Purchase -> Revenue
+# in three gates, cheapest signal first. Read by scripts/ad_funnel.py.
+#
+# A short run with 0 sales is NOT proof an ad fails: a 0-sale verdict waits until the ad has spent
+# enough that one sale should have come (zero_sale_patience), and a creative with a proven lifetime
+# MY CPA gets more room (proven_patience) before it is called.
+
+cpl:                       # gate 1 — is the registration cost sane?
+  line_myr: 80             # operator's webinar target CPL
+  stop_myr: 120            # above this after min_spend -> 关 candidate (if no sale yet)
+
+cost_per_attendee:         # gate 2 — what one parent who actually shows up costs
+  line_myr: 135            # = CPA line 960 x 14% target attendee->purchase conversion
+  stop_myr: 170            # = CPA hard stop 1,200 x 14%
+  min_attendees: 3         # below this many matched show-ups the gate is not applied
+
+cpa:                       # gate 3 — what the ad finally earns (MY sales only)
+  line_myr: 960            # keep / scale at or under
+  stop_myr: 1200           # hard stop
+  roas_line: 2.0           # revenue / spend
+
+sample:
+  min_spend_myr: 300       # under this, or younger than min_days: 样本不足, no verdict
+  min_days: 7
+  zero_sale_patience_myr: 1200   # spend with 0 MY sales before a 关 on CPA grounds
+  proven_patience_myr: 1800      # same, for a creative whose lifetime MY CPA <= cpa.line_myr
+
+attendance:                # webinar show-up lists (Zoom / WebinarKit exports), joined on phone/email
+  sheet_id: "1h9ikVAQiiso4UtF1ncMaRtWzqSGidUAOdF4oyLpY05Q"   # "Zoom ... Attendance Phone" — share with the SA
+  tabs: []                 # empty = every tab
