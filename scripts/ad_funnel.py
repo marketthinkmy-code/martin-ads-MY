@@ -221,7 +221,7 @@ def main() -> None:
             continue
         k = cpa.ad_key(x.ad)
         l_sales[k] += 1
-        if x.date and x.date >= since:
+        if x.date and since <= x.date <= today:      # a future-dated row is a typo, not a sale
             w_sales[k] += 1
             w_rev[k] += x.amount
 
