@@ -1,0 +1,42 @@
+name: adbot · Register rows per day (read-only)
+
+# Counts of Register-tab rows per created date by UTM market, to compare with Meta's pixel count.
+
+on:
+  workflow_dispatch:
+    inputs:
+      days:
+        description: "look back this many days"
+        type: string
+        required: false
+        default: "14"
+  push:
+    branches: ["claude/sweet-curie-b6vql4"]
+    paths:
+      - ".github/workflows/adbot-register-daily.yml"
+      - "scripts/register_daily.py"
+
+concurrency:
+  group: adbot-register-daily
+  cancel-in-progress: false
+
+jobs:
+  recent:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install .
+      - name: Rows per day
+        env:
+          ADBOT_ROOT: ${{ github.workspace }}
+          ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
+          ADBOT_DAYS: ${{ inputs.days || '14' }}
+          GOOGLE_SERVICE_ACCOUNT_JSON_B64: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON_B64 }}
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
+          META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
+        run: python scripts/register_daily.py
