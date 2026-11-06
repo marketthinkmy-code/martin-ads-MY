@@ -25,8 +25,16 @@ Date rules (operator, final, 2026-11-06):
   * A registrant with no survey yet is Pending — never Low Quality (D).
   * MY and SG are never mixed (budgets, currency, rows).
 
+  * Eligible vs Pre-launch: only parents who registered on/after the survey launch date are eligible
+    for the new survey; earlier registrants are "Pre-launch / Not Invited" and stay out of every
+    completion / qualified-rate denominator. An eligible parent with no answers yet is Eligible Pending.
+  * Missing UTM on a surveyed row is reported as a fact, never as a tracking error: the check that
+    matters is whether parents who registered WITH a real MY ad UTM still carry J/K/L after the survey.
+  * Thin samples read WATCH / INSUFFICIENT DATA — the audit never recommends REDUCE or PAUSE.
+
 Env:
-  ADBOT_SINCE   first registration date to analyse (default: first date with a scored row)
+  ADBOT_SINCE          first registration date to analyse (default: survey launch date)
+  ADBOT_SURVEY_LAUNCH  survey launch date (default: first registration date carrying any survey answer)
 """
 from __future__ import annotations
 
@@ -84,6 +92,12 @@ def market_tag(camp: str) -> str:
     if "[my]" in c or "martin-my" in c:
         return "MY-tag"
     return "other"
+
+
+MIN_ELIGIBLE = 20   # per campaign / ad: fewer eligible registrations -> INSUFFICIENT DATA
+MIN_SCORED = 10     # per campaign / ad: fewer scored leads -> INSUFFICIENT DATA
+CPQL_MIN_SCORED = 30     # account-wide scored MY leads before CPQL is meaningful
+CPQL_MIN_UTM_CHECK = 5   # surveyed MY rows with a real ad UTM needed to confirm UTMs survive the survey
 
 
 def pct(a, b) -> str:
@@ -160,7 +174,12 @@ def main() -> None:
     print(f"rows with a GHL score (U), all markets: {sum(scored_dates.values())} · "
           f"with any survey answer (P–T): {sum(1 for x in recs if x['surveyed'])}")
     print("  scored rows per registration date: " + ", ".join(f"{d:%m-%d} {n}" for d, n in sorted(scored_dates.items())))
-    since = dt.date.fromisoformat(os.environ["ADBOT_SINCE"]) if os.environ.get("ADBOT_SINCE") else first
+    surveyed_dates = [x["date"] for x in recs if x["surveyed"]]
+    launch = (dt.date.fromisoformat(os.environ["ADBOT_SURVEY_LAUNCH"]) if os.environ.get("ADBOT_SURVEY_LAUNCH")
+              else (min(surveyed_dates) if surveyed_dates else None))
+    print(f"survey launch date used: {launch} "
+          f"({'set by ADBOT_SURVEY_LAUNCH' if os.environ.get('ADBOT_SURVEY_LAUNCH') else 'first registration date carrying any answer — confirm with the team'})")
+    since = dt.date.fromisoformat(os.environ["ADBOT_SINCE"]) if os.environ.get("ADBOT_SINCE") else (launch or first)
     today = (dt.datetime.utcnow() + dt.timedelta(hours=8)).date()
     print(f"excluded internal tests: {tests} {dict(test_by)} · undated rows: {undated}")
     print(f"first registration date with a GHL score: {first} → analysis window {since}..{today}\n")
@@ -169,6 +188,8 @@ def main() -> None:
         print(f"NO GHL survey answers or scores in P–U — score sections skipped; registration and "
               f"attribution audited for {since}..{today}\n")
     win = [x for x in recs if x["date"] >= since]
+    for x in win:
+        x["eligible"] = bool(launch) and x["date"] >= launch
 
     # ── A. by market + daily cohort ────────────────────────────────────────────
     print("--- A. registrations in window by market (MY = campaign verified in the MY ad account) ---")
@@ -178,11 +199,14 @@ def main() -> None:
         print(f"  {k:<7} regs {len(sub):>5} · survey any {sum(x['surveyed'] for x in sub):>4} · all 5 answered "
               f"{sum(x['complete'] for x in sub):>4} · score present {sum(x['score'] is not None for x in sub):>4}")
     my = [x for x in win if x["mk"] == "MY"]
-    print("\n  MY daily cohort by registration date (G) — every rate ÷ that cohort's valid registrations:")
+    pre = [x for x in win if x["mk"] == "MY" and not x["eligible"]]
+    print(f"\n  MY Pre-launch / Not Invited (registered before {launch}): {len(pre)} — excluded from every rate")
+    print("  MY daily cohort by registration date (G), eligible registrants only — rates ÷ eligible regs:")
     print(f"  {'date':<11} {'regs':>5} {'done':>5} {'compl%':>6} {'scored':>6} {'≥70':>4} {'QL%':>5} {'pending':>7}")
     byd = defaultdict(list)
     for x in my:
-        byd[x["date"]].append(x)
+        if x["eligible"]:
+            byd[x["date"]].append(x)
     for d in sorted(byd):
         L = byd[d]
         done = sum(x["complete"] for x in L)
@@ -198,14 +222,16 @@ def main() -> None:
 
     has_scores = any(x["score"] is not None for x in my)
     # ── B. distribution ────────────────────────────────────────────────────────
+    my_all = my
+    my = [x for x in my if x["eligible"]]
     sc_my = [x for x in my if x["score"] is not None]
     pending = [x for x in my if x["score"] is None]
-    print(f"\n--- B. MY score distribution (valid regs {len(my)} · scored {len(sc_my)} · Pending {len(pending)}) ---")
-    print("  (Pending = no score yet — not Low Quality; % of valid regs, then % of scored)")
+    print(f"\n--- B. MY score distribution (eligible regs {len(my)} · scored {len(sc_my)} · Eligible Pending {len(pending)}) ---")
+    print("  (Eligible Pending = registered after launch, no score yet — not Low Quality; % of eligible regs, then % of scored)")
     gc = Counter(grade(x["score"]) for x in sc_my)
     for gname in "ABCD":
         print(f"  {gname}:       {gc[gname]:>4}  {pct(gc[gname], len(my)):>5}  {pct(gc[gname], len(sc_my)):>5}")
-    print(f"  Pending: {len(pending):>4}  {pct(len(pending), len(my)):>5}")
+    print(f"  Pending: {len(pending):>4}  {pct(len(pending), len(my)):>5}   (+ {len(pre)} pre-launch, not counted)")
     hs = [x for x in sc_my if x["score"] >= 70]
     core = [x for x in hs if (x["q2"] or 0) >= 20 and (x["q5"] or 0) >= 16]
     print(f"  High Score / Qualified (≥70): {len(hs)} · Qualified Lead Rate {pct(len(hs), len(my))} of valid regs")
@@ -225,6 +251,11 @@ def main() -> None:
         print(f"    {q} answers matching no known option: {unk}")
 
     # ── C/D. by campaign / ad set / ad with spend ──────────────────────────────
+    try:
+        cur = g.get_object(s.meta.account_path, "currency,name").get("currency")
+    except Exception as exc:  # noqa: BLE001
+        cur = f"? ({str(exc)[:60]})"
+    print(f"\nMeta spend currency — MY account {s.meta.account_path}: {cur} (all spend figures below are in it; SG never mixed)")
     spend = defaultdict(float)
     for r in g.account_insights(s.meta.account_path, level="ad",
                                 fields="campaign_name,adset_name,ad_name,spend",
@@ -237,7 +268,7 @@ def main() -> None:
         for x in my:
             grp[keyf(x)].append(x)
         print(f"\n--- {title} ---")
-        print(f"  {'regs':>4} {'pend':>4} {'scored':>6} {'avg':>5} {'A':>3} {'B':>3} {'C':>3} {'D':>3} {'QL':>3} {'QL%':>4} {'ICP':>3} {'ICP%':>4} {'spend':>7} {'CPQL':>6} {'RM/ICP':>6}  {label}")
+        print(f"  {'status':<17} {'regs':>4} {'pend':>4} {'scored':>6} {'avg':>5} {'A':>3} {'B':>3} {'C':>3} {'D':>3} {'QL':>3} {'QL%':>4} {'ICP':>3} {'ICP%':>4} {'spend':>7} {'CPQL':>6} {'RM/ICP':>6}  {label}")
         for k, L in sorted(grp.items(), key=lambda kv: -len(kv[1])):
             S = [x for x in L if x["score"] is not None]
             gcn = Counter(grade(x["score"]) for x in S)
@@ -248,7 +279,9 @@ def main() -> None:
             avg = f"{mean(x['score'] for x in S):.0f}" if S else "—"
             rhs = f"{sp / len(h):,.0f}" if sp and h else "—"
             ric = f"{sp / len(c):,.0f}" if sp and c else "—"
-            print(f"  {len(L):>4} {len(L) - len(S):>4} {len(S):>6} {avg:>5} {gcn['A']:>3} {gcn['B']:>3} {gcn['C']:>3} {gcn['D']:>3} "
+            st = ("INSUFFICIENT DATA" if len(L) < MIN_ELIGIBLE or len(S) < MIN_SCORED
+                  else "WATCH" if not h else "OK")
+            print(f"  {st:<17} {len(L):>4} {len(L) - len(S):>4} {len(S):>6} {avg:>5} {gcn['A']:>3} {gcn['B']:>3} {gcn['C']:>3} {gcn['D']:>3} "
                   f"{len(h):>3} {pct(len(h), len(L)):>4} {len(c):>3} {pct(len(c), len(L)):>4} "
                   f"{(f'{sp:,.0f}' if sp is not None else '—'):>7} {rhs:>6} {ric:>6}  {' · '.join(k)[:110]}")
 
@@ -274,6 +307,27 @@ def main() -> None:
     my_noad = sum(1 for x in my if not x["ad"])
     my_noadset = sum(1 for x in my if not x["adset"])
     print(f"  MY rows missing ad set (K): {my_noadset} · missing ad name (L): {my_noad}")
+    # ── UTM retention after the survey (rows that registered WITH a real MY ad UTM) ──
+    srv = [x for x in my_all if x["surveyed"]]
+    keep = [x for x in srv if x["camp"] and x["adset"] and x["ad"]]
+    print(f"\n--- UTM retention: MY-UTM registrants who answered the survey: {len(srv)} · still carry "
+          f"campaign + ad set + ad: {len(keep)} ---")
+    nou = [x for x in win if x["mk"] == "no-UTM" and x["surveyed"]]
+    print(f"  surveyed rows with no UTM: {len(nou)} — reported as a fact; they may simply be non-ad / "
+          f"group sign-ups. Not evidence that the survey drops UTMs.")
+
+    # ── CPQL readiness ─────────────────────────────────────────────────────────
+    checks = [
+        ("survey launch date known", bool(launch)),
+        (f"≥{CPQL_MIN_SCORED} scored eligible MY leads (have {len(sc_my)})", len(sc_my) >= CPQL_MIN_SCORED),
+        (f"≥{CPQL_MIN_UTM_CHECK} surveyed MY-UTM rows confirm UTMs survive (have {len(srv)}, kept {len(keep)})",
+         len(srv) >= CPQL_MIN_UTM_CHECK and len(keep) == len(srv)),
+        (f"spend currency confirmed ({cur})", isinstance(cur, str) and len(cur) == 3),
+    ]
+    print("\n--- CPQL readiness ---")
+    for label, ok in checks:
+        print(f"  [{'x' if ok else ' '}] {label}")
+    print(f"  => {'READY for CPQL analysis' if all(ok for _, ok in checks) else 'NOT READY — WATCH / INSUFFICIENT DATA; no REDUCE / PAUSE from this audit'}")
     print("\nDONE (read-only · aggregates only)")
 
 
