@@ -16,7 +16,7 @@ PRIVACY: name / e-mail / phone cells are read only to spot test rows. Output is 
 survey answer categories (multiple-choice text) and Meta object names — never a person.
 
 Env:
-  ADBOT_SINCE   first registration date to analyse (default: first date with ≥5 scored rows)
+  ADBOT_SINCE   first registration date to analyse (default: first date with a scored row)
 """
 from __future__ import annotations
 
@@ -103,12 +103,19 @@ def main() -> None:
 
     cell = lambda r, k: (r[COL[k]] if COL[k] < len(r) else "").strip()
     recs, tests, undated = [], 0, 0
+    test_by = Counter()
     for r in rows:
         if not any(c.strip() for c in r):
             continue
-        blob = " ".join([*(r[i] for i in PII_COLS if i < len(r)), cell(r, "source")]).casefold()
-        if "test" in blob or "测试" in blob or "測試" in blob:
+        name = (r[0] if len(r) > 0 else "").casefold()
+        email = (r[2] if len(r) > 2 else "").casefold()
+        src = cell(r, "source").casefold()
+        hit = ("name" if re.search(r"\btest\b|测试|測試", name) else
+               "email" if re.match(r"test[\d._+-]*@|[^@]*\+test@", email) else
+               "source" if "test" in src else None)
+        if hit:
             tests += 1
+            test_by[hit] += 1
             continue
         d = cpa.parse_date(cell(r, "date"))
         if not d:
@@ -130,11 +137,14 @@ def main() -> None:
                      "q2": map_score(answers[1], Q2_MAP), "q5": map_score(answers[4], Q5_MAP)})
 
     scored_dates = Counter(x["date"] for x in recs if x["score"] is not None)
-    first = next((d for d in sorted(scored_dates) if scored_dates[d] >= 5), None)
+    first = min(scored_dates) if scored_dates else None
+    print(f"rows with a GHL score (U), all markets: {sum(scored_dates.values())} · "
+          f"with any survey answer (P–T): {sum(1 for x in recs if x['surveyed'])}")
+    print("  scored rows per registration date: " + ", ".join(f"{d:%m-%d} {n}" for d, n in sorted(scored_dates.items())))
     since = dt.date.fromisoformat(os.environ["ADBOT_SINCE"]) if os.environ.get("ADBOT_SINCE") else first
     today = (dt.datetime.utcnow() + dt.timedelta(hours=8)).date()
-    print(f"excluded internal tests: {tests} · undated rows: {undated}")
-    print(f"first registration date with ≥5 GHL scores: {first} → analysis window {since}..{today}\n")
+    print(f"excluded internal tests: {tests} {dict(test_by)} · undated rows: {undated}")
+    print(f"first registration date with a GHL score: {first} → analysis window {since}..{today}\n")
     if not since:
         print("no scored rows found — stop")
         return
