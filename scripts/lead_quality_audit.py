@@ -92,6 +92,15 @@ def main() -> None:
         h = header[i]
         print(f"  {letters[i]}: {h if safe_cat(h) else '(looks like data — not printed)'}")
     rows = values[1:]
+    # fill check: how many rows (last 14 days by column G) have each column A..Z filled — counts only
+    cutoff = (dt.datetime.utcnow() + dt.timedelta(hours=8)).date() - dt.timedelta(days=14)
+    recent = [r for r in rows if (lambda d: d and d >= cutoff)(cpa.parse_date(r[6] if len(r) > 6 else ""))]
+    width = max((len(r) for r in rows), default=0)
+    print(f"\nrows {len(rows)} · widest row {width} cols · rows dated in the last 14 days {len(recent)}")
+    print("  filled per column, last 14 days: " + "  ".join(
+        f"{letters[i]}={sum(1 for r in recent if i < len(r) and r[i].strip())}" for i in range(min(width, 26))))
+    print("  filled per column, all rows:     " + "  ".join(
+        f"{letters[i]}={sum(1 for r in rows if i < len(r) and r[i].strip())}" for i in range(min(width, 26))))
 
     # ── verified MY campaigns from the live MY ad account ──────────────────────
     g = graph_client(s)
