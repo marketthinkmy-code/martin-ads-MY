@@ -15,6 +15,16 @@ Q2 score ≥ 20 AND Q5 score ≥ 16, with Q2/Q5 scored from the raw answer text 
 PRIVACY: name / e-mail / phone cells are read only to spot test rows. Output is counts, averages,
 survey answer categories (multiple-choice text) and Meta object names — never a person.
 
+Date rules (operator, final, 2026-11-06):
+  * Every figure is dated by column G (registration date). There is no survey timestamp and none is
+    added: a parent who finishes the survey days later is counted in the original registration cohort,
+    with the score as it reads today.
+  * Survey Completion Rate = cohort parents with all of Q1–Q5 answered ÷ the cohort's valid registrations.
+  * Qualified Lead Rate   = cohort parents with Score ≥ 70 ÷ the cohort's valid registrations.
+  * CPQL = MY spend for the same campaign / ad scope and the same registration-date range ÷ qualified leads.
+  * A registrant with no survey yet is Pending — never Low Quality (D).
+  * MY and SG are never mixed (budgets, currency, rows).
+
 Env:
   ADBOT_SINCE   first registration date to analyse (default: first date with a scored row)
 """
@@ -168,15 +178,18 @@ def main() -> None:
         print(f"  {k:<7} regs {len(sub):>5} · survey any {sum(x['surveyed'] for x in sub):>4} · all 5 answered "
               f"{sum(x['complete'] for x in sub):>4} · score present {sum(x['score'] is not None for x in sub):>4}")
     my = [x for x in win if x["mk"] == "MY"]
-    print("\n  MY daily cohort (same registration date in numerator and denominator):")
-    print(f"  {'date':<11} {'regs':>5} {'survey':>6} {'rate':>5} {'score':>6} {'rate':>5}")
+    print("\n  MY daily cohort by registration date (G) — every rate ÷ that cohort's valid registrations:")
+    print(f"  {'date':<11} {'regs':>5} {'done':>5} {'compl%':>6} {'scored':>6} {'≥70':>4} {'QL%':>5} {'pending':>7}")
     byd = defaultdict(list)
     for x in my:
         byd[x["date"]].append(x)
     for d in sorted(byd):
         L = byd[d]
-        sv, sc = sum(x["surveyed"] for x in L), sum(x["score"] is not None for x in L)
-        print(f"  {d}  {len(L):>5} {sv:>6} {pct(sv, len(L)):>5} {sc:>6} {pct(sc, len(L)):>5}")
+        done = sum(x["complete"] for x in L)
+        sc = sum(x["score"] is not None for x in L)
+        ql = sum(1 for x in L if x["score"] is not None and x["score"] >= 70)
+        pend = sum(1 for x in L if x["score"] is None and not x["complete"])
+        print(f"  {d}  {len(L):>5} {done:>5} {pct(done, len(L)):>6} {sc:>6} {ql:>4} {pct(ql, len(L)):>5} {pend:>7}")
     miss = [x for x in my if x["surveyed"] and x["score"] is None]
     print(f"\n  MY rows with survey answers but NO score (U empty): {len(miss)}")
     print(f"  MY rows with a score but no survey answers: {sum(1 for x in my if not x['surveyed'] and x['score'] is not None)}")
@@ -186,14 +199,17 @@ def main() -> None:
     has_scores = any(x["score"] is not None for x in my)
     # ── B. distribution ────────────────────────────────────────────────────────
     sc_my = [x for x in my if x["score"] is not None]
-    print(f"\n--- B. MY score distribution (n={len(sc_my)} scored) ---")
+    pending = [x for x in my if x["score"] is None]
+    print(f"\n--- B. MY score distribution (valid regs {len(my)} · scored {len(sc_my)} · Pending {len(pending)}) ---")
+    print("  (Pending = no score yet — not Low Quality; % of valid regs, then % of scored)")
     gc = Counter(grade(x["score"]) for x in sc_my)
     for gname in "ABCD":
-        print(f"  {gname}: {gc[gname]:>4}  {pct(gc[gname], len(sc_my))}")
+        print(f"  {gname}:       {gc[gname]:>4}  {pct(gc[gname], len(my)):>5}  {pct(gc[gname], len(sc_my)):>5}")
+    print(f"  Pending: {len(pending):>4}  {pct(len(pending), len(my)):>5}")
     hs = [x for x in sc_my if x["score"] >= 70]
     core = [x for x in hs if (x["q2"] or 0) >= 20 and (x["q5"] or 0) >= 16]
-    print(f"  High Score (≥70): {len(hs)} ({pct(len(hs), len(sc_my))})")
-    print(f"  Core ICP (≥70 + Q2≥20 + Q5≥16 from raw answers): {len(core)} ({pct(len(core), len(sc_my))})")
+    print(f"  High Score / Qualified (≥70): {len(hs)} · Qualified Lead Rate {pct(len(hs), len(my))} of valid regs")
+    print(f"  Core ICP (≥70 + Q2≥20 + Q5≥16 from raw answers): {len(core)} ({pct(len(core), len(my))} of valid regs)")
     print(f"  ≥70 but NOT Core ICP: {len(hs) - len(core)}  (Q2<20: {sum(1 for x in hs if (x['q2'] or 0) < 20)} · "
           f"Q5<16: {sum(1 for x in hs if (x['q5'] or 0) < 16)})")
     if sc_my:
@@ -221,7 +237,7 @@ def main() -> None:
         for x in my:
             grp[keyf(x)].append(x)
         print(f"\n--- {title} ---")
-        print(f"  {'regs':>4} {'scored':>6} {'avg':>5} {'A':>3} {'B':>3} {'C':>3} {'D':>3} {'HS':>3} {'HS%':>4} {'ICP':>3} {'ICP%':>4} {'spend':>7} {'RM/HS':>6} {'RM/ICP':>6}  {label}")
+        print(f"  {'regs':>4} {'pend':>4} {'scored':>6} {'avg':>5} {'A':>3} {'B':>3} {'C':>3} {'D':>3} {'QL':>3} {'QL%':>4} {'ICP':>3} {'ICP%':>4} {'spend':>7} {'CPQL':>6} {'RM/ICP':>6}  {label}")
         for k, L in sorted(grp.items(), key=lambda kv: -len(kv[1])):
             S = [x for x in L if x["score"] is not None]
             gcn = Counter(grade(x["score"]) for x in S)
@@ -232,8 +248,8 @@ def main() -> None:
             avg = f"{mean(x['score'] for x in S):.0f}" if S else "—"
             rhs = f"{sp / len(h):,.0f}" if sp and h else "—"
             ric = f"{sp / len(c):,.0f}" if sp and c else "—"
-            print(f"  {len(L):>4} {len(S):>6} {avg:>5} {gcn['A']:>3} {gcn['B']:>3} {gcn['C']:>3} {gcn['D']:>3} "
-                  f"{len(h):>3} {pct(len(h), len(S)):>4} {len(c):>3} {pct(len(c), len(S)):>4} "
+            print(f"  {len(L):>4} {len(L) - len(S):>4} {len(S):>6} {avg:>5} {gcn['A']:>3} {gcn['B']:>3} {gcn['C']:>3} {gcn['D']:>3} "
+                  f"{len(h):>3} {pct(len(h), len(L)):>4} {len(c):>3} {pct(len(c), len(L)):>4} "
                   f"{(f'{sp:,.0f}' if sp is not None else '—'):>7} {rhs:>6} {ric:>6}  {' · '.join(k)[:110]}")
 
     table("C/D-1. by MY campaign", lambda x: (x["camp"],), "campaign")
