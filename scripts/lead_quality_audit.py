@@ -155,8 +155,9 @@ def main() -> None:
     print(f"excluded internal tests: {tests} {dict(test_by)} · undated rows: {undated}")
     print(f"first registration date with a GHL score: {first} → analysis window {since}..{today}\n")
     if not since:
-        print("no scored rows found — stop")
-        return
+        since = today - dt.timedelta(days=14)
+        print(f"NO GHL survey answers or scores in P–U — score sections skipped; registration and "
+              f"attribution audited for {since}..{today}\n")
     win = [x for x in recs if x["date"] >= since]
 
     # ── A. by market + daily cohort ────────────────────────────────────────────
@@ -182,6 +183,7 @@ def main() -> None:
     bad = [x for x in my if x["score"] is not None and not (0 <= x["score"] <= 100)]
     print(f"  MY scores outside 0–100: {len(bad)}")
 
+    has_scores = any(x["score"] is not None for x in my)
     # ── B. distribution ────────────────────────────────────────────────────────
     sc_my = [x for x in my if x["score"] is not None]
     print(f"\n--- B. MY score distribution (n={len(sc_my)} scored) ---")
@@ -235,8 +237,9 @@ def main() -> None:
                   f"{(f'{sp:,.0f}' if sp is not None else '—'):>7} {rhs:>6} {ric:>6}  {' · '.join(k)[:110]}")
 
     table("C/D-1. by MY campaign", lambda x: (x["camp"],), "campaign")
-    table("C/D-2. by MY campaign › ad set", lambda x: (x["camp"][-45:], x["adset"]), "ad set")
-    table("C/D-3. by MY campaign › ad", lambda x: (x["camp"][-45:], x["ad"]), "ad")
+    if has_scores:
+        table("C/D-2. by MY campaign › ad set", lambda x: (x["camp"][-45:], x["adset"]), "ad set")
+        table("C/D-3. by MY campaign › ad", lambda x: (x["camp"][-45:], x["ad"]), "ad")
 
     # ── E. attribution ─────────────────────────────────────────────────────────
     print("\n--- E. attribution in window ---")
