@@ -21,16 +21,23 @@ Date rules (operator, final, 2026-11-06):
     with the score as it reads today.
   * Survey Completion Rate = cohort parents with all of Q1–Q5 answered ÷ the cohort's valid registrations.
   * Qualified Lead Rate   = cohort parents with Score ≥ 70 ÷ the cohort's valid registrations.
-  * CPQL = MY spend for the same campaign / ad scope and the same registration-date range ÷ qualified leads.
+  * Preliminary CPQL = matched MY Meta spend (same campaign / ad set / ad, same registration-date range)
+    ÷ qualified leads, computed whenever QL > 0. QL = 0 -> CPQL N/A (never RM0, never "poor").
+    Calculable is not the same as reliable: thin samples are labelled PRELIMINARY / INSUFFICIENT DATA.
+  * The survey score never drives SCALE / REDUCE / PAUSE; the Ads Agent's CPL / CPA / ROAS rules stand.
   * A registrant with no survey yet is Pending — never Low Quality (D).
   * MY and SG are never mixed (budgets, currency, rows).
 
   * Eligible vs Pre-launch: only parents who registered on/after the survey launch date are eligible
-    for the new survey; earlier registrants are "Pre-launch / Not Invited" and stay out of every
-    completion / qualified-rate denominator. An eligible parent with no answers yet is Eligible Pending.
+    for the new survey; earlier registrants are "Pre-launch Registration / Invitation Unknown" (no send
+    record exists, so never "Not Invited" or "refused") and stay out of every rate denominator. An eligible parent with no answers yet is Eligible Pending.
   * Missing UTM on a surveyed row is reported as a fact, never as a tracking error: the check that
     matters is whether parents who registered WITH a real MY ad UTM still carry J/K/L after the survey.
-  * Thin samples read WATCH / INSUFFICIENT DATA — the audit never recommends REDUCE or PAUSE.
+  * Thin samples read PRELIMINARY / INSUFFICIENT DATA — the audit never recommends REDUCE or PAUSE.
+  * Duplicates: raw registration rows AND distinct persons (phone last 9 digits / e-mail, in memory)
+    are both printed. Both Ads Agents (MY, SG) count registrations as the Meta pixel
+    COMPLETE_REGISTRATION result — that is not changed here.
+  * Cohorts younger than IMMATURE_DAYS are flagged immature (survey answers still arriving).
 
 Env:
   ADBOT_SINCE          first registration date to analyse (default: survey launch date)
@@ -96,12 +103,22 @@ def market_tag(camp: str) -> str:
 
 MIN_ELIGIBLE = 20   # per campaign / ad: fewer eligible registrations -> INSUFFICIENT DATA
 MIN_SCORED = 10     # per campaign / ad: fewer scored leads -> INSUFFICIENT DATA
-CPQL_MIN_SCORED = 30     # account-wide scored MY leads before CPQL is meaningful
+CPQL_MIN_SCORED = 30     # account-wide scored MY leads before CPQL is decision-reliable (not a calc gate)
+IMMATURE_DAYS = 7        # cohorts registered within this many days are still collecting answers
 CPQL_MIN_UTM_CHECK = 5   # surveyed MY rows with a real ad UTM needed to confirm UTMs survive the survey
 
 
 def pct(a, b) -> str:
     return f"{a / b:.0%}" if b else "—"
+
+
+def person_key(r) -> str:
+    """Join key for de-duplication only (phone last 9 digits, else e-mail); never printed."""
+    d = re.sub(r"\D", "", r[1] if len(r) > 1 else "")
+    if len(d) >= 8:
+        return "p:" + d[-9:]
+    e = (r[2] if len(r) > 2 else "").strip().lower()
+    return "e:" + e if "@" in e else ""
 
 
 def main() -> None:
@@ -164,7 +181,7 @@ def main() -> None:
             mk = market_tag(camp)
         answers = [cell(r, q) for q in ("q1", "q2", "q3", "q4", "q5")]
         sc = num(cell(r, "score"))
-        recs.append({"date": d, "mk": mk, "camp": camp, "adset": cell(r, "adset"), "ad": cell(r, "ad"),
+        recs.append({"pid": person_key(r) or f"row:{len(recs)}", "date": d, "mk": mk, "camp": camp, "adset": cell(r, "adset"), "ad": cell(r, "ad"),
                      "source": cell(r, "source"), "answers": answers,
                      "surveyed": any(answers), "complete": all(answers), "score": sc,
                      "q2": map_score(answers[1], Q2_MAP), "q5": map_score(answers[4], Q5_MAP)})
@@ -200,27 +217,37 @@ def main() -> None:
               f"{sum(x['complete'] for x in sub):>4} · score present {sum(x['score'] is not None for x in sub):>4}")
     my = [x for x in win if x["mk"] == "MY"]
     pre = [x for x in win if x["mk"] == "MY" and not x["eligible"]]
-    print(f"\n  MY Pre-launch / Not Invited (registered before {launch}): {len(pre)} — excluded from every rate")
-    print("  MY daily cohort by registration date (G), eligible registrants only — rates ÷ eligible regs:")
-    print(f"  {'date':<11} {'regs':>5} {'done':>5} {'compl%':>6} {'scored':>6} {'≥70':>4} {'QL%':>5} {'pending':>7}")
+    print(f"\n  MY Pre-launch Registration / Invitation Unknown (registered before {launch}): {len(pre)} rows · "
+          f"{len({x['pid'] for x in pre})} persons — excluded from every rate (not 'Not Invited', not 'refused')")
+    elig = [x for x in my if x["eligible"]]
+    print(f"  MY eligible: raw registration rows {len(elig)} · distinct persons {len({x['pid'] for x in elig})} "
+          f"(phone last 9 / e-mail, in memory)")
+    print("  MY cohort by registration date (G), eligible only. Two denominators, never mixed:")
+    print("    compl% / cover% / QL/regs = ÷ valid registrations (raw rows) · QL/done = ÷ completed surveys")
+    print("    pending = no score yet (not Low Quality) · ICP = Core ICP · imm = immature cohort (<"
+          f"{IMMATURE_DAYS}d, answers still arriving)")
+    print(f"  {'date':<11} {'regs':>4} {'pers':>4} {'done':>4} {'compl%':>6} {'scored':>6} {'cover%':>6} {'pend':>4} "
+          f"{'QL':>3} {'QL/regs':>7} {'QL/done':>7} {'ICP':>3}")
     byd = defaultdict(list)
-    for x in my:
-        if x["eligible"]:
-            byd[x["date"]].append(x)
+    for x in elig:
+        byd[x["date"]].append(x)
     for d in sorted(byd):
         L = byd[d]
         done = sum(x["complete"] for x in L)
         sc = sum(x["score"] is not None for x in L)
-        ql = sum(1 for x in L if x["score"] is not None and x["score"] >= 70)
-        pend = sum(1 for x in L if x["score"] is None and not x["complete"])
-        print(f"  {d}  {len(L):>5} {done:>5} {pct(done, len(L)):>6} {sc:>6} {ql:>4} {pct(ql, len(L)):>5} {pend:>7}")
+        qlL = [x for x in L if x["score"] is not None and x["score"] >= 70]
+        icp = sum(1 for x in qlL if (x["q2"] or 0) >= 20 and (x["q5"] or 0) >= 16)
+        pend = sum(1 for x in L if x["score"] is None)
+        imm = " imm" if (today - d).days < IMMATURE_DAYS else ""
+        print(f"  {d}  {len(L):>4} {len({x['pid'] for x in L}):>4} {done:>4} {pct(done, len(L)):>6} {sc:>6} "
+              f"{pct(sc, len(L)):>6} {pend:>4} {len(qlL):>3} {pct(len(qlL), len(L)):>7} {pct(len(qlL), done):>7} "
+              f"{icp:>3}{imm}")
     miss = [x for x in my if x["surveyed"] and x["score"] is None]
     print(f"\n  MY rows with survey answers but NO score (U empty): {len(miss)}")
     print(f"  MY rows with a score but no survey answers: {sum(1 for x in my if not x['surveyed'] and x['score'] is not None)}")
     bad = [x for x in my if x["score"] is not None and not (0 <= x["score"] <= 100)]
     print(f"  MY scores outside 0–100: {len(bad)}")
 
-    has_scores = any(x["score"] is not None for x in my)
     # ── B. distribution ────────────────────────────────────────────────────────
     my_all = my
     my = [x for x in my if x["eligible"]]
@@ -234,7 +261,10 @@ def main() -> None:
     print(f"  Pending: {len(pending):>4}  {pct(len(pending), len(my)):>5}   (+ {len(pre)} pre-launch, not counted)")
     hs = [x for x in sc_my if x["score"] >= 70]
     core = [x for x in hs if (x["q2"] or 0) >= 20 and (x["q5"] or 0) >= 16]
-    print(f"  High Score / Qualified (≥70): {len(hs)} · Qualified Lead Rate {pct(len(hs), len(my))} of eligible regs")
+    done_my = sum(x["complete"] for x in my)
+    print(f"  High Score / Qualified (≥70): {len(hs)} · QL ÷ valid regs {pct(len(hs), len(my))} · "
+          f"QL ÷ completed surveys {pct(len(hs), done_my)} ({done_my} completed) — different denominators")
+    print(f"  Score Coverage Rate (scored ÷ valid regs): {pct(len(sc_my), len(my))}")
     print(f"  Core ICP (≥70 + Q2≥20 + Q5≥16 from raw answers): {len(core)} ({pct(len(core), len(my))} of eligible regs)")
     print(f"  ≥70 but NOT Core ICP: {len(hs) - len(core)}  (Q2<20: {sum(1 for x in hs if (x['q2'] or 0) < 20)} · "
           f"Q5<16: {sum(1 for x in hs if (x['q5'] or 0) < 16)})")
@@ -261,7 +291,8 @@ def main() -> None:
     for r in g.account_insights(s.meta.account_path, level="ad",
                                 fields="campaign_name,adset_name,ad_name,spend",
                                 time_range={"since": max(since, launch or since).isoformat(), "until": today.isoformat()}):
-        k = (cpa.norm(r.get("campaign_name") or ""), cpa.ad_key(r.get("ad_name") or ""))
+        k = (cpa.norm(r.get("campaign_name") or ""), cpa.ad_key(r.get("ad_name") or ""),
+             cpa.norm(r.get("adset_name") or ""))
         spend[k] += float(r.get("spend") or 0)
 
     def table(title, keyf, label):
@@ -269,27 +300,30 @@ def main() -> None:
         for x in my:
             grp[keyf(x)].append(x)
         print(f"\n--- {title} ---")
-        print(f"  {'status':<17} {'regs':>4} {'pend':>4} {'scored':>6} {'avg':>5} {'A':>3} {'B':>3} {'C':>3} {'D':>3} {'QL':>3} {'QL%':>4} {'ICP':>3} {'ICP%':>4} {'spend':>7} {'CPQL':>6} {'RM/ICP':>6}  {label}")
+        print("  CPQL = Preliminary CPQL (matched spend ÷ QL, same scope & dates); N/A when QL = 0. "
+              "Reliability: INSUFFICIENT DATA / PRELIMINARY / WATCH / OK — informational only.")
+        print(f"  {'reliability':<17} {'regs':>4} {'pend':>4} {'scored':>6} {'avg':>5} {'A':>3} {'B':>3} {'C':>3} {'D':>3} {'QL':>3} {'QL%':>4} {'ICP':>3} {'ICP%':>4} {'spend':>7} {'CPQL':>6} {'RM/ICP':>6}  {label}")
         for k, L in sorted(grp.items(), key=lambda kv: -len(kv[1])):
             S = [x for x in L if x["score"] is not None]
             gcn = Counter(grade(x["score"]) for x in S)
             h = [x for x in S if x["score"] >= 70]
             c = [x for x in h if (x["q2"] or 0) >= 20 and (x["q5"] or 0) >= 16]
             sp = sum(v for kk, v in spend.items() if kk[0] == cpa.norm(L[0]["camp"]) and
-                     (label != "ad" or kk[1] == cpa.ad_key(L[0]["ad"]))) if label != "ad set" else None
+                     (label != "ad" or kk[1] == cpa.ad_key(L[0]["ad"])) and
+                     (label != "ad set" or kk[2] == cpa.norm(L[0]["adset"])))
             avg = f"{mean(x['score'] for x in S):.0f}" if S else "—"
-            rhs = f"{sp / len(h):,.0f}" if sp and h else "—"
-            ric = f"{sp / len(c):,.0f}" if sp and c else "—"
-            st = ("INSUFFICIENT DATA" if len(L) < MIN_ELIGIBLE or len(S) < MIN_SCORED
+            rhs = f"{sp / len(h):,.0f}" if h and sp else "N/A"
+            ric = f"{sp / len(c):,.0f}" if c and sp else "N/A"
+            thin = len(L) < MIN_ELIGIBLE or len(S) < MIN_SCORED
+            st = (("PRELIMINARY" if h else "INSUFFICIENT DATA") if thin
                   else "WATCH" if not h else "OK")
             print(f"  {st:<17} {len(L):>4} {len(L) - len(S):>4} {len(S):>6} {avg:>5} {gcn['A']:>3} {gcn['B']:>3} {gcn['C']:>3} {gcn['D']:>3} "
                   f"{len(h):>3} {pct(len(h), len(L)):>4} {len(c):>3} {pct(len(c), len(L)):>4} "
-                  f"{(f'{sp:,.0f}' if sp is not None else '—'):>7} {rhs:>6} {ric:>6}  {' · '.join(k)[:110]}")
+                  f"{sp:>7,.0f} {rhs:>6} {ric:>6}  {' · '.join(k)[:110]}")
 
     table("C/D-1. by MY campaign", lambda x: (x["camp"],), "campaign")
-    if has_scores:
-        table("C/D-2. by MY campaign › ad set", lambda x: (x["camp"][-45:], x["adset"]), "ad set")
-        table("C/D-3. by MY campaign › ad", lambda x: (x["camp"][-45:], x["ad"]), "ad")
+    table("C/D-2. by MY campaign › ad set", lambda x: (x["camp"][-45:], x["adset"]), "ad set")
+    table("C/D-3. by MY campaign › ad", lambda x: (x["camp"][-45:], x["ad"]), "ad")
 
     # ── E. attribution ─────────────────────────────────────────────────────────
     print("\n--- E. attribution in window ---")
@@ -317,18 +351,28 @@ def main() -> None:
     print(f"  surveyed rows with no UTM: {len(nou)} — reported as a fact; they may simply be non-ad / "
           f"group sign-ups. Not evidence that the survey drops UTMs.")
 
-    # ── CPQL readiness ─────────────────────────────────────────────────────────
-    checks = [
+    # ── CPQL: calculable vs decision-reliable (kept apart) ────────────────────
+    calc = [
         ("survey launch date known", bool(launch)),
+        (f"spend currency confirmed ({cur})", isinstance(cur, str) and len(cur) == 3),
+        (f"at least one MY qualified lead (≥70) with matched spend (QL {len(hs)})", bool(hs)),
+    ]
+    rel = [
         (f"≥{CPQL_MIN_SCORED} scored eligible MY leads (have {len(sc_my)})", len(sc_my) >= CPQL_MIN_SCORED),
         (f"≥{CPQL_MIN_UTM_CHECK} surveyed MY-UTM rows confirm UTMs survive (have {len(srv)}, kept {len(keep)})",
          len(srv) >= CPQL_MIN_UTM_CHECK and len(keep) == len(srv)),
-        (f"spend currency confirmed ({cur})", isinstance(cur, str) and len(cur) == 3),
+        (f"no cohort in the window still immature (<{IMMATURE_DAYS}d)",
+         bool(byd) and all((today - d).days >= IMMATURE_DAYS for d in byd)),
     ]
-    print("\n--- CPQL readiness ---")
-    for label, ok in checks:
+    print("\n--- CPQL calculable? ---")
+    for label, ok in calc:
         print(f"  [{'x' if ok else ' '}] {label}")
-    print(f"  => {'READY for CPQL analysis' if all(ok for _, ok in checks) else 'NOT READY — WATCH / INSUFFICIENT DATA; no REDUCE / PAUSE from this audit'}")
+    print(f"  => {'CALCULABLE — Preliminary CPQL shown where QL > 0' if all(ok for _, ok in calc) else 'NOT YET CALCULABLE — CPQL N/A'}")
+    print("--- CPQL decision-reliable? ---")
+    for label, ok in rel:
+        print(f"  [{'x' if ok else ' '}] {label}")
+    print(f"  => {'RELIABLE enough to read' if all(ok for _, ok in rel) else 'PRELIMINARY / INSUFFICIENT DATA'}")
+    print("  Survey score never triggers SCALE / REDUCE / PAUSE; the Ads Agent's CPL / CPA / ROAS rules are unchanged.")
     print("\nDONE (read-only · aggregates only)")
 
 
