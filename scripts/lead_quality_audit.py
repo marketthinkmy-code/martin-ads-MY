@@ -41,7 +41,7 @@ Date rules (operator, final, 2026-11-06):
 
 Env:
   ADBOT_SINCE          first registration date to analyse (default: survey launch date)
-  ADBOT_SURVEY_LAUNCH  survey launch date (default: first registration date carrying any survey answer)
+  ADBOT_SURVEY_LAUNCH  survey launch date (default: provisional 2026-11-06, operator-confirmed)
 """
 from __future__ import annotations
 
@@ -104,6 +104,7 @@ def market_tag(camp: str) -> str:
 MIN_ELIGIBLE = 20   # per campaign / ad: fewer eligible registrations -> INSUFFICIENT DATA
 MIN_SCORED = 10     # per campaign / ad: fewer scored leads -> INSUFFICIENT DATA
 CPQL_MIN_SCORED = 30     # account-wide scored MY leads before CPQL is decision-reliable (not a calc gate)
+PROVISIONAL_LAUNCH = "2026-11-06"   # operator-confirmed provisional survey start (no send records)
 IMMATURE_DAYS = 7        # cohorts registered within this many days are still collecting answers
 CPQL_MIN_UTM_CHECK = 5   # surveyed MY rows with a real ad UTM needed to confirm UTMs survive the survey
 
@@ -192,10 +193,10 @@ def main() -> None:
           f"with any survey answer (P–T): {sum(1 for x in recs if x['surveyed'])}")
     print("  scored rows per registration date: " + ", ".join(f"{d:%m-%d} {n}" for d, n in sorted(scored_dates.items())))
     surveyed_dates = [x["date"] for x in recs if x["surveyed"]]
-    launch = (dt.date.fromisoformat(os.environ["ADBOT_SURVEY_LAUNCH"]) if os.environ.get("ADBOT_SURVEY_LAUNCH")
-              else (min(surveyed_dates) if surveyed_dates else None))
+    launch = dt.date.fromisoformat(os.environ.get("ADBOT_SURVEY_LAUNCH") or PROVISIONAL_LAUNCH)
     print(f"survey launch date used: {launch} "
-          f"({'set by ADBOT_SURVEY_LAUNCH' if os.environ.get('ADBOT_SURVEY_LAUNCH') else 'first registration date carrying any answer — confirm with the team'})")
+          f"({'set by ADBOT_SURVEY_LAUNCH' if os.environ.get('ADBOT_SURVEY_LAUNCH') else 'provisional operator date'})"
+          f" · first registration date carrying any answer: {min(surveyed_dates) if surveyed_dates else 'none yet'}")
     since = dt.date.fromisoformat(os.environ["ADBOT_SINCE"]) if os.environ.get("ADBOT_SINCE") else (launch or first)
     today = (dt.datetime.utcnow() + dt.timedelta(hours=8)).date()
     print(f"excluded internal tests: {tests} {dict(test_by)} · undated rows: {undated}")
