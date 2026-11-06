@@ -234,8 +234,8 @@ def main() -> None:
     print(f"  Pending: {len(pending):>4}  {pct(len(pending), len(my)):>5}   (+ {len(pre)} pre-launch, not counted)")
     hs = [x for x in sc_my if x["score"] >= 70]
     core = [x for x in hs if (x["q2"] or 0) >= 20 and (x["q5"] or 0) >= 16]
-    print(f"  High Score / Qualified (≥70): {len(hs)} · Qualified Lead Rate {pct(len(hs), len(my))} of valid regs")
-    print(f"  Core ICP (≥70 + Q2≥20 + Q5≥16 from raw answers): {len(core)} ({pct(len(core), len(my))} of valid regs)")
+    print(f"  High Score / Qualified (≥70): {len(hs)} · Qualified Lead Rate {pct(len(hs), len(my))} of eligible regs")
+    print(f"  Core ICP (≥70 + Q2≥20 + Q5≥16 from raw answers): {len(core)} ({pct(len(core), len(my))} of eligible regs)")
     print(f"  ≥70 but NOT Core ICP: {len(hs) - len(core)}  (Q2<20: {sum(1 for x in hs if (x['q2'] or 0) < 20)} · "
           f"Q5<16: {sum(1 for x in hs if (x['q5'] or 0) < 16)})")
     if sc_my:
@@ -256,10 +256,11 @@ def main() -> None:
     except Exception as exc:  # noqa: BLE001
         cur = f"? ({str(exc)[:60]})"
     print(f"\nMeta spend currency — MY account {s.meta.account_path}: {cur} (all spend figures below are in it; SG never mixed)")
+    print(f"spend window = eligible registration window: {max(since, launch or since)}..{today}")
     spend = defaultdict(float)
     for r in g.account_insights(s.meta.account_path, level="ad",
                                 fields="campaign_name,adset_name,ad_name,spend",
-                                time_range={"since": since.isoformat(), "until": today.isoformat()}):
+                                time_range={"since": max(since, launch or since).isoformat(), "until": today.isoformat()}):
         k = (cpa.norm(r.get("campaign_name") or ""), cpa.ad_key(r.get("ad_name") or ""))
         spend[k] += float(r.get("spend") or 0)
 
