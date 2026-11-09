@@ -77,5 +77,28 @@
       ]
     }
   ],
-  "_note": "2026-11-09 operator approved: 7 new videos (Video 4 excluded), ad names = script titles, option A RM50 each (1-7-7 ABO), Parents 3-17 + Engaged cloned from 120248670491000575 as in Test B, Advantage+ placements. Built PAUSED; operator activates. Creatives from scripts/mint_specs/nov9_batch7.json (run 42580850105)."
+  "_note": "2026-11-09 operator approved: 7 new videos (Video 4 excluded), ad names = script titles, option A RM50 each (1-7-7 ABO), Parents 3-17 + Engaged cloned from 120248670491000575 as in Test B, Advantage+ placements. Built PAUSED; operator activates. Creatives from scripts/mint_specs/nov9_batch7.json (run 42580850105).",
+  "_built": {
+    "run": "42581607081",
+    "campaign_id": "120249800506580575",
+    "adset_ids": [
+      "120249800506650575",
+      "120249800507410575",
+      "120249800507880575",
+      "120249800508110575",
+      "120249800508420575",
+      "120249800508800575",
+      "120249800509500575"
+    ],
+    "ad_ids": [
+      "120249800510130575",
+      "120249800510450575",
+      "120249800510600575",
+      "120249800510980575",
+      "120249800511210575",
+      "120249800511480575",
+      "120249800511920575"
+    ],
+    "placements": "automatic (Advantage+)"
+  }
 }
