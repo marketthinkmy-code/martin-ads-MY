@@ -1,0 +1,70 @@
+{
+ "videos": [
+  {
+   "key": "v1",
+   "drive_file_id": "1yAIft0i2AeyuYQZLcCa3-YtUlbcNcIUH",
+   "video_name": "Martin Sep Video 1：是誰說的？",
+   "content_id": "my_nov9_v1",
+   "ad_name": "Video 1：是誰說的？",
+   "headline": "🔴 天天喝牛奶补钙，孩子为什么还是长不高？",
+   "body_file": "scripts/mint_specs/nov9_batch7.body_v1.txt",
+   "video_id": "1857807902298873"
+  },
+  {
+   "key": "v2",
+   "drive_file_id": "1u7oPrGaV5uAzjhvxV65HtlEmz8AKsOfN",
+   "video_name": "Martin Sep Video 2：吃完就馬上去廁所？",
+   "content_id": "my_nov9_v2",
+   "ad_name": "Video 2：吃完就馬上去廁所？",
+   "headline": "🔴 孩子一吃完饭就跑厕所？吃很多却不长高，先看这个",
+   "body_file": "scripts/mint_specs/nov9_batch7.body_v2.txt"
+  },
+  {
+   "key": "v3",
+   "drive_file_id": "15s3Kc4N9yahNtqzpoKswrhb2MHKqBW-p",
+   "video_name": "Martin Sep Video 3：完蛋了！",
+   "content_id": "my_nov9_v3",
+   "ad_name": "Video 3：完蛋了！",
+   "headline": "🔴 爸妈都不高，孩子就一定矮？别太早下定论",
+   "body_file": "scripts/mint_specs/nov9_batch7.body_v3.txt",
+   "video_id": "1806147427196247"
+  },
+  {
+   "key": "v5",
+   "drive_file_id": "1uXmtdeSqSt8-SzPgPzoM7IrvUP9KNbSH",
+   "video_name": "Martin Sep Video 5：飯桌生活細節場景",
+   "content_id": "my_nov9_v5",
+   "ad_name": "Video 5：飯桌生活細節場景",
+   "headline": "🔴 孩子吃饭慢、胃口差、长得比同龄慢？问题可能在脾胃",
+   "body_file": "scripts/mint_specs/nov9_batch7.body_v5.txt"
+  },
+  {
+   "key": "v6",
+   "drive_file_id": "1laot0YP6o5SftX2geip_jHlsGrYAKYp0",
+   "video_name": "Martin Sep Video 6：具體數字目標",
+   "content_id": "my_nov9_v6",
+   "ad_name": "Video 6：具體數字目標",
+   "headline": "🔴 孩子去年长了几公分？不到 6 公分要注意了",
+   "body_file": "scripts/mint_specs/nov9_batch7.body_v6.txt"
+  },
+  {
+   "key": "v7",
+   "drive_file_id": "1rhrfwuR9MV6I286mMS0WpI_vaGg0Zdfw",
+   "video_name": "Martin Sep Video 7：父母試過一切共情",
+   "content_id": "my_nov9_v7",
+   "ad_name": "Video 7：父母試過一切共情",
+   "headline": "🔴 钙片、跳绳、早睡都试过了，孩子还是没长高？",
+   "body_file": "scripts/mint_specs/nov9_batch7.body_v7.txt"
+  },
+  {
+   "key": "v8",
+   "drive_file_id": "15dghR_QMCDJjMBioq6uN-kJnTa38Cact",
+   "video_name": "Martin Sep Video 8：對話式「我跟你說！」",
+   "content_id": "my_nov9_v8",
+   "ad_name": "Video 8：對話式「我跟你說！」",
+   "headline": "🔴 孩子 5–17 岁？长高不只靠基因，更靠管理",
+   "body_file": "scripts/mint_specs/nov9_batch7.body_v8.txt"
+  }
+ ],
+ "_note": "2026-11-09 operator approved (A: RM50 each; names = script titles; copy OK, 10,000+ throughout). 7 videos (Video 4 excluded). Video 1/3 reuse library videos from sept_myths_2. Next: clone spec nov9_batch7_parents_1_7_7.json — Parents 3-17 + Engaged, 1-7-7 ABO RM50 each, built PAUSED; operator activates."
+}
