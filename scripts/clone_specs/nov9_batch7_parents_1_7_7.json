@@ -1,0 +1,81 @@
+{
+  "campaign_name": "[MY] 儿童长高方程式 | Parents 3-17 + Engaged | NOV 新片 | 1-7-7 | NOV 9",
+  "source_adset_id": "120248670491000575",
+  "regulation_source_adset_id": "120247917148640575",
+  "also_exclude": [
+    "120248429743500575"
+  ],
+  "adsets": [
+    {
+      "name": "Parents 3-17 + Engaged",
+      "budget_myr": 50,
+      "ads": [
+        {
+          "name": "Video 1：是誰說的？",
+          "creative_id": "28914611384899368"
+        }
+      ]
+    },
+    {
+      "name": "Parents 3-17 + Engaged",
+      "budget_myr": 50,
+      "ads": [
+        {
+          "name": "Video 2：吃完就馬上去廁所？",
+          "creative_id": "1686923686185670"
+        }
+      ]
+    },
+    {
+      "name": "Parents 3-17 + Engaged",
+      "budget_myr": 50,
+      "ads": [
+        {
+          "name": "Video 3：完蛋了！",
+          "creative_id": "3342688355926282"
+        }
+      ]
+    },
+    {
+      "name": "Parents 3-17 + Engaged",
+      "budget_myr": 50,
+      "ads": [
+        {
+          "name": "Video 5：飯桌生活細節場景",
+          "creative_id": "28946204941667984"
+        }
+      ]
+    },
+    {
+      "name": "Parents 3-17 + Engaged",
+      "budget_myr": 50,
+      "ads": [
+        {
+          "name": "Video 6：具體數字目標",
+          "creative_id": "1692314798986966"
+        }
+      ]
+    },
+    {
+      "name": "Parents 3-17 + Engaged",
+      "budget_myr": 50,
+      "ads": [
+        {
+          "name": "Video 7：父母試過一切共情",
+          "creative_id": "1121274444204057"
+        }
+      ]
+    },
+    {
+      "name": "Parents 3-17 + Engaged",
+      "budget_myr": 50,
+      "ads": [
+        {
+          "name": "Video 8：對話式「我跟你說！」",
+          "creative_id": "1001804379647712"
+        }
+      ]
+    }
+  ],
+  "_note": "2026-11-09 operator approved: 7 new videos (Video 4 excluded), ad names = script titles, option A RM50 each (1-7-7 ABO), Parents 3-17 + Engaged cloned from 120248670491000575 as in Test B, Advantage+ placements. Built PAUSED; operator activates. Creatives from scripts/mint_specs/nov9_batch7.json (run 42580850105)."
+}
