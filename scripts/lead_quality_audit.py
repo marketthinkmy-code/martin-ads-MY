@@ -294,6 +294,11 @@ def main() -> None:
                 print(f"    {q} {n:>4} × [{'?' if pts == -1 else pts}] {ans[:60]}")
         unk = sum(n for (a, p), n in cats.items() if p == -1)
         print(f"    {q} answers matching no known option: {unk}")
+    print("\n  EXACT answer texts seen in Q1–Q5, all markets (multiple-choice options, full text):")
+    for qi, q in enumerate(("Q1", "Q2", "Q3", "Q4", "Q5")):
+        for ans, n in Counter(x["answers"][qi] for x in recs if x["answers"][qi]).most_common():
+            if safe_cat(ans):
+                print(f"    {q} {n:>3} × {ans!r}")
 
     # ── C/D. by campaign / ad set / ad with spend ──────────────────────────────
     try:
