@@ -61,10 +61,11 @@ COL = {"date": 6, "source": 7, "campaign": 9, "adset": 10, "ad": 11,
        "q1": 15, "q2": 16, "q3": 17, "q4": 18, "q5": 19, "score": 20}
 PII_COLS = (0, 1, 2)   # Name, Phone Number, Email — read only for the test check
 
-Q2_MAP = [(("身高记录", "成长变慢", "成長變慢", "身高記錄"), 25), (("成长评估", "成長評估"), 25),
+Q2_MAP = [(("身高记录", "成长变慢", "成長變慢", "身高記錄", "记录孩子身高", "記錄孩子身高",
+            "长高速度明显变慢", "長高速度明顯變慢"), 25), (("成长评估", "成長評估"), 25),
           (("比同龄", "比同齡"), 20), (("不确定", "不確定"), 12), (("提前学习", "提前學習"), 5)]
 Q5_MAP = [(("专业指导", "持续跟进", "專業指導", "持續跟進"), 20), (("系统性", "按步骤", "系統性", "按步驟"), 16),
-          (("先了解", "先瞭解"), 10), (("免费资讯", "免費資訊", "免费资讯"), 4)]
+          (("先了解", "先瞭解"), 10), (("免费资讯", "免費資訊", "免费的成长知识", "免費的成長知識", "免费", "免費"), 4)]
 
 
 def map_score(ans: str, table) -> Optional[int]:
@@ -152,6 +153,8 @@ def main() -> None:
         my_ids.add(str(c.get("id")))
     print(f"\nMY ad account {s.meta.account_path}: {len(my_names)} campaigns read for verification")
 
+    my_names_plus = {" ".join(n.replace("+", " ").split()) for n in my_names}
+    plus_fixed = 0
     cell = lambda r, k: (r[COL[k]] if COL[k] < len(r) else "").strip()
     recs, tests, undated = [], 0, 0
     test_by = Counter()
@@ -178,6 +181,9 @@ def main() -> None:
             mk = "no-UTM"
         elif cn in my_names or camp in my_ids:
             mk = "MY"
+        elif " ".join(cn.split()) in my_names_plus:
+            mk = "MY"            # same campaign; the UTM decoded '+' as a space
+            plus_fixed += 1
         else:
             mk = market_tag(camp)
         answers = [cell(r, q) for q in ("q1", "q2", "q3", "q4", "q5")]
@@ -199,7 +205,8 @@ def main() -> None:
           f" · first registration date carrying any answer: {min(surveyed_dates) if surveyed_dates else 'none yet'}")
     since = dt.date.fromisoformat(os.environ["ADBOT_SINCE"]) if os.environ.get("ADBOT_SINCE") else (launch or first)
     today = (dt.datetime.utcnow() + dt.timedelta(hours=8)).date()
-    print(f"excluded internal tests: {tests} {dict(test_by)} · undated rows: {undated}")
+    print(f"excluded internal tests: {tests} {dict(test_by)} · undated rows: {undated} · "
+          f"MY rows matched after '+'→space UTM decoding: {plus_fixed}")
     print(f"first registration date with a GHL score: {first} → analysis window {since}..{today}\n")
     if not since:
         since = today - dt.timedelta(days=14)
@@ -276,7 +283,7 @@ def main() -> None:
     for q, key, idx in (("Q2", "q2", 1), ("Q5", "q5", 4)):
         cats = Counter((x["answers"][idx], x[key]) for x in my if x["answers"][idx])
         for (ans, pts), n in cats.most_common(12):
-            if n >= 2 and safe_cat(ans):
+            if safe_cat(ans):
                 print(f"    {q} {n:>4} × [{'?' if pts == -1 else pts}] {ans[:60]}")
         unk = sum(n for (a, p), n in cats.items() if p == -1)
         print(f"    {q} answers matching no known option: {unk}")
