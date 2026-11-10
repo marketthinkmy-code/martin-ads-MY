@@ -155,7 +155,7 @@ def main() -> None:
     cell = lambda r, k: (r[COL[k]] if COL[k] < len(r) else "").strip()
     recs, tests, undated = [], 0, 0
     test_by = Counter()
-    for r in rows:
+    for ri, r in enumerate(rows, start=2):   # sheet row number (header is row 1)
         if not any(c.strip() for c in r):
             continue
         name = (r[0] if len(r) > 0 else "").casefold()
@@ -182,7 +182,7 @@ def main() -> None:
             mk = market_tag(camp)
         answers = [cell(r, q) for q in ("q1", "q2", "q3", "q4", "q5")]
         sc = num(cell(r, "score"))
-        recs.append({"pid": person_key(r) or f"row:{len(recs)}", "date": d, "mk": mk, "camp": camp, "adset": cell(r, "adset"), "ad": cell(r, "ad"),
+        recs.append({"row": ri, "pid": person_key(r) or f"row:{len(recs)}", "date": d, "mk": mk, "camp": camp, "adset": cell(r, "adset"), "ad": cell(r, "ad"),
                      "source": cell(r, "source"), "answers": answers,
                      "surveyed": any(answers), "complete": all(answers), "score": sc,
                      "q2": map_score(answers[1], Q2_MAP), "q5": map_score(answers[4], Q5_MAP)})
@@ -288,13 +288,36 @@ def main() -> None:
         cur = f"? ({str(exc)[:60]})"
     print(f"\nMeta spend currency — MY account {s.meta.account_path}: {cur} (all spend figures below are in it; SG never mixed)")
     print(f"spend window = eligible registration window: {max(since, launch or since)}..{today}")
-    spend = defaultdict(float)
+    spend, mleads = defaultdict(float), defaultdict(float)
+    reg_token = "offsite_conversion.fb_pixel_" + (s.meta.conversion_event or "").lower()
     for r in g.account_insights(s.meta.account_path, level="ad",
-                                fields="campaign_name,adset_name,ad_name,spend",
+                                fields="campaign_name,adset_name,ad_name,spend,actions",
                                 time_range={"since": max(since, launch or since).isoformat(), "until": today.isoformat()}):
         k = (cpa.norm(r.get("campaign_name") or ""), cpa.ad_key(r.get("ad_name") or ""),
              cpa.norm(r.get("adset_name") or ""))
         spend[k] += float(r.get("spend") or 0)
+        mleads[k] += sum(float(a.get("value") or 0) for a in (r.get("actions") or [])
+                         if a.get("action_type") == reg_token)
+    print(f"Meta 'Leads' = platform {reg_token} (Ads Manager Results) — NOT the same as Register rows attributed by UTM")
+
+    # ── S. every scored MY row, row-level (sheet row number only — no personal data) ──
+    def ad_verified(x):
+        return any(kk[0] == cpa.norm(x["camp"]) and kk[1] == cpa.ad_key(x["ad"]) for kk in spend)
+    scored_rows = [x for x in my if x["score"] is not None]
+    print(f"\n--- S. scored MY rows in window ({len(scored_rows)}) — score as read from U (GHL), not recomputed ---")
+    print("  row    reg date    score grade Q2pts Q5pts ICP  all5 UTM(J/K/L) ad-in-Meta  campaign › ad set › ad")
+    for x in sorted(scored_rows, key=lambda x: x["row"]):
+        icp = x["score"] >= 70 and (x["q2"] or 0) >= 20 and (x["q5"] or 0) >= 16
+        utm = "complete" if x["camp"] and x["adset"] and x["ad"] else "MISSING"
+        q2 = "?" if x["q2"] == -1 else x["q2"]
+        q5 = "?" if x["q5"] == -1 else x["q5"]
+        print(f"  {x['row']:<6} {x['date']}  {x['score']:>5.0f} {grade(x['score']):>5} {str(q2):>5} {str(q5):>5} "
+              f"{'yes' if icp else 'no':>3}  {'yes' if x['complete'] else 'no':>4} {utm:<10} "
+              f"{'yes' if ad_verified(x) else 'NO':<10}  {x['camp'][-40:]} › {x['adset']} › {x['ad']}")
+    dup = Counter(x["pid"] for x in my)
+    print(f"  duplicate registrations among eligible MY rows: {sum(n - 1 for n in dup.values() if n > 1)} extra rows "
+          f"across {sum(1 for n in dup.values() if n > 1)} persons · scored rows that are duplicates: "
+          f"{sum(1 for x in scored_rows if dup[x['pid']] > 1)}")
 
     def table(title, keyf, label):
         grp = defaultdict(list)
@@ -303,24 +326,29 @@ def main() -> None:
         print(f"\n--- {title} ---")
         print("  CPQL = Preliminary CPQL (matched spend ÷ QL, same scope & dates); N/A when QL = 0. "
               "Reliability: INSUFFICIENT DATA / PRELIMINARY / WATCH / OK — informational only.")
-        print(f"  {'reliability':<17} {'regs':>4} {'pend':>4} {'scored':>6} {'avg':>5} {'A':>3} {'B':>3} {'C':>3} {'D':>3} {'QL':>3} {'QL%':>4} {'ICP':>3} {'ICP%':>4} {'spend':>7} {'CPQL':>6} {'RM/ICP':>6}  {label}")
+        print("  regs/pers = Register rows / distinct persons attributed by UTM · Mleads = Meta platform registrations · "
+              "CPL = spend ÷ Mleads · done = all 5 answered")
+        print(f"  {'reliability':<17} {'spend':>6} {'Mleads':>6} {'CPL':>4} {'regs':>4} {'pers':>4} {'done':>4} {'pend':>4} {'scored':>6} {'avg':>4} {'A':>2} {'B':>2} {'C':>2} {'D':>2} {'QL':>3} {'ICP':>3} {'CPQL':>6} {'RM/ICP':>6}  {label}")
         for k, L in sorted(grp.items(), key=lambda kv: -len(kv[1])):
             S = [x for x in L if x["score"] is not None]
             gcn = Counter(grade(x["score"]) for x in S)
             h = [x for x in S if x["score"] >= 70]
             c = [x for x in h if (x["q2"] or 0) >= 20 and (x["q5"] or 0) >= 16]
-            sp = sum(v for kk, v in spend.items() if kk[0] == cpa.norm(L[0]["camp"]) and
-                     (label != "ad" or kk[1] == cpa.ad_key(L[0]["ad"])) and
-                     (label != "ad set" or kk[2] == cpa.norm(L[0]["adset"])))
+            match = lambda kk: (kk[0] == cpa.norm(L[0]["camp"]) and
+                                (label != "ad" or kk[1] == cpa.ad_key(L[0]["ad"])) and
+                                (label != "ad set" or kk[2] == cpa.norm(L[0]["adset"])))
+            sp = sum(v for kk, v in spend.items() if match(kk))
+            ml = sum(v for kk, v in mleads.items() if match(kk))
+            cpl = f"{sp / ml:.0f}" if ml else "—"
             avg = f"{mean(x['score'] for x in S):.0f}" if S else "—"
             rhs = f"{sp / len(h):,.0f}" if h and sp else "N/A"
             ric = f"{sp / len(c):,.0f}" if c and sp else "N/A"
             thin = len(L) < MIN_ELIGIBLE or len(S) < MIN_SCORED
             st = (("PRELIMINARY" if h else "INSUFFICIENT DATA") if thin
                   else "WATCH" if not h else "OK")
-            print(f"  {st:<17} {len(L):>4} {len(L) - len(S):>4} {len(S):>6} {avg:>5} {gcn['A']:>3} {gcn['B']:>3} {gcn['C']:>3} {gcn['D']:>3} "
-                  f"{len(h):>3} {pct(len(h), len(L)):>4} {len(c):>3} {pct(len(c), len(L)):>4} "
-                  f"{sp:>7,.0f} {rhs:>6} {ric:>6}  {' · '.join(k)[:110]}")
+            print(f"  {st:<17} {sp:>6,.0f} {ml:>6.0f} {cpl:>4} {len(L):>4} {len({x['pid'] for x in L}):>4} "
+                  f"{sum(x['complete'] for x in L):>4} {len(L) - len(S):>4} {len(S):>6} {avg:>4} {gcn['A']:>2} {gcn['B']:>2} {gcn['C']:>2} {gcn['D']:>2} "
+                  f"{len(h):>3} {len(c):>3} {rhs:>6} {ric:>6}  {' · '.join(k)[:110]}")
 
     table("C/D-1. by MY campaign", lambda x: (x["camp"],), "campaign")
     table("C/D-2. by MY campaign › ad set", lambda x: (x["camp"][-45:], x["adset"]), "ad set")
