@@ -64,7 +64,8 @@ PII_COLS = (0, 1, 2)   # Name, Phone Number, Email — read only for the test ch
 Q2_MAP = [(("身高记录", "成长变慢", "成長變慢", "身高記錄", "记录孩子身高", "記錄孩子身高",
             "长高速度明显变慢", "長高速度明顯變慢"), 25), (("成长评估", "成長評估"), 25),
           (("比同龄", "比同齡"), 20), (("不确定", "不確定"), 12), (("提前学习", "提前學習"), 5)]
-Q5_MAP = [(("专业指导", "持续跟进", "專業指導", "持續跟進"), 20), (("系统性", "按步骤", "系統性", "按步驟"), 16),
+Q5_MAP = [(("专业指导", "持续跟进", "專業指導", "持續跟進"), 20),
+          (("系统性", "按步骤", "系統性", "按步驟", "跟着步骤", "跟著步驟", "一套清楚的方法"), 16),
           (("先了解", "先瞭解"), 10), (("免费资讯", "免費資訊", "免费的成长知识", "免費的成長知識", "免费", "免費"), 4)]
 
 
@@ -148,8 +149,10 @@ def main() -> None:
     # ── verified MY campaigns from the live MY ad account ──────────────────────
     g = graph_client(s)
     my_names, my_ids = set(), set()
+    canon = {}
     for c in g.list_campaigns(s.meta.account_path):
         my_names.add(cpa.norm(c.get("name") or ""))
+        canon[" ".join(cpa.norm(c.get("name") or "").replace("+", " ").split())] = c.get("name") or ""
         my_ids.add(str(c.get("id")))
     print(f"\nMY ad account {s.meta.account_path}: {len(my_names)} campaigns read for verification")
 
@@ -184,11 +187,15 @@ def main() -> None:
         elif " ".join(cn.split()) in my_names_plus:
             mk = "MY"            # same campaign; the UTM decoded '+' as a space
             plus_fixed += 1
+            camp = canon.get(" ".join(cn.split()), camp)
         else:
             mk = market_tag(camp)
         answers = [cell(r, q) for q in ("q1", "q2", "q3", "q4", "q5")]
         sc = num(cell(r, "score"))
-        recs.append({"row": ri, "pid": person_key(r) or f"row:{len(recs)}", "date": d, "mk": mk, "camp": camp, "adset": cell(r, "adset"), "ad": cell(r, "ad"),
+        adset = cell(r, "adset")
+        if plus_fixed and camp != cell(r, "campaign"):
+            adset = adset.replace("   ", " + ")   # same '+'-decoding damage in the ad set name
+        recs.append({"row": ri, "pid": person_key(r) or f"row:{len(recs)}", "date": d, "mk": mk, "camp": camp, "adset": adset, "ad": cell(r, "ad"),
                      "source": cell(r, "source"), "answers": answers,
                      "surveyed": any(answers), "complete": all(answers), "score": sc,
                      "q2": map_score(answers[1], Q2_MAP), "q5": map_score(answers[4], Q5_MAP)})
