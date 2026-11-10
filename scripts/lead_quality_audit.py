@@ -341,12 +341,13 @@ def main() -> None:
     ads = {}
     for cn in {cpa.norm(x["camp"]) for x in my}:
         for cid in camp_ids.get(cn, ()):
-            for a_ in g._get_all(f"{cid}/ads", {"fields": "id,name,adset_id,adset{name},campaign{name},creative{id}",
+            for a_ in g._get_all(f"{cid}/ads", {"fields": "id,name,adset_id,adset{name},campaign{name},creative{id,effective_object_story_id}",
                                                "limit": 200}):
                 ads[a_["id"]] = {"name": a_.get("name") or "", "adset_id": str(a_.get("adset_id") or ""),
                                  "adset": (a_.get("adset") or {}).get("name") or "", "cid": cid,
                                  "camp": (a_.get("campaign") or {}).get("name") or "",
-                                 "creative": str((a_.get("creative") or {}).get("id") or "")}
+                                 "creative": str((a_.get("creative") or {}).get("id") or ""),
+                                 "post": str((a_.get("creative") or {}).get("effective_object_story_id") or "")}
     # mint-time creative names from our own mint specs: a UTM {{ad.name}} can still carry them
     mint_alias = defaultdict(set)
     for f in Path("scripts/mint_specs").glob("*.json"):
@@ -358,15 +359,18 @@ def main() -> None:
         for v in d.get("videos", []):
             m = minted.get(v.get("key"))
             cr = m.get("creative_id") if isinstance(m, dict) else m
+            post = m.get("post_id") if isinstance(m, dict) else None
             if v.get("ad_name") and cr:
                 mint_alias[cpa.ad_key(v["ad_name"])].add(str(cr))
+            if v.get("ad_name") and post:
+                mint_alias[cpa.ad_key(v["ad_name"])].add(str(post))
 
     def resolve(x):
         cids = camp_ids.get(cpa.norm(x["camp"]), set())
         cand, how = [i for i, a_ in ads.items() if a_["cid"] in cids and cpa.ad_key(a_["name"]) == cpa.ad_key(x["ad"])], "ad name"
         if not cand:
             crs = mint_alias.get(cpa.ad_key(x["ad"]), set())
-            cand, how = [i for i, a_ in ads.items() if a_["cid"] in cids and a_["creative"] in crs], "mint creative ID"
+            cand, how = [i for i, a_ in ads.items() if a_["cid"] in cids and (a_["creative"] in crs or a_["post"] in crs)], "mint creative/post ID"
         if len(cand) > 1:
             c2 = [i for i in cand if cpa.norm(ads[i]["adset"]) == cpa.norm(x["adset"])]
             if len(c2) == 1:
