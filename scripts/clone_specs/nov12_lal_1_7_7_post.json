@@ -1,0 +1,82 @@
+{
+  "campaign_name": "[MY] 儿童长高方程式 | LAL 买家 1-5% | NOV 新片 | 1-7-7 | NOV 12",
+  "source_adset_id": "120242140766700575",
+  "regulation_source_adset_id": "120247917148640575",
+  "also_exclude": [
+    "120248429743500575"
+  ],
+  "start_time": "2026-11-12T00:00:00+0800",
+  "adsets": [
+    {
+      "name": "LAL 买家 1-5% · 35-55",
+      "budget_myr": 50,
+      "ads": [
+        {
+          "name": "Video 1：是誰說的？",
+          "post_id": "341825319024143_122203031408485585"
+        }
+      ]
+    },
+    {
+      "name": "LAL 买家 1-5% · 35-55",
+      "budget_myr": 50,
+      "ads": [
+        {
+          "name": "Video 2：吃完就馬上去廁所？",
+          "post_id": "341825319024143_122203031498485585"
+        }
+      ]
+    },
+    {
+      "name": "LAL 买家 1-5% · 35-55",
+      "budget_myr": 50,
+      "ads": [
+        {
+          "name": "Video 3：完蛋了！",
+          "post_id": "341825319024143_122203031510485585"
+        }
+      ]
+    },
+    {
+      "name": "LAL 买家 1-5% · 35-55",
+      "budget_myr": 50,
+      "ads": [
+        {
+          "name": "Video 5：飯桌生活細節場景",
+          "post_id": "341825319024143_122203031552485585"
+        }
+      ]
+    },
+    {
+      "name": "LAL 买家 1-5% · 35-55",
+      "budget_myr": 50,
+      "ads": [
+        {
+          "name": "Video 6：具體數字目標",
+          "post_id": "341825319024143_122203031654485585"
+        }
+      ]
+    },
+    {
+      "name": "LAL 买家 1-5% · 35-55",
+      "budget_myr": 50,
+      "ads": [
+        {
+          "name": "Video 7：父母試過一切共情",
+          "post_id": "341825319024143_122203031786485585"
+        }
+      ]
+    },
+    {
+      "name": "LAL 买家 1-5% · 35-55",
+      "budget_myr": 50,
+      "ads": [
+        {
+          "name": "Video 8：對話式「我跟你說！」",
+          "post_id": "341825319024143_122203031846485585"
+        }
+      ]
+    }
+  ],
+  "_note": "2026-11-11 operator: same structure as NOV 新片 1-7-7 (120249800506580575) — same 7 creatives & names, RM50 per ad set, ABO, Advantage+ placements, start 2026-11-12 00:00 MYT; built PAUSED, operator activates. Audience = buyer lookalike 1-5% 35-55, cloned from PURCHASE LIST ad set 120242140766700575. REBUILT 2026-11-11 with existing post IDs (operator: 用 existing post id 建); the creative_id build was deleted."
+}
