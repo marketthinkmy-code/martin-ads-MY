@@ -13,7 +13,8 @@
       "ads": [
         {
           "name": "Video 1：是誰說的？",
-          "creative_id": "28914611384899368"
+          "creative_id": "28914611384899368",
+          "post_id": "341825319024143_122203031408485585"
         }
       ]
     },
@@ -23,7 +24,8 @@
       "ads": [
         {
           "name": "Video 2：吃完就馬上去廁所？",
-          "creative_id": "1686923686185670"
+          "creative_id": "1686923686185670",
+          "post_id": "341825319024143_122203031498485585"
         }
       ]
     },
@@ -33,7 +35,8 @@
       "ads": [
         {
           "name": "Video 3：完蛋了！",
-          "creative_id": "3342688355926282"
+          "creative_id": "3342688355926282",
+          "post_id": "341825319024143_122203031510485585"
         }
       ]
     },
@@ -43,7 +46,8 @@
       "ads": [
         {
           "name": "Video 5：飯桌生活細節場景",
-          "creative_id": "28946204941667984"
+          "creative_id": "28946204941667984",
+          "post_id": "341825319024143_122203031552485585"
         }
       ]
     },
@@ -53,7 +57,8 @@
       "ads": [
         {
           "name": "Video 6：具體數字目標",
-          "creative_id": "1692314798986966"
+          "creative_id": "1692314798986966",
+          "post_id": "341825319024143_122203031654485585"
         }
       ]
     },
@@ -63,7 +68,8 @@
       "ads": [
         {
           "name": "Video 7：父母試過一切共情",
-          "creative_id": "1121274444204057"
+          "creative_id": "1121274444204057",
+          "post_id": "341825319024143_122203031786485585"
         }
       ]
     },
@@ -73,10 +79,35 @@
       "ads": [
         {
           "name": "Video 8：對話式「我跟你說！」",
-          "creative_id": "1001804379647712"
+          "creative_id": "1001804379647712",
+          "post_id": "341825319024143_122203031846485585"
         }
       ]
     }
   ],
-  "_note": "2026-11-11 operator: same structure as NOV 新片 1-7-7 (120249800506580575) — same 7 creatives & names, RM50 per ad set, ABO, Advantage+ placements, start 2026-11-12 00:00 MYT; built PAUSED, operator activates. Audience = Family & Relationships interest, cloned from F&R Top5 ad set 120247917148640575 (6 MY sales in 180d)."
+  "_note": "2026-11-11 operator: same structure as NOV 新片 1-7-7 (120249800506580575) — same 7 creatives & names, RM50 per ad set, ABO, Advantage+ placements, start 2026-11-12 00:00 MYT; built PAUSED, operator activates. Audience = Family & Relationships interest, cloned from F&R Top5 ad set 120247917148640575 (6 MY sales in 180d).",
+  "_built": {
+    "run": "42985413913",
+    "campaign_id": "120249834527960575",
+    "adset_ids": [
+      "120249834528720575",
+      "120249834530690575",
+      "120249834532040575",
+      "120249834533380575",
+      "120249834535520575",
+      "120249834536440575",
+      "120249834537540575"
+    ],
+    "ad_ids": [
+      "120249834538900575",
+      "120249834539210575",
+      "120249834540510575",
+      "120249834540820575",
+      "120249834541070575",
+      "120249834541250575",
+      "120249834542840575"
+    ],
+    "placements": "automatic (Advantage+)",
+    "post_note": "ads reuse the NOV 9 creatives, so each shares the existing post (effective_object_story_id) with the NOV 新片 ad"
+  }
 }
