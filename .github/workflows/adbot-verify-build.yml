@@ -6,7 +6,12 @@ on:
       campaign_ids:
         description: "comma-separated campaign ids"
         type: string
-        required: true
+        required: false
+  push:
+    branches: ["claude/sweet-curie-b6vql4"]
+    paths:
+      - ".github/workflows/adbot-verify-build.yml"
+      - "scripts/verify_build.py"
 
 concurrency:
   group: adbot-verify-build
@@ -26,7 +31,7 @@ jobs:
         env:
           ADBOT_ROOT: ${{ github.workspace }}
           ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
-          ADBOT_VERIFY_IDS: ${{ inputs.campaign_ids }}
+          ADBOT_VERIFY_IDS: ${{ inputs.campaign_ids || '120249800506580575,120249834692750575,120249834728740575' }}
           META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
           META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
         run: python scripts/verify_build.py
