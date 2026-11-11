@@ -1,0 +1,36 @@
+name: adbot · add excluded audiences to ad sets
+
+on:
+  workflow_dispatch:
+    inputs:
+      spec_path:
+        description: "path to the exclusion spec JSON"
+        type: string
+        required: true
+  push:
+    branches: ["claude/sweet-curie-b6vql4"]
+    paths:
+      - "scripts/excl_specs/**"
+
+concurrency:
+  group: adbot-add-exclusions
+  cancel-in-progress: false
+
+jobs:
+  set:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install .
+      - name: Add exclusions
+        env:
+          ADBOT_ROOT: ${{ github.workspace }}
+          ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
+          ADBOT_EXCL_SPEC: ${{ inputs.spec_path || 'scripts/excl_specs/nov12_lal.json' }}
+          META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
+          META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
+        run: python scripts/add_adset_exclusions.py
