@@ -1,0 +1,32 @@
+name: adbot · verify built campaigns (read-only)
+
+on:
+  workflow_dispatch:
+    inputs:
+      campaign_ids:
+        description: "comma-separated campaign ids"
+        type: string
+        required: true
+
+concurrency:
+  group: adbot-verify-build
+  cancel-in-progress: false
+
+jobs:
+  set:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install .
+      - name: Verify
+        env:
+          ADBOT_ROOT: ${{ github.workspace }}
+          ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
+          ADBOT_VERIFY_IDS: ${{ inputs.campaign_ids }}
+          META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
+          META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
+        run: python scripts/verify_build.py
