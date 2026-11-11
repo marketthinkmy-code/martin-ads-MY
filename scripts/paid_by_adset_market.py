@@ -113,36 +113,45 @@ def main() -> None:
     for x in sales:
         if x["mk"] == "MY" and x["adset"]:
             grp[(cpa.norm(x["camp"]), cpa.norm(x["adset"]))].append(x)
-    ranked = sorted(grp.items(), key=lambda kv: (-len(kv[1]), -max((y["date"] or dt.date.min).toordinal() for y in kv[1])))
-    print(f"\n--- MY ad sets with sales (UTM campaign + ad set) — {len(grp)} groups · top 15 ---")
-    print("  life 180d  90d  60d  last-sale   life-spend   CPA   60d-spend  status    ad set id          campaign › ad set")
-    for (cn, an), L in ranked[:15]:
-        m = meta.get((cn, an)) or []
-        w = lambda days: sum(1 for x in L if x["date"] and x["date"] > today - dt.timedelta(days=days))
-        last = max((x["date"] for x in L if x["date"]), default=None)
-        if len(m) == 1:
-            aid = str(m[0]["adset_id"])
-            sp = float(m[0].get("spend") or 0)
-            try:
-                o = g.get_object(aid, "effective_status,daily_budget")
-                st = (o.get("effective_status") or "")[:8]
-            except Exception:  # noqa: BLE001
-                st = "?"
-            cpa_ = f"{sp / len(L):,.0f}"
-            sp_s, s60, aid_s = f"{sp:,.0f}", f"{spend60.get(aid, 0):,.0f}", aid
-        else:
-            st, cpa_, sp_s, s60 = ("UNMATCHED" if not m else f"AMBIG({len(m)})"), "N/A", "N/A", "N/A"
-            aid_s = "-"
-        print(f"  {len(L):>4} {w(180):>4} {w(90):>4} {w(60):>4}  {str(last):<10} {sp_s:>10} {cpa_:>6} {s60:>10}  "
-              f"{st:<9} {aid_s:<18} {L[0]['camp'][:60]} › {L[0]['adset'][:50]}")
-        ads = Counter(x["ad"] for x in L if x["ad"]).most_common(4)
-        print(f"        top ads: " + " · ".join(f"{a[:40]} ({n})" for a, n in ads))
-        if len(m) == 1:
-            try:
-                t = g.get_object(str(m[0]["adset_id"]), "targeting").get("targeting") or {}
-                print(f"        targeting: {tsum(t)}")
-            except Exception as exc:  # noqa: BLE001
-                print(f"        targeting: ? ({str(exc)[:60]})")
+    def show(title, items):
+        print(f"\n--- {title} ---")
+        print("  life 180d  90d  60d  last-sale   life-spend   CPA   60d-spend  #adsets  campaign › ad set")
+        for (cn, an), L in items:
+            m = meta.get((cn, an)) or []
+            w = lambda days: sum(1 for x in L if x["date"] and x["date"] > today - dt.timedelta(days=days))
+            last = max((x["date"] for x in L if x["date"]), default=None)
+            if m:
+                sp = sum(float(r.get("spend") or 0) for r in m)
+                s60 = sum(spend60.get(str(r["adset_id"]), 0) for r in m)
+                sp_s, cpa_, s60_s, n_s = f"{sp:,.0f}", (f"{sp / len(L):,.0f}" if sp else "N/A"), f"{s60:,.0f}", str(len(m))
+            else:
+                sp_s, cpa_, s60_s, n_s = "N/A", "N/A", "N/A", "UNMATCHED"
+            print(f"  {len(L):>4} {w(180):>4} {w(90):>4} {w(60):>4}  {str(last):<10} {sp_s:>10} {cpa_:>6} {s60_s:>10}  {n_s:<8} "
+                  f"{L[0]['camp'][:62]} › {L[0]['adset'][:50]}")
+            ads = Counter(x["ad"] for x in L if x["ad"]).most_common(4)
+            print("        top ads: " + " · ".join(f"{a_[:40]} ({n})" for a_, n in ads))
+            if m:
+                try:
+                    t = g.get_object(str(m[0]["adset_id"]), "targeting").get("targeting") or {}
+                    print(f"        targeting (ad set {m[0]['adset_id']}): {tsum(t)}")
+                except Exception as exc:  # noqa: BLE001
+                    print(f"        targeting: ? ({str(exc)[:60]})")
+
+    last_of = lambda L: max((y["date"] or dt.date.min) for y in L).toordinal()
+    show(f"MY ad sets by LIFETIME sales — {len(grp)} groups · top 12",
+         sorted(grp.items(), key=lambda kv: (-len(kv[1]), -last_of(kv[1])))[:12])
+    w180 = lambda L: sum(1 for x in L if x["date"] and x["date"] > today - dt.timedelta(days=180))
+    show("MY ad sets by sales in the LAST 180 DAYS · top 12",
+         sorted([kv for kv in grp.items() if w180(kv[1])], key=lambda kv: (-w180(kv[1]), -len(kv[1])))[:12])
+    # same audience label across campaigns: pool by ad-set NAME only (informational)
+    by_name = defaultdict(list)
+    for x in sales:
+        if x["mk"] == "MY" and x["adset"]:
+            by_name[cpa.norm(x["adset"])].append(x)
+    print("\n--- MY sales pooled by ad-set NAME across all campaigns (label, not verified audience) · top 12 ---")
+    for n_, L in sorted(by_name.items(), key=lambda kv: -len(kv[1]))[:12]:
+        print(f"  {len(L):>4} life · {w180(L):>3} in 180d · {sum(1 for x in L if x['date'] and x['date'] > today - dt.timedelta(days=60)):>3} in 60d · "
+              f"{len({cpa.norm(x['camp']) for x in L}):>3} campaigns · {L[0]['adset'][:70]}")
     um = sum(len(L) for k, L in grp.items() if not meta.get(k))
     print(f"\n  MY sales whose (campaign, ad set) is not found in this ad account: {um} of "
           f"{sum(len(L) for L in grp.values())}")
