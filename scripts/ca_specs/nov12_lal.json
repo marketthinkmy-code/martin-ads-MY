@@ -1,0 +1,7 @@
+{
+  "adset_ids": ["120249834553450575", "120249834555380575", "120249834555720575", "120249834556190575",
+                "120249834556440575", "120249834556660575", "120249834557420575"],
+  "custom_audience_ids": ["120242141930970575", "120242141931500575", "120242141931490575",
+                          "120242141931480575", "120242141931470575"],
+  "_note": "2026-11-11 operator: LAL 买家 1-5% campaign had no included audience (clone keeps no custom_audiences). Same 5 buyer lookalikes as PURCHASE LIST 120242141766700575: MY 1%, 1-2%, 2-3%, 3-4%, 4-5% of MARTIN MYSG PAID CUSTOMER - 13 APR."
+}

@@ -1,0 +1,36 @@
+name: adbot · add included custom audiences to ad sets
+
+on:
+  workflow_dispatch:
+    inputs:
+      spec_path:
+        description: "path to the custom-audience spec JSON"
+        type: string
+        required: true
+  push:
+    branches: ["claude/sweet-curie-b6vql4"]
+    paths:
+      - "scripts/ca_specs/**"
+
+concurrency:
+  group: adbot-set-custom-audiences
+  cancel-in-progress: false
+
+jobs:
+  set:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install .
+      - name: Add custom audiences
+        env:
+          ADBOT_ROOT: ${{ github.workspace }}
+          ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
+          ADBOT_CA_SPEC: ${{ inputs.spec_path || 'scripts/ca_specs/nov12_lal.json' }}
+          META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
+          META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
+        run: python scripts/set_adset_custom_audiences.py
