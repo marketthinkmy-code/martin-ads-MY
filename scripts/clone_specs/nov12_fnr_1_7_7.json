@@ -1,0 +1,82 @@
+{
+  "campaign_name": "[MY] 儿童长高方程式 | Family & Relationships | NOV 新片 | 1-7-7 | NOV 12",
+  "source_adset_id": "120247917148640575",
+  "regulation_source_adset_id": "120247917148640575",
+  "also_exclude": [
+    "120248429743500575"
+  ],
+  "start_time": "2026-11-12T00:00:00+0800",
+  "adsets": [
+    {
+      "name": "F&R 兴趣 · Parenting/Motherhood/Fatherhood",
+      "budget_myr": 50,
+      "ads": [
+        {
+          "name": "Video 1：是誰說的？",
+          "creative_id": "28914611384899368"
+        }
+      ]
+    },
+    {
+      "name": "F&R 兴趣 · Parenting/Motherhood/Fatherhood",
+      "budget_myr": 50,
+      "ads": [
+        {
+          "name": "Video 2：吃完就馬上去廁所？",
+          "creative_id": "1686923686185670"
+        }
+      ]
+    },
+    {
+      "name": "F&R 兴趣 · Parenting/Motherhood/Fatherhood",
+      "budget_myr": 50,
+      "ads": [
+        {
+          "name": "Video 3：完蛋了！",
+          "creative_id": "3342688355926282"
+        }
+      ]
+    },
+    {
+      "name": "F&R 兴趣 · Parenting/Motherhood/Fatherhood",
+      "budget_myr": 50,
+      "ads": [
+        {
+          "name": "Video 5：飯桌生活細節場景",
+          "creative_id": "28946204941667984"
+        }
+      ]
+    },
+    {
+      "name": "F&R 兴趣 · Parenting/Motherhood/Fatherhood",
+      "budget_myr": 50,
+      "ads": [
+        {
+          "name": "Video 6：具體數字目標",
+          "creative_id": "1692314798986966"
+        }
+      ]
+    },
+    {
+      "name": "F&R 兴趣 · Parenting/Motherhood/Fatherhood",
+      "budget_myr": 50,
+      "ads": [
+        {
+          "name": "Video 7：父母試過一切共情",
+          "creative_id": "1121274444204057"
+        }
+      ]
+    },
+    {
+      "name": "F&R 兴趣 · Parenting/Motherhood/Fatherhood",
+      "budget_myr": 50,
+      "ads": [
+        {
+          "name": "Video 8：對話式「我跟你說！」",
+          "creative_id": "1001804379647712"
+        }
+      ]
+    }
+  ],
+  "_note": "2026-11-11 operator: same structure as NOV 新片 1-7-7 (120249800506580575) — same 7 creatives & names, RM50 per ad set, ABO, Advantage+ placements, start 2026-11-12 00:00 MYT; built PAUSED, operator activates. Audience = Family & Relationships interest, cloned from F&R Top5 ad set 120247917148640575 (6 MY sales in 180d)."
+}
