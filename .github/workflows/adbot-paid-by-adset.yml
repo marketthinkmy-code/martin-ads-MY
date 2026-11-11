@@ -1,0 +1,35 @@
+name: adbot · paid sales by ad set · MY vs SG (read-only)
+
+# Paid sales split MY vs SG; MY ad sets with sales joined to the MY ad account. Aggregates only.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["claude/sweet-curie-b6vql4"]
+    paths:
+      - ".github/workflows/adbot-paid-by-adset.yml"
+      - "scripts/paid_by_adset_market.py"
+
+concurrency:
+  group: adbot-paid-by-adset
+  cancel-in-progress: false
+
+jobs:
+  recent:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install .
+      - name: Paid by ad set
+        env:
+          ADBOT_ROOT: ${{ github.workspace }}
+          ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
+          GOOGLE_SERVICE_ACCOUNT_JSON_B64: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON_B64 }}
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
+          META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
+        run: python scripts/paid_by_adset_market.py
