@@ -78,5 +78,27 @@
       ]
     }
   ],
-  "_note": "2026-11-11 operator: same structure as NOV 新片 1-7-7 (120249800506580575) — same 7 creatives & names, RM50 per ad set, ABO, Advantage+ placements, start 2026-11-12 00:00 MYT; built PAUSED, operator activates. Audience = Family & Relationships interest, cloned from F&R Top5 ad set 120247917148640575 (6 MY sales in 180d). REBUILT 2026-11-11 with existing post IDs (operator: 用 existing post id 建); the creative_id build was deleted."
+  "_note": "2026-11-11 operator: same structure as NOV 新片 1-7-7 (120249800506580575) — same 7 creatives & names, RM50 per ad set, ABO, Advantage+ placements, start 2026-11-12 00:00 MYT; built PAUSED, operator activates. Audience = Family & Relationships interest, cloned from F&R Top5 ad set 120247917148640575 (6 MY sales in 180d). REBUILT 2026-11-11 with existing post IDs (operator: 用 existing post id 建); the creative_id build was deleted.",
+  "_built": {
+    "run": "42986726253",
+    "campaign_id": "120249834692750575",
+    "adset_ids": [
+      "120249834693440575",
+      "120249834694780575",
+      "120249834695360575",
+      "120249834696650575",
+      "120249834698110575",
+      "120249834698760575",
+      "120249834699890575"
+    ],
+    "ad_ids": [
+      "120249834702320575",
+      "120249834703980575",
+      "120249834706180575",
+      "120249834708400575",
+      "120249834709720575",
+      "120249834713730575",
+      "120249834718100575"
+    ]
+  }
 }

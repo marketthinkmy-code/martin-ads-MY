@@ -78,5 +78,27 @@
       ]
     }
   ],
-  "_note": "2026-11-11 operator: same structure as NOV 新片 1-7-7 (120249800506580575) — same 7 creatives & names, RM50 per ad set, ABO, Advantage+ placements, start 2026-11-12 00:00 MYT; built PAUSED, operator activates. Audience = buyer lookalike 1-5% 35-55, cloned from PURCHASE LIST ad set 120242140766700575. REBUILT 2026-11-11 with existing post IDs (operator: 用 existing post id 建); the creative_id build was deleted."
+  "_note": "2026-11-11 operator: same structure as NOV 新片 1-7-7 (120249800506580575) — same 7 creatives & names, RM50 per ad set, ABO, Advantage+ placements, start 2026-11-12 00:00 MYT; built PAUSED, operator activates. Audience = buyer lookalike 1-5% 35-55, cloned from PURCHASE LIST ad set 120242140766700575. REBUILT 2026-11-11 with existing post IDs (operator: 用 existing post id 建); the creative_id build was deleted.",
+  "_built": {
+    "run": "42986906550",
+    "campaign_id": "120249834728740575",
+    "adset_ids": [
+      "120249834728870575",
+      "120249834729500575",
+      "120249834730170575",
+      "120249834730710575",
+      "120249834731060575",
+      "120249834731550575",
+      "120249834732240575"
+    ],
+    "ad_ids": [
+      "120249834733090575",
+      "120249834733770575",
+      "120249834734070575",
+      "120249834734720575",
+      "120249834735690575",
+      "120249834736540575",
+      "120249834741190575"
+    ]
+  }
 }
