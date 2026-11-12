@@ -11,6 +11,7 @@ PRIVACY: phone cells are read only to tell the market; output is counts, Meta ob
 from __future__ import annotations
 
 import datetime as dt
+import os
 import re
 from collections import Counter, defaultdict
 
@@ -79,6 +80,23 @@ def main() -> None:
             d = None
         sales.append({"mk": market_of(phone, camp), "date": d, "camp": camp,
                       "adset": cell(r, col.get("adset", -1)), "ad": cell(r, col.get("ad", -1))})
+    # row-level view of the latest sale dates (no personal data: market, dialling-code class, tags)
+    rs = os.environ.get("ADBOT_ROWS_SINCE")
+    if rs:
+        rs_d = dt.date.fromisoformat(rs)
+        print(f"===== rows dated on/after {rs_d} (incl. future-dated) =====")
+        for i, r in enumerate(rows, start=hi + 2):
+            d_raw = cell(r, col.get("date", -1))
+            d = cpa.parse_date(d_raw)
+            if not d or d < rs_d:
+                continue
+            camp = cell(r, col.get("campaign", -1))
+            phone = next((cell(r, j) for j in pc if cell(r, j)), "")
+            dg = re.sub(r"\D", "", phone)
+            code = ("none" if not dg else "60/0x" if dg.startswith(("60", "0")) else "65/8-digit"
+                    if (dg.startswith("65") and len(dg) >= 9) or (len(dg) == 8 and dg[0] in "3689") else f"+{dg[:2]}… ({len(dg)} digits)")
+            print(f"  row {i}  date {d}  market {market_of(phone, camp):<7} phone-class {code:<16} "
+                  f"amount '{cell(r, col.get('amount', -1))[:12]}'  campaign '{camp[:50]}'  adset '{cell(r, col.get('adset', -1))[:30]}'  ad '{cell(r, col.get('ad', -1))[:40]}'")
     print(f"===== PAID STUDENT LIST · sales by market · {today} MYT =====")
     print(f"sales rows {len(sales)} · tab '{s.cpa.sales_tab}'")
     by_mk = Counter(x["mk"] for x in sales)
