@@ -80,7 +80,7 @@ def main() -> None:
     cell = lambda r, k: (r[COL[k]] if COL[k] < len(r) else "").strip()
     print("===== MARTIN MY — PHASE 3: 11/11 WEBINAR · ATTENDANCE × SURVEY × SALES (read-only) =====\n")
 
-    src_c = Counter(cell(r, "source") for r in rows if "nov1" in cell(r, "source").casefold())
+    src_c = Counter(cell(r, "source") for r in rows if re.search(r"webinar_nov1[18]", cell(r, "source").casefold()))
     print("Register H values containing 'nov1' (rows):", dict(src_c))
 
     g = graph_client(s)
@@ -98,7 +98,7 @@ def main() -> None:
         x = {"row": ri, "ids": person_ids(r), "date": cpa.parse_date(cell(r, "date")),
              "source": cell(r, "source")}
         allrecs.append(x)
-        if x["source"].casefold() != COHORT:
+        if not re.search(r"(?<![a-z0-9_])webinar_nov11(?![0-9])", x["source"].casefold()):
             continue
         camp = cell(r, "campaign"); cn = cpa.norm(camp); adset = cell(r, "adset")
         if not camp:
