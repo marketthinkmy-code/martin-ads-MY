@@ -1,0 +1,320 @@
+{
+ "_note": "Zoom 89007046098 (2026-11-11) attendees from the operator workbook 'Zoom Audience' sheet: Register row number, market, unique minutes, purchased. No names, e-mails or hashes.",
+ "attendees": [
+  {
+   "register_row": 26098,
+   "market": "MY",
+   "minutes": 143.5,
+   "first_join": "19:59",
+   "purchased": "YES"
+  },
+  {
+   "register_row": 26110,
+   "market": "UNKNOWN",
+   "minutes": 139.9,
+   "first_join": "19:59",
+   "purchased": "NO"
+  },
+  {
+   "register_row": 26160,
+   "market": "MY",
+   "minutes": 65.5,
+   "first_join": "19:59",
+   "purchased": "NO"
+  },
+  {
+   "register_row": 26112,
+   "market": "SG",
+   "minutes": 139.6,
+   "first_join": "19:59",
+   "purchased": "NO"
+  },
+  {
+   "register_row": 26126,
+   "market": "SG",
+   "minutes": 143.4,
+   "first_join": "19:59",
+   "purchased": "NO"
+  },
+  {
+   "register_row": null,
+   "market": "NOT_MATCHED",
+   "minutes": 4.8,
+   "first_join": "19:59",
+   "purchased": "NO"
+  },
+  {
+   "register_row": null,
+   "market": "NOT_MATCHED",
+   "minutes": 143.4,
+   "first_join": "19:59",
+   "purchased": "NO"
+  },
+  {
+   "register_row": 26158,
+   "market": "UNKNOWN",
+   "minutes": 127.5,
+   "first_join": "19:59",
+   "purchased": "NO"
+  },
+  {
+   "register_row": 26168,
+   "market": "MY",
+   "minutes": 45.3,
+   "first_join": "19:59",
+   "purchased": "NO"
+  },
+  {
+   "register_row": 26144,
+   "market": "MY",
+   "minutes": 68.5,
+   "first_join": "19:59",
+   "purchased": "NO"
+  },
+  {
+   "register_row": null,
+   "market": "NOT_MATCHED",
+   "minutes": 102.1,
+   "first_join": "20:01",
+   "purchased": "NO"
+  },
+  {
+   "register_row": 26115,
+   "market": "UNKNOWN",
+   "minutes": 141.4,
+   "first_join": "20:01",
+   "purchased": "YES"
+  },
+  {
+   "register_row": 26142,
+   "market": "SG",
+   "minutes": 132.6,
+   "first_join": "20:02",
+   "purchased": "NO"
+  },
+  {
+   "register_row": null,
+   "market": "NOT_MATCHED",
+   "minutes": 98.8,
+   "first_join": "20:03",
+   "purchased": "NO"
+  },
+  {
+   "register_row": null,
+   "market": "NOT_MATCHED",
+   "minutes": 138.2,
+   "first_join": "20:03",
+   "purchased": "NO"
+  },
+  {
+   "register_row": 26113,
+   "market": "SG",
+   "minutes": 25.8,
+   "first_join": "20:03",
+   "purchased": "NO"
+  },
+  {
+   "register_row": null,
+   "market": "NOT_MATCHED",
+   "minutes": 139.4,
+   "first_join": "20:03",
+   "purchased": "NO"
+  },
+  {
+   "register_row": 26131,
+   "market": "SG",
+   "minutes": 67.5,
+   "first_join": "20:04",
+   "purchased": "NO"
+  },
+  {
+   "register_row": 26121,
+   "market": "MY",
+   "minutes": 42.3,
+   "first_join": "20:04",
+   "purchased": "NO"
+  },
+  {
+   "register_row": null,
+   "market": "NOT_MATCHED",
+   "minutes": 138.6,
+   "first_join": "20:04",
+   "purchased": "NO"
+  },
+  {
+   "register_row": null,
+   "market": "NOT_MATCHED",
+   "minutes": 122.8,
+   "first_join": "20:06",
+   "purchased": "NO"
+  },
+  {
+   "register_row": 26102,
+   "market": "MY",
+   "minutes": 110.8,
+   "first_join": "20:06",
+   "purchased": "NO"
+  },
+  {
+   "register_row": 26166,
+   "market": "MY",
+   "minutes": 108.5,
+   "first_join": "20:07",
+   "purchased": "NO"
+  },
+  {
+   "register_row": 26163,
+   "market": "SG",
+   "minutes": 42.4,
+   "first_join": "20:08",
+   "purchased": "NO"
+  },
+  {
+   "register_row": null,
+   "market": "NOT_MATCHED",
+   "minutes": 25.4,
+   "first_join": "20:08",
+   "purchased": "NO"
+  },
+  {
+   "register_row": null,
+   "market": "NOT_MATCHED",
+   "minutes": 106.3,
+   "first_join": "20:09",
+   "purchased": "NO"
+  },
+  {
+   "register_row": 26103,
+   "market": "SG",
+   "minutes": 103.3,
+   "first_join": "20:11",
+   "purchased": "NO"
+  },
+  {
+   "register_row": 26137,
+   "market": "SG",
+   "minutes": 97.3,
+   "first_join": "20:12",
+   "purchased": "NO"
+  },
+  {
+   "register_row": 26138,
+   "market": "SG",
+   "minutes": 114.7,
+   "first_join": "20:14",
+   "purchased": "NO"
+  },
+  {
+   "register_row": 26107,
+   "market": "MY",
+   "minutes": 126.2,
+   "first_join": "20:15",
+   "purchased": "NO"
+  },
+  {
+   "register_row": 26150,
+   "market": "MY",
+   "minutes": 58.4,
+   "first_join": "20:15",
+   "purchased": "NO"
+  },
+  {
+   "register_row": 26109,
+   "market": "SG",
+   "minutes": 115.9,
+   "first_join": "20:24",
+   "purchased": "NO"
+  },
+  {
+   "register_row": null,
+   "market": "NOT_MATCHED",
+   "minutes": 83.5,
+   "first_join": "20:27",
+   "purchased": "NO"
+  },
+  {
+   "register_row": 26172,
+   "market": "UNKNOWN",
+   "minutes": 43.5,
+   "first_join": "20:28",
+   "purchased": "NO"
+  },
+  {
+   "register_row": 26139,
+   "market": "MY",
+   "minutes": 108.1,
+   "first_join": "20:33",
+   "purchased": "YES"
+  },
+  {
+   "register_row": null,
+   "market": "NOT_MATCHED",
+   "minutes": 54.8,
+   "first_join": "20:39",
+   "purchased": "NO"
+  },
+  {
+   "register_row": 26148,
+   "market": "MY",
+   "minutes": 81.5,
+   "first_join": "20:47",
+   "purchased": "NO"
+  },
+  {
+   "register_row": null,
+   "market": "NOT_MATCHED",
+   "minutes": 13.8,
+   "first_join": "20:50",
+   "purchased": "NO"
+  },
+  {
+   "register_row": null,
+   "market": "NOT_MATCHED",
+   "minutes": 17.1,
+   "first_join": "20:51",
+   "purchased": "NO"
+  },
+  {
+   "register_row": null,
+   "market": "NOT_MATCHED",
+   "minutes": 2.2,
+   "first_join": "20:52",
+   "purchased": "NO"
+  },
+  {
+   "register_row": null,
+   "market": "NOT_MATCHED",
+   "minutes": 0.9,
+   "first_join": "20:53",
+   "purchased": "NO"
+  },
+  {
+   "register_row": null,
+   "market": "NOT_MATCHED",
+   "minutes": 11.5,
+   "first_join": "20:58",
+   "purchased": "NO"
+  },
+  {
+   "register_row": 26127,
+   "market": "MY",
+   "minutes": 71.5,
+   "first_join": "21:11",
+   "purchased": "NO"
+  },
+  {
+   "register_row": 26114,
+   "market": "MY",
+   "minutes": 52.0,
+   "first_join": "21:13",
+   "purchased": "NO"
+  },
+  {
+   "register_row": null,
+   "market": "NOT_MATCHED",
+   "minutes": 61.8,
+   "first_join": "21:19",
+   "purchased": "NO"
+  }
+ ]
+}
