@@ -120,7 +120,10 @@ kpi:
   #   孩子15岁以上          RM1,497 across two campaigns, 0 MY sales -> failed.
   # A hold is a promise to look again, not a permanent exemption — all three are handed back to the
   # monitor. Re-add a name here only with a fresh review date attached.
-  cpl_hold: []                           # ad-name substrings temporarily exempt from auto-pause
+  # 2026-11-13 (operator: 重开 Sinus): Sinus has 60d 2 MY sales, CPA ~RM665, but was auto-paused for
+  # RM96 / 0 regs this week. Held from CPL-only pauses (CPA checks still apply). REVIEW 2026-11-19,
+  # after the 11/18 webinar — remove the hold then unless the operator extends it.
+  cpl_hold: ["鼻子敏感 Sinus"]            # ad-name substrings temporarily exempt from auto-pause
 
 cpa:                                     # cost per real PAID acquisition (joins the paid-list sheet)
   enabled: true
