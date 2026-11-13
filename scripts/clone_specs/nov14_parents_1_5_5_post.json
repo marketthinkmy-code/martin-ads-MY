@@ -1,0 +1,62 @@
+{
+ "campaign_name": "[MY] 儿童长高方程式 | Parents 3-17 + Engaged | NOV 新片 B | 1-5-5 | NOV 14",
+ "source_adset_id": "120248670491000575",
+ "regulation_source_adset_id": "120247917148640575",
+ "also_exclude": [
+  "120248429743500575"
+ ],
+ "start_time": "2026-11-14T00:00:00+0800",
+ "_note": "2026-11-13 operator approved: 5 new videos (Hook 1, Video 7/8/9/10), Parents 3-17 + Engaged cloned as NOV 9, 1-5-5 ABO RM50 each, start 11/14 00:00 MYT, existing post ids from scripts/mint_specs/nov13_batch5.json. Built PAUSED.",
+ "adsets": [
+  {
+   "name": "Parents 3-17 + Engaged",
+   "budget_myr": 50,
+   "ads": [
+    {
+     "name": "Hook 1：吃完就上廁所？！",
+     "post_id": "341825319024143_122203372238485585"
+    }
+   ]
+  },
+  {
+   "name": "Parents 3-17 + Engaged",
+   "budget_myr": 50,
+   "ads": [
+    {
+     "name": "Video 7：14歲了，還有機會長高嗎",
+     "post_id": "341825319024143_122203372298485585"
+    }
+   ]
+  },
+  {
+   "name": "Parents 3-17 + Engaged",
+   "budget_myr": 50,
+   "ads": [
+    {
+     "name": "Video 8：鼻塞的孩子长不高",
+     "post_id": "341825319024143_122203372424485585"
+    }
+   ]
+  },
+  {
+   "name": "Parents 3-17 + Engaged",
+   "budget_myr": 50,
+   "ads": [
+    {
+     "name": "Video 9：鼻子不通的孩子，长不高",
+     "post_id": "341825319024143_122203372484485585"
+    }
+   ]
+  },
+  {
+   "name": "Parents 3-17 + Engaged",
+   "budget_myr": 50,
+   "ads": [
+    {
+     "name": "Video 10：不是吃不够，是吸收不到",
+     "post_id": "341825319024143_122203372592485585"
+    }
+   ]
+  }
+ ]
+}
