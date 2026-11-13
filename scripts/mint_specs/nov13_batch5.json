@@ -1,0 +1,50 @@
+{
+ "_note": "2026-11-13 operator approved: copy OK, all 5 videos, Parents 3-17 + Engaged, RM50 each (1-5-5 ABO), start 11/14 00:00 MYT. Names = script titles (author suffix dropped). Copy in Simplified, 马丁医师, 10,000+.",
+ "videos": [
+  {
+   "key": "h1",
+   "drive_file_id": "1vCVhbynwxrf-PNkI8t92d8ZAwbczLoPo",
+   "video_name": "Martin Sep 新馬 Video H1",
+   "content_id": "my_nov13_h1",
+   "ad_name": "Hook 1：吃完就上廁所？！",
+   "headline": "🔴 孩子一吃完饭就要上大号？身体在发出警告",
+   "body_file": "scripts/mint_specs/nov13_batch5.body_h1.txt"
+  },
+  {
+   "key": "v7",
+   "drive_file_id": "1f_SSNor9O7lL7VR9MdZErK47uuGdPD21",
+   "video_name": "Martin Sep 新馬 Video 7",
+   "content_id": "my_nov13_v7",
+   "ad_name": "Video 7：14歲了，還有機會長高嗎",
+   "headline": "🔴 女儿 14 岁、来 MC 了，还有机会长高吗？",
+   "body_file": "scripts/mint_specs/nov13_batch5.body_v7.txt"
+  },
+  {
+   "key": "v8",
+   "drive_file_id": "1uS1r0AX4bWYBPgZakpSv4eHQ7X0s-whi",
+   "video_name": "Martin Sep Video 8",
+   "content_id": "my_nov13_v8",
+   "ad_name": "Video 8：鼻塞的孩子长不高",
+   "headline": "🔴 孩子整天鼻塞、打喷嚏？小心影响长高",
+   "body_file": "scripts/mint_specs/nov13_batch5.body_v8.txt"
+  },
+  {
+   "key": "v9",
+   "drive_file_id": "1VDZMOcO1teSahpk8SemJdf9s630Elh0t",
+   "video_name": "Martin Sep Video 9",
+   "content_id": "my_nov13_v9",
+   "ad_name": "Video 9：鼻子不通的孩子，长不高",
+   "headline": "🔴 鼻子敏感的孩子，为什么怎么补都不长高？",
+   "body_file": "scripts/mint_specs/nov13_batch5.body_v9.txt"
+  },
+  {
+   "key": "v10",
+   "drive_file_id": "12aUIl6883gYBUtw4bs5EgJz9GEyfW4Gq",
+   "video_name": "Martin Sep Video 10",
+   "content_id": "my_nov13_v10",
+   "ad_name": "Video 10：不是吃不够，是吸收不到",
+   "headline": "🔴 孩子吃很多还是瘦小？问题可能不在吃不够",
+   "body_file": "scripts/mint_specs/nov13_batch5.body_v10.txt"
+  }
+ ]
+}
