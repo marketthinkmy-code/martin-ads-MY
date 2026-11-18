@@ -1,0 +1,40 @@
+name: adbot · buyer sources (read-only)
+
+# Paid Student List rows in a date range → matched Register UTM campaign / ad set / ad. No personal data printed.
+
+on:
+  workflow_dispatch:
+    inputs:
+      sale_from:
+        type: string
+        default: "2026-11-18"
+      sale_to:
+        type: string
+        default: "2026-11-19"
+  push:
+    branches: ["claude/sweet-curie-b6vql4"]
+    paths:
+      - ".github/workflows/adbot-buyers-source.yml"
+      - "scripts/buyers_source.py"
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install .
+      - name: Buyer sources
+        env:
+          ADBOT_ROOT: ${{ github.workspace }}
+          ADBOT_CONFIG: ${{ github.workspace }}/config/config.yaml
+          ADBOT_SALE_FROM: ${{ inputs.sale_from || '2026-11-18' }}
+          ADBOT_SALE_TO: ${{ inputs.sale_to || '2026-11-19' }}
+          GOOGLE_SERVICE_ACCOUNT_JSON_B64: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON_B64 }}
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
+          META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
+        run: python scripts/buyers_source.py
