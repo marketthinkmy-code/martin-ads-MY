@@ -1,0 +1,31 @@
+{
+ "campaign_name": "[MY] 儿童长高方程式 | Parents 3-17 + Engaged | 成交赢家 A | 1-1-3 | NOV 21",
+ "source_adset_id": "120248670491000575",
+ "also_exclude": [
+  "120248429743500575"
+ ],
+ "start_time": "2026-11-21T00:00:00+0800",
+ "regulation_source_adset_id": "120247917148640575",
+ "_note": "2026-11-20 operator approved: top 3 MY sellers (林書豪 / H2 / Video 7) in one ad set, ABO RM100, start 11/21 00:00 MYT, existing post ids. Built PAUSED.",
+ "adsets": [
+  {
+   "name": "Parents 3-17 + Engaged",
+   "budget_myr": 100,
+   "ads": [
+    {
+     "name": "MAR Video 5：林書豪story",
+     "post_id": "341825319024143_122200714286485585"
+    },
+    {
+     "name": "Video：H2 面包牛奶一点都不健康",
+     "post_id": "341825319024143_122192839352485585"
+    },
+    {
+     "name": "Video 7：我13岁身高173",
+     "post_id": "341825319024143_122196834554485585"
+    }
+   ]
+  }
+ ],
+ "abo": true
+}

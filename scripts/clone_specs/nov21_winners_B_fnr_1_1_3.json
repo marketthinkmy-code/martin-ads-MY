@@ -1,0 +1,31 @@
+{
+ "campaign_name": "[MY] 儿童长高方程式 | Family and Relationships | 成交赢家 B | 1-1-3 | NOV 21",
+ "source_adset_id": "120247917148640575",
+ "also_exclude": [
+  "120248429743500575"
+ ],
+ "start_time": "2026-11-21T00:00:00+0800",
+ "regulation_source_adset_id": "120247917148640575",
+ "_note": "2026-11-20 operator approved: Sinus / Video 1 鼻窦炎 / Video 10 in one F&R ad set, ABO RM100, start 11/21 00:00 MYT, existing post ids. Old single Sinus + Video 10 ad sets stay on (operator: 不要关). Built PAUSED.",
+ "adsets": [
+  {
+   "name": "Family and Relationships",
+   "budget_myr": 100,
+   "ads": [
+    {
+     "name": "Hook Edit 08：鼻子敏感 Sinus",
+     "post_id": "341825319024143_122200904804485585"
+    },
+    {
+     "name": "Video 1：孩子如果有鼻窦炎",
+     "post_id": "341825319024143_122175862454485585"
+    },
+    {
+     "name": "Video 10：不是吃不够，是吸收不到",
+     "post_id": "341825319024143_122203372592485585"
+    }
+   ]
+  }
+ ],
+ "abo": true
+}
