@@ -1,0 +1,30 @@
+{
+ "campaign_name": "[MY] 儿童长高方程式 | Food & Drink + Milk + Bread | 成交赢家 A2 | 1-1-3 | NOV 23",
+ "source_adset_id": "120248670466640575",
+ "also_exclude": [
+  "120248429743500575"
+ ],
+ "regulation_source_adset_id": "120247917148640575",
+ "_note": "2026-11-23 operator: lift webinar #4 spend (MY + SG) to RM5,000 by Wed 11/25 3pm while keeping CPL low. Same 3 MY sellers as A (林書豪 / H2 / Video 7) in the Food & Drink + Milk + Bread audience, where H2 already ran RM3,091 / 69 regs (CPL 45) and Video 7 RM420 / 7 (CPL 60) in the last 90 days. ABO RM100, existing post ids, built PAUSED; operator activates.",
+ "adsets": [
+  {
+   "name": "Food & Drink + Milk + Bread",
+   "budget_myr": 100,
+   "ads": [
+    {
+     "name": "Video：H2 面包牛奶一点都不健康",
+     "post_id": "341825319024143_122192839352485585"
+    },
+    {
+     "name": "Video 7：我13岁身高173",
+     "post_id": "341825319024143_122196834554485585"
+    },
+    {
+     "name": "MAR Video 5：林書豪story",
+     "post_id": "341825319024143_122200714286485585"
+    }
+   ]
+  }
+ ],
+ "abo": true
+}
