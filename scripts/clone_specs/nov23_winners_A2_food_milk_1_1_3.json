@@ -27,5 +27,16 @@
   }
  ],
  "cbo": true,
- "budget_myr": 100
+ "budget_myr": 100,
+ "_built": {
+  "campaign_id": "120250039410720575",
+  "adset_id": "120250039411130575",
+  "ads": {
+   "H2": "120250039411530575",
+   "Video 7": "120250039412210575",
+   "林書豪": "120250039412470575"
+  },
+  "run": "45108535415",
+  "status": "PAUSED 2026-11-23 ~11:53 MYT; CBO RM100; placements still include Audience Network / right column / Marketplace / IG Explore + unknown age (removed by hand on A and B 11/20)"
+ }
 }
