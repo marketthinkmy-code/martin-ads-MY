@@ -5,7 +5,7 @@
   "120248429743500575"
  ],
  "regulation_source_adset_id": "120247917148640575",
- "_note": "2026-11-23 operator: lift webinar #4 spend (MY + SG) to RM5,000 by Wed 11/25 3pm while keeping CPL low. Same 3 MY sellers as A (林書豪 / H2 / Video 7) in the Food & Drink + Milk + Bread audience, where H2 already ran RM3,091 / 69 regs (CPL 45) and Video 7 RM420 / 7 (CPL 60) in the last 90 days. ABO RM100, existing post ids, built PAUSED; operator activates.",
+ "_note": "2026-11-23 operator: lift webinar #4 spend (MY + SG) to RM5,000 by Wed 11/25 3pm while keeping CPL low. Same 3 MY sellers as A (林書豪 / H2 / Video 7) in the Food & Drink + Milk + Bread audience, where H2 already ran RM3,091 / 69 regs (CPL 45) and Video 7 RM420 / 7 (CPL 60) in the last 90 days. CBO RM100 (operator 11/23: 我建议是 CBO), existing post ids, built PAUSED; operator activates.",
  "adsets": [
   {
    "name": "Food & Drink + Milk + Bread",
@@ -26,5 +26,6 @@
    ]
   }
  ],
- "abo": true
+ "cbo": true,
+ "budget_myr": 100
 }
