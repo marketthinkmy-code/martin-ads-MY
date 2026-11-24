@@ -37,6 +37,6 @@
    "林書豪": "120250039412470575"
   },
   "run": "45108535415",
-  "status": "Built PAUSED 2026-11-23 ~11:53 MYT; operator removed extra placements + unknown age and activated ~12:02; PAUSED 2026-11-24 ~10:00 MYT on operator 關 (rule a: RM105 / 1 reg, CPL 105), adbot-pause run 45310903860"
+  "status": "Built PAUSED 2026-11-23 ~11:53 MYT; operator removed extra placements + unknown age and activated ~12:02; PAUSED 2026-11-24 ~10:00 MYT on operator 關 (rule a: RM105 / 1 reg, CPL 105), adbot-pause run 45310903860; REOPENED 2026-11-24 ~10:27 MYT on operator 重开 (adbot-activate run 45312398964, verified ACTIVE, CBO RM100)"
  }
 }
